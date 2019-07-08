@@ -1,5 +1,6 @@
-.coverage
-.mypy_cache/
-ner_evaluation/tests/__pycache__/
-ner_evaluation/__pycache__/
-.ipynb_checkpoints/
+**.coverage
+**.mypy_cache/
+**__pycache__/
+**.ipynb_checkpoints/
+.tox/
+nervaluate.egg-info/

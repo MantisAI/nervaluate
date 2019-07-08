@@ -1,10 +1,10 @@
-from ner_evaluation.ner_eval import Entity
-from ner_evaluation.ner_eval import compute_metrics
-from ner_evaluation.ner_eval import collect_named_entities
-from ner_evaluation.ner_eval import find_overlap
-from ner_evaluation.ner_eval import compute_actual_possible
-from ner_evaluation.ner_eval import compute_precision_recall
-from ner_evaluation.ner_eval import compute_precision_recall_wrapper
+from nervaluate import Entity
+from nervaluate import compute_metrics
+from nervaluate import collect_named_entities
+from nervaluate import find_overlap
+from nervaluate import compute_actual_possible
+from nervaluate import compute_precision_recall
+from nervaluate import compute_precision_recall_wrapper
 
 
 def test_collect_named_entities_same_type_in_sequence():
