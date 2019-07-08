@@ -1,6 +1,6 @@
 import pytest
 
-from ner_evaluation.ner_eval import Evaluator
+from nervaluate import Evaluator
 
 
 def test_evaluator_simple_case():

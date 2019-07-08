@@ -1,0 +1,7 @@
+__name__="nervaluate"
+__version__="0.1.0"
+__description__="NER evaluation done right"
+__url__="https://www.github.com/ivyleavedtoadflax/nervaluate"
+__author__="David Batista Matthew Upson"
+__author_email__="david.batista@comtravo.com matthew.a.upson@gmail.com"
+__license__="GNU GPL v3"
