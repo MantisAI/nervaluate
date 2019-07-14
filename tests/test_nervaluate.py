@@ -1,4 +1,3 @@
-from nervaluate import Entity
 from nervaluate import compute_metrics
 from nervaluate import collect_named_entities
 from nervaluate import find_overlap
@@ -10,16 +9,16 @@ from nervaluate import compute_precision_recall_wrapper
 def test_collect_named_entities_same_type_in_sequence():
     tags = ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC', 'O']
     result = collect_named_entities(tags)
-    expected = [Entity(e_type='LOC', start_offset=1, end_offset=2),
-                Entity(e_type='LOC', start_offset=3, end_offset=4)]
+    expected = [{"label": "LOC", "start": 1, "end": 2},
+                {"label": "LOC", "start": 3, "end": 4}]
     assert result == expected
 
 
 def test_collect_named_entities_entity_goes_until_last_token():
     tags = ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC']
     result = collect_named_entities(tags)
-    expected = [Entity(e_type='LOC', start_offset=1, end_offset=2),
-                Entity(e_type='LOC', start_offset=3, end_offset=4)]
+    expected = [{"label": "LOC", "start": 1, "end": 2},
+                {"label": "LOC", "start": 3, "end": 4}]
     assert result == expected
 
 
@@ -32,21 +31,21 @@ def test_collect_named_entities_no_entity():
 
 def test_compute_metrics_case_1():
     true_named_entities = [
-        Entity('PER', 59, 69),
-        Entity('LOC', 127, 134),
-        Entity('LOC', 164, 174),
-        Entity('LOC', 197, 205),
-        Entity('LOC', 208, 219),
-        Entity('MISC', 230, 240)
+        {"label":"PER", "start": 59, "end": 69},
+        {"label":"LOC", "start": 127, "end": 134},
+        {"label":"LOC", "start": 164, "end": 174},
+        {"label":"LOC", "start": 197, "end": 205},
+        {"label":"LOC", "start": 208, "end": 219},
+        {"label":"MISC", "start": 230, "end": 240},
     ]
 
     pred_named_entities = [
-        Entity('PER', 24, 30),
-        Entity('LOC', 124, 134),
-        Entity('PER', 164, 174),
-        Entity('LOC', 197, 205),
-        Entity('LOC', 208, 219),
-        Entity('LOC', 225, 243)
+        {"label":"PER", "start": 24, "end": 30},
+        {"label":"LOC", "start": 124, "end": 134},
+        {"label":"PER", "start": 164, "end": 174},
+        {"label":"LOC", "start": 197, "end": 205},
+        {"label":"LOC", "start": 208, "end": 219},
+        {"label":"LOC", "start": 225, "end": 243},
     ]
 
     results, results_agg = compute_metrics(
@@ -98,7 +97,7 @@ def test_compute_metrics_case_1():
 
 def test_compute_metrics_agg_scenario_3():
 
-    true_named_entities = [Entity('PER', 59, 69)]
+    true_named_entities = [{"label": "PER", "start":59, "end":69}]
 
     pred_named_entities = []
 
@@ -165,7 +164,7 @@ def test_compute_metrics_agg_scenario_2():
 
     true_named_entities = []
 
-    pred_named_entities = [Entity('PER', 59, 69)]
+    pred_named_entities = [{"label":"PER", "start":59, "end":69}]
 
     results, results_agg = compute_metrics(
         true_named_entities, pred_named_entities, ['PER']
@@ -228,9 +227,9 @@ def test_compute_metrics_agg_scenario_2():
 
 def test_compute_metrics_agg_scenario_5():
 
-    true_named_entities = [Entity('PER', 59, 69)]
+    true_named_entities = [{"label":"PER", "start":59, "end":69}]
 
-    pred_named_entities = [Entity('PER', 57, 69)]
+    pred_named_entities = [{"label":"PER", "start":57, "end":69}]
 
     results, results_agg = compute_metrics(
         true_named_entities, pred_named_entities, ['PER']
@@ -293,9 +292,9 @@ def test_compute_metrics_agg_scenario_5():
 
 def test_compute_metrics_agg_scenario_4():
 
-    true_named_entities = [Entity('PER', 59, 69)]
+    true_named_entities = [{"label":"PER", "start":59, "end":69}]
 
-    pred_named_entities = [Entity('LOC', 59, 69)]
+    pred_named_entities = [{"label":"LOC", "start":59, "end":69}]
 
     results, results_agg = compute_metrics(
         true_named_entities, pred_named_entities, ['PER', 'LOC']
@@ -406,9 +405,9 @@ def test_compute_metrics_agg_scenario_4():
 
 def test_compute_metrics_agg_scenario_1():
 
-    true_named_entities = [Entity('PER', 59, 69)]
+    true_named_entities = [{"label":"PER", "start": 59, "end": 69}]
 
-    pred_named_entities = [Entity('PER', 59, 69)]
+    pred_named_entities = [{"label":"PER", "start": 59, "end": 69}]
 
     results, results_agg = compute_metrics(
         true_named_entities, pred_named_entities, ['PER']
@@ -471,9 +470,9 @@ def test_compute_metrics_agg_scenario_1():
 
 def test_compute_metrics_agg_scenario_6():
 
-    true_named_entities = [Entity('PER', 59, 69)]
+    true_named_entities = [{"label":"PER", "start": 59, "end": 69}]
 
-    pred_named_entities = [Entity('LOC', 54, 69)]
+    pred_named_entities = [{"label":"LOC", "start": 54, "end": 69}]
 
     results, results_agg = compute_metrics(
         true_named_entities, pred_named_entities, ['PER', 'LOC']
@@ -585,15 +584,15 @@ def test_compute_metrics_agg_scenario_6():
 def test_compute_metrics_extra_tags_in_prediction():
 
     true_named_entities = [
-        Entity('PER', 50, 52),
-        Entity('ORG', 59, 69),
-        Entity('ORG', 71, 72),
+        {"label":"PER", "start": 50, "end": 52},
+        {"label":"ORG", "start": 59, "end": 69},
+        {"label":"ORG", "start": 71, "end": 72},
     ]
 
     pred_named_entities = [
-        Entity('LOC', 50, 52),  # Wrong type
-        Entity('ORG', 59, 69),  # Correct
-        Entity('MISC', 71, 72), # Wrong type
+        {"label":"LOC",  "start": 50,  "end": 52},  # Wrong type
+        {"label":"ORG",  "start": 59,  "end": 69},  # Correct
+        {"label":"MISC", "start": 71, "end": 72}, # Wrong type
     ]
 
     results, results_agg = compute_metrics(
@@ -656,15 +655,15 @@ def test_compute_metrics_extra_tags_in_prediction():
 def test_compute_metrics_extra_tags_in_true():
 
     true_named_entities = [
-        Entity('PER', 50, 52),
-        Entity('ORG', 59, 69),
-        Entity('MISC', 71, 72),
+        {"label": "PER", "start": 50, "end": 52},
+        {"label": "ORG", "start": 59, "end": 69},
+        {"label":"MISC", "start": 71, "end": 72},
     ]
 
     pred_named_entities = [
-        Entity('LOC', 50, 52),  # Wrong type
-        Entity('ORG', 59, 69),  # Correct
-        Entity('ORG', 71, 72),  # Spurious
+        {"label":"LOC", "start": 50, "end": 52},  # Wrong type
+        {"label":"ORG", "start": 59, "end": 69},  # Correct
+        {"label":"ORG", "start": 71, "end": 72},  # Spurious
     ]
 
     results, results_agg = compute_metrics(
@@ -727,9 +726,9 @@ def test_compute_metrics_extra_tags_in_true():
 def test_compute_metrics_no_predictions():
 
     true_named_entities = [
-        Entity('PER', 50, 52),
-        Entity('ORG', 59, 69),
-        Entity('MISC', 71, 72),
+        {"label": "PER", "start": 50, "end": 52},
+        {"label": "ORG", "start": 59, "end": 69},
+        {"label":"MISC", "start": 71, "end": 72},
     ]
 
     pred_named_entities = []
@@ -792,11 +791,11 @@ def test_compute_metrics_no_predictions():
 
 def test_find_overlap_no_overlap():
 
-    pred_entity = Entity('LOC', 1, 10)
-    true_entity = Entity('LOC', 11, 20)
+    pred_entity = {"label":"LOC", "start": 1,  "end": 10}
+    true_entity = {"label":"LOC", "start": 11, "end": 20}
 
-    pred_range = range(pred_entity.start_offset, pred_entity.end_offset)
-    true_range = range(true_entity.start_offset, true_entity.end_offset)
+    pred_range = range(pred_entity["start"], pred_entity["end"])
+    true_range = range(true_entity["start"], true_entity["end"])
 
     pred_set = set(pred_range)
     true_set = set(true_range)
@@ -808,11 +807,11 @@ def test_find_overlap_no_overlap():
 
 def test_find_overlap_total_overlap():
 
-    pred_entity = Entity('LOC', 10, 22)
-    true_entity = Entity('LOC', 11, 20)
+    pred_entity = {"label":"LOC", "start": 10, "end": 22}
+    true_entity = {"label":"LOC", "start": 11, "end": 20}
 
-    pred_range = range(pred_entity.start_offset, pred_entity.end_offset)
-    true_range = range(true_entity.start_offset, true_entity.end_offset)
+    pred_range = range(pred_entity["start"], pred_entity["end"])
+    true_range = range(true_entity["start"], true_entity["end"])
 
     pred_set = set(pred_range)
     true_set = set(true_range)
@@ -824,11 +823,11 @@ def test_find_overlap_total_overlap():
 
 def test_find_overlap_start_overlap():
 
-    pred_entity = Entity('LOC', 5, 12)
-    true_entity = Entity('LOC', 11, 20)
+    pred_entity = {"label":"LOC", "start": 5,  "end": 12}
+    true_entity = {"label":"LOC", "start": 11, "end": 20}
 
-    pred_range = range(pred_entity.start_offset, pred_entity.end_offset)
-    true_range = range(true_entity.start_offset, true_entity.end_offset)
+    pred_range = range(pred_entity["start"], pred_entity["end"])
+    true_range = range(true_entity["start"], true_entity["end"])
 
     pred_set = set(pred_range)
     true_set = set(true_range)
@@ -840,11 +839,11 @@ def test_find_overlap_start_overlap():
 
 def test_find_overlap_end_overlap():
 
-    pred_entity = Entity('LOC', 15, 25)
-    true_entity = Entity('LOC', 11, 20)
+    pred_entity = {"label":"LOC", "start": 15, "end":25}
+    true_entity = {"label":"LOC", "start": 11, "end":20}
 
-    pred_range = range(pred_entity.start_offset, pred_entity.end_offset)
-    true_range = range(true_entity.start_offset, true_entity.end_offset)
+    pred_range = range(pred_entity["start"], pred_entity["end"])
+    true_range = range(true_entity["start"], true_entity["end"])
 
     pred_set = set(pred_range)
     true_set = set(true_range)
