@@ -9,7 +9,7 @@ logging.basicConfig(
 
 class Evaluator():
 
-    def __init__(self, true, pred, tags):
+    def __init__(self, true, pred, tags, list=False):
         """
         """
 
@@ -19,6 +19,7 @@ class Evaluator():
         self.true = true
         self.pred = pred
         self.tags = tags
+        self.list = list
 
         # Setup dict into which metrics will be stored.
 
@@ -64,12 +65,16 @@ class Evaluator():
             if len(true_ents) != len(pred_ents):
                 raise ValueError("Prediction length does not match true example length")
 
+            # If entities passed as list, collect these into json format
+
+            if self.list:
+                true_ents = collect_named_entities(true_ents)
+                pred_ents = collect_named_entities(pred_ents)
+
             # Compute results for one message
 
             tmp_results, tmp_agg_results = compute_metrics(
-                collect_named_entities(true_ents),
-                collect_named_entities(pred_ents),
-                self.tags
+                true_ents, pred_ents, self.tags
             )
 
             # Cycle through each result and accumulate
