@@ -110,8 +110,8 @@ class Evaluator():
 
 def collect_named_entities(tokens):
     """
-    Creates a list of Entity named-tuples, storing the entity type and the start and end
-    offsets of the entity.
+    Creates a list of Entity named-tuples, storing the entity type and the 
+    start and end offsets of the entity.
 
     :param tokens: a list of tags
     :return: a list of Entity named-tuples
@@ -155,6 +155,13 @@ def collect_named_entities(tokens):
 
 
 def compute_metrics(true_named_entities, pred_named_entities, tags):
+    """
+    Compute metrics on the collected true and predicted named entities
+
+    :true_name_entitites: Collected true named entities output by collect_named_entities
+    :pred_name_entitites:  Collected predicted named entities output by collect_named_entities
+    :tags: List of tags to be used 
+    """
 
 
     eval_metrics = {'correct': 0, 'incorrect': 0, 'partial': 0, 'missed': 0, 'spurious': 0, 'precision': 0, 'recall': 0}
