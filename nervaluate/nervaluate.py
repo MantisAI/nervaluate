@@ -1,5 +1,4 @@
 import logging
-from collections import namedtuple
 from copy import deepcopy
 
 logging.basicConfig(
@@ -8,11 +7,9 @@ logging.basicConfig(
     level="DEBUG",
 )
 
-Entity = namedtuple("Entity", "e_type start_offset end_offset")
-
 class Evaluator():
 
-    def __init__(self, true, pred, tags):
+    def __init__(self, true, pred, tags, list=False):
         """
         """
 
@@ -22,6 +19,7 @@ class Evaluator():
         self.true = true
         self.pred = pred
         self.tags = tags
+        self.list = list
 
         # Setup dict into which metrics will be stored.
 
@@ -67,12 +65,16 @@ class Evaluator():
             if len(true_ents) != len(pred_ents):
                 raise ValueError("Prediction length does not match true example length")
 
+            # If entities passed as list, collect these into json format
+
+            if self.list:
+                true_ents = collect_named_entities(true_ents)
+                pred_ents = collect_named_entities(pred_ents)
+
             # Compute results for one message
 
             tmp_results, tmp_agg_results = compute_metrics(
-                collect_named_entities(true_ents),
-                collect_named_entities(pred_ents),
-                self.tags
+                true_ents, pred_ents, self.tags
             )
 
             # Cycle through each result and accumulate
@@ -91,17 +93,17 @@ class Evaluator():
 
             # Aggregate results by entity type
 
-            for e_type in self.tags:
+            for label in self.tags:
 
-                for eval_schema in tmp_agg_results[e_type]:
+                for eval_schema in tmp_agg_results[label]:
 
-                    for metric in tmp_agg_results[e_type][eval_schema]:
+                    for metric in tmp_agg_results[label][eval_schema]:
 
-                        self.evaluation_agg_entities_type[e_type][eval_schema][metric] += tmp_agg_results[e_type][eval_schema][metric]
+                        self.evaluation_agg_entities_type[label][eval_schema][metric] += tmp_agg_results[label][eval_schema][metric]
 
                 # Calculate precision recall at the individual entity level
 
-                self.evaluation_agg_entities_type[e_type] = compute_precision_recall_wrapper(self.evaluation_agg_entities_type[e_type])
+                self.evaluation_agg_entities_type[label] = compute_precision_recall_wrapper(self.evaluation_agg_entities_type[label])
 
         return self.results, self.evaluation_agg_entities_type
 
@@ -125,7 +127,7 @@ def collect_named_entities(tokens):
         if token_tag == 'O':
             if ent_type is not None and start_offset is not None:
                 end_offset = offset - 1
-                named_entities.append(Entity(ent_type, start_offset, end_offset))
+                named_entities.append({"label": ent_type, "start": start_offset, "end":end_offset})
                 start_offset = None
                 end_offset = None
                 ent_type = None
@@ -137,7 +139,7 @@ def collect_named_entities(tokens):
         elif ent_type != token_tag[2:] or (ent_type == token_tag[2:] and token_tag[:1] == 'B'):
 
             end_offset = offset - 1
-            named_entities.append(Entity(ent_type, start_offset, end_offset))
+            named_entities.append({"label": ent_type, "start": start_offset, "end":end_offset})
 
             # start of a new entity
             ent_type = token_tag[2:]
@@ -147,7 +149,7 @@ def collect_named_entities(tokens):
     # catches an entity that goes up until the last token
 
     if ent_type and start_offset and end_offset is None:
-        named_entities.append(Entity(ent_type, start_offset, len(tokens)-1))
+        named_entities.append({"label": ent_type, "start": start_offset, "end":len(tokens)-1})
 
     return named_entities
 
@@ -182,8 +184,8 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
     # 2) Where there is a tag in the true data that the model is not capable of
     # predicting.
 
-    true_named_entities = [ent for ent in true_named_entities if ent.e_type in tags]
-    pred_named_entities = [ent for ent in pred_named_entities if ent.e_type in tags]
+    true_named_entities = [ent for ent in true_named_entities if ent["label"] in tags]
+    pred_named_entities = [ent for ent in pred_named_entities if ent["label"] in tags]
 
     # go through each predicted named-entity
 
@@ -203,11 +205,11 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
             evaluation['exact']['correct'] += 1
             evaluation['partial']['correct'] += 1
 
-            # for the agg. by e_type results
-            evaluation_agg_entities_type[pred.e_type]['strict']['correct'] += 1
-            evaluation_agg_entities_type[pred.e_type]['ent_type']['correct'] += 1
-            evaluation_agg_entities_type[pred.e_type]['exact']['correct'] += 1
-            evaluation_agg_entities_type[pred.e_type]['partial']['correct'] += 1
+            # for the agg. by label results
+            evaluation_agg_entities_type[pred["label"]]['strict']['correct'] += 1
+            evaluation_agg_entities_type[pred["label"]]['ent_type']['correct'] += 1
+            evaluation_agg_entities_type[pred["label"]]['exact']['correct'] += 1
+            evaluation_agg_entities_type[pred["label"]]['partial']['correct'] += 1
 
         else:
 
@@ -215,13 +217,13 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
             for true in true_named_entities:
 
-                pred_range = range(pred.start_offset, pred.end_offset)
-                true_range = range(true.start_offset, true.end_offset)
+                pred_range = range(pred["start"], pred["end"])
+                true_range = range(true["start"], true["end"])
 
                 # Scenario IV: Offsets match, but entity type is wrong
 
-                if true.start_offset == pred.start_offset and pred.end_offset == true.end_offset \
-                        and true.e_type != pred.e_type:
+                if true["start"] == pred["start"] and pred["end"] == true["end"] \
+                        and true["label"] != pred["label"]:
 
                     # overall results
                     evaluation['strict']['incorrect'] += 1
@@ -230,10 +232,10 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
                     evaluation['exact']['correct'] += 1
 
                     # aggregated by entity type results
-                    evaluation_agg_entities_type[true.e_type]['strict']['incorrect'] += 1
-                    evaluation_agg_entities_type[true.e_type]['ent_type']['incorrect'] += 1
-                    evaluation_agg_entities_type[true.e_type]['partial']['correct'] += 1
-                    evaluation_agg_entities_type[true.e_type]['exact']['correct'] += 1
+                    evaluation_agg_entities_type[true["label"]]['strict']['incorrect'] += 1
+                    evaluation_agg_entities_type[true["label"]]['ent_type']['incorrect'] += 1
+                    evaluation_agg_entities_type[true["label"]]['partial']['correct'] += 1
+                    evaluation_agg_entities_type[true["label"]]['exact']['correct'] += 1
 
                     true_which_overlapped_with_pred.append(true)
                     found_overlap = True
@@ -250,7 +252,7 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
                     # exactly), and the entity type is the same.
                     # 2.1 overlaps with the same entity type
 
-                    if pred.e_type == true.e_type:
+                    if pred["label"] == true["label"]:
 
                         # overall results
                         evaluation['strict']['incorrect'] += 1
@@ -259,10 +261,10 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
                         evaluation['exact']['incorrect'] += 1
 
                         # aggregated by entity type results
-                        evaluation_agg_entities_type[true.e_type]['strict']['incorrect'] += 1
-                        evaluation_agg_entities_type[true.e_type]['ent_type']['correct'] += 1
-                        evaluation_agg_entities_type[true.e_type]['partial']['partial'] += 1
-                        evaluation_agg_entities_type[true.e_type]['exact']['incorrect'] += 1
+                        evaluation_agg_entities_type[true["label"]]['strict']['incorrect'] += 1
+                        evaluation_agg_entities_type[true["label"]]['ent_type']['correct'] += 1
+                        evaluation_agg_entities_type[true["label"]]['partial']['partial'] += 1
+                        evaluation_agg_entities_type[true["label"]]['exact']['incorrect'] += 1
 
                         found_overlap = True
 
@@ -281,14 +283,14 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
                         # aggregated by entity type results
                         # Results against the true entity
 
-                        evaluation_agg_entities_type[true.e_type]['strict']['incorrect'] += 1
-                        evaluation_agg_entities_type[true.e_type]['partial']['partial'] += 1
-                        evaluation_agg_entities_type[true.e_type]['ent_type']['incorrect'] += 1
-                        evaluation_agg_entities_type[true.e_type]['exact']['incorrect'] += 1
+                        evaluation_agg_entities_type[true["label"]]['strict']['incorrect'] += 1
+                        evaluation_agg_entities_type[true["label"]]['partial']['partial'] += 1
+                        evaluation_agg_entities_type[true["label"]]['ent_type']['incorrect'] += 1
+                        evaluation_agg_entities_type[true["label"]]['exact']['incorrect'] += 1
 
                         # Results against the predicted entity
 
-                        # evaluation_agg_entities_type[pred.e_type]['strict']['spurious'] += 1
+                        # evaluation_agg_entities_type[pred["label"]]['strict']['spurious'] += 1
 
                         found_overlap = True
 
@@ -307,7 +309,7 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
                 # Aggregated by entity type results
 
-                # NOTE: when pred.e_type is not found in tags
+                # NOTE: when pred["label"] is not found in tags
                 # or when it simply does not appear in the test set, then it is
                 # spurious, but it is not clear where to assign it at the tag
                 # level. In this case, it is applied to all target_tags
@@ -333,11 +335,11 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
             evaluation['partial']['missed'] += 1
             evaluation['exact']['missed'] += 1
 
-            # for the agg. by e_type
-            evaluation_agg_entities_type[true.e_type]['strict']['missed'] += 1
-            evaluation_agg_entities_type[true.e_type]['ent_type']['missed'] += 1
-            evaluation_agg_entities_type[true.e_type]['partial']['missed'] += 1
-            evaluation_agg_entities_type[true.e_type]['exact']['missed'] += 1
+            # for the agg. by label
+            evaluation_agg_entities_type[true["label"]]['strict']['missed'] += 1
+            evaluation_agg_entities_type[true["label"]]['ent_type']['missed'] += 1
+            evaluation_agg_entities_type[true["label"]]['partial']['missed'] += 1
+            evaluation_agg_entities_type[true["label"]]['exact']['missed'] += 1
 
     # Compute 'possible', 'actual' according to SemEval-2013 Task 9.1 on the
     # overall results, and use these to calculate precision and recall.

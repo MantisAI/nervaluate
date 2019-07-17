@@ -15,7 +15,7 @@ def test_evaluator_simple_case():
         ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC', 'O'],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['LOC', 'PER'])
+    evaluator = Evaluator(true, pred, tags=['LOC', 'PER'], list=True)
 
     results, results_agg = evaluator.evaluate()
 
@@ -89,7 +89,7 @@ def test_evaluator_simple_case_filtered_tags():
         ['O', 'B-MISC', 'I-MISC', 'O', 'O', 'O'],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER', 'LOC'])
+    evaluator = Evaluator(true, pred, tags=['PER', 'LOC'], list=True)
 
     results, results_agg = evaluator.evaluate()
 
@@ -159,7 +159,7 @@ def test_evaluator_extra_classes():
         ['O', 'B-FOO', 'I-FOO', 'I-FOO', 'O', 'O'],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['ORG', 'FOO'])
+    evaluator = Evaluator(true, pred, tags=['ORG', 'FOO'], list=True)
 
     results, results_agg = evaluator.evaluate()
 
@@ -228,7 +228,7 @@ def test_evaluator_no_entities_in_prediction():
         ['O', 'O', 'O', 'O', 'O', 'O'],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER'])
+    evaluator = Evaluator(true, pred, tags=['PER'], list=True)
 
     results, results_agg = evaluator.evaluate()
 
@@ -297,7 +297,7 @@ def test_evaluator_compare_results_and_results_agg():
         ['O', 'O', 'B-PER', 'I-PER', 'O', 'O'],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER'])
+    evaluator = Evaluator(true, pred, tags=['PER'], list=True)
 
     results, results_agg = evaluator.evaluate()
 
@@ -429,7 +429,7 @@ def test_evaluator_compare_results_and_results_agg_1():
         ['O', 'O', 'B-MISC', 'I-MISC', 'O', 'O'],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'MISC'])
+    evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'MISC'], list=True)
 
     results, results_agg = evaluator.evaluate()
 
@@ -600,7 +600,7 @@ def test_evaluator_wrong_prediction_length():
         ['O', 'B-MISC', 'I-MISC', 'O'],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER', 'MISC'])
+    evaluator = Evaluator(true, pred, tags=['PER', 'MISC'], list=True)
 
     with pytest.raises(ValueError):
         evaluator.evaluate()
@@ -617,5 +617,5 @@ def test_evaluator_non_matching_corpus_length():
     ]
 
     with pytest.raises(ValueError):
-        evaluator = Evaluator(true, pred, tags=['PER', 'MISC'])
+        evaluator = Evaluator(true, pred, tags=['PER', 'MISC'], list=True)
 
