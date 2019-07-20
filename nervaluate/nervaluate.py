@@ -58,16 +58,18 @@ class Evaluator():
 
         for true_ents, pred_ents in zip(self.true, self.pred):
 
-            # Check that the length of the true and predicted examples are the
-            # same. This must be checked here, because another error may not
-            # be thrown if the lengths do not match.
-
-            if len(true_ents) != len(pred_ents):
-                raise ValueError("Prediction length does not match true example length")
+            if self.list:
 
             # If entities passed as list, collect these into json format
 
-            if self.list:
+            # If recieving a list of entities, check that the length of the
+            # true and predicted examples are the same. This must be checked
+            # here, because another error may not be thrown if the lengths do
+            # not match.
+
+                if len(true_ents) != len(pred_ents):
+                    raise ValueError("Prediction length does not match true example length")
+
                 true_ents = collect_named_entities(true_ents)
                 pred_ents = collect_named_entities(pred_ents)
 
