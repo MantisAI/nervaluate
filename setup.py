@@ -22,10 +22,7 @@ setup(
     author_email=about["__author_email__"],
     license=["__license__"],
     packages=["nervaluate"],
-    install_requires=[
-        "scikit-learn==0.21.2",
-        "sklearn-crfsuite==0.3.6"
-    ],
+    install_requires=[],
     tests_require=["pytest"],
     include_package_data=True,
     zip_safe=True,
