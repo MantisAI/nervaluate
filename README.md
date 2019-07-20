@@ -4,7 +4,7 @@ nervaluate is a python pip module for evaluating Named Entity Recognition (NER) 
 
 The evaluation metrics output by nervaluate go belong a simple token/tag based schema, and consider diferent scenarios based on wether all the tokens that belong to a named entity were classified or not, and also wether the correct entity type was assigned.
 
-This problem is described in detail in the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) which accompanied to blog post.
+This problem is described in detail in the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) which accompanied the blog post.
 
 The code draws heavily on:
 
@@ -25,7 +25,6 @@ To install the package:
 
 ```
 pip install git+https://github.com/ivyleavedtoadflax/nervaluate
-
 ```
 
 To create a virtual environment for development:
@@ -39,7 +38,6 @@ source /build/virtualenv/bin/activate
 ```
 
 Alternatively you can use your own virtualenv manager and simply `make reqs` to install requirements.
-```
 
 To run tests:
 
@@ -53,5 +51,5 @@ make test
 
 You can see a working example in the following notebook:
 
-- [example/example-full-named-entity-evaluation.ipynb](example-full-named-entity-evaluation.ipynb)
+- [examples/example-full-named-entity-evaluation.ipynb](examples/example-full-named-entity-evaluation.ipynb)
 
