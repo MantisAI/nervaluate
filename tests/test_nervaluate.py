@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# coding: utf-8
+
 from nervaluate import compute_metrics
 from nervaluate import collect_named_entities
 from nervaluate import find_overlap
