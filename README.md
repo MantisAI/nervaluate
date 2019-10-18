@@ -49,7 +49,206 @@ make test
 
 ## Example:
 
-You can see a working example in the following notebook:
+The package currently works with two formats:
+
+* [prodi.gy](https://prodi.gy) style lists of spans.
+* Nested lists containing NER labels.
+
+### Prodigy spans
+
+```
+true = [
+    [{"label": "PER", "start": 2, "end": 4}],
+    [{"label": "LOC", "start": 1, "end": 2},
+     {"label": "LOC", "start": 3, "end": 4}]
+]
+
+pred = [
+    [{"label": "PER", "start": 2, "end": 4}],
+    [{"label": "LOC", "start": 1, "end": 2},
+     {"label": "LOC", "start": 3, "end": 4}]
+]
+
+from nervaluate import Evaluator
+
+evaluator = Evaluator(true, pred, tags=['LOC', 'PER'])
+
+# Returns overall metrics and metrics for each tag
+
+results, results_per_tag = evaluator.evaluate()
+
+print(results)
+```
+
+```
+{
+    'ent_type':{
+        'correct':3,
+        'incorrect':0,
+        'partial':0,
+        'missed':0,
+        'spurious':0,
+        'possible':3,
+        'actual':3,
+        'precision':1.0,
+        'recall':1.0
+    },
+    'partial':{
+        'correct':3,
+        'incorrect':0,
+        'partial':0,
+        'missed':0,
+        'spurious':0,
+        'possible':3,
+        'actual':3,
+        'precision':1.0,
+        'recall':1.0
+    },
+    'strict':{
+        'correct':3,
+        'incorrect':0,
+        'partial':0,
+        'missed':0,
+        'spurious':0,
+        'possible':3,
+        'actual':3,
+        'precision':1.0,
+        'recall':1.0
+    },
+    'exact':{
+        'correct':3,
+        'incorrect':0,
+        'partial':0,
+        'missed':0,
+        'spurious':0,
+        'possible':3,
+        'actual':3,
+        'precision':1.0,
+        'recall':1.0
+    }
+}
+```
+
+```
+print(results_by_tag)
+```
+
+```
+{
+    'LOC':{
+        'ent_type':{
+            'correct':2,
+            'incorrect':0,
+            'partial':0,
+            'missed':0,
+            'spurious':0,
+            'possible':2,
+            'actual':2,
+            'precision':1.0,
+            'recall':1.0
+        },
+        'partial':{
+            'correct':2,
+            'incorrect':0,
+            'partial':0,
+            'missed':0,
+            'spurious':0,
+            'possible':2,
+            'actual':2,
+            'precision':1.0,
+            'recall':1.0
+        },
+        'strict':{
+            'correct':2,
+            'incorrect':0,
+            'partial':0,
+            'missed':0,
+            'spurious':0,
+            'possible':2,
+            'actual':2,
+            'precision':1.0,
+            'recall':1.0
+        },
+        'exact':{
+            'correct':2,
+            'incorrect':0,
+            'partial':0,
+            'missed':0,
+            'spurious':0,
+            'possible':2,
+            'actual':2,
+            'precision':1.0,
+            'recall':1.0
+        }
+    },
+    'PER':{
+        'ent_type':{
+            'correct':1,
+            'incorrect':0,
+            'partial':0,
+            'missed':0,
+            'spurious':0,
+            'possible':1,
+            'actual':1,
+            'precision':1.0,
+            'recall':1.0
+        },
+        'partial':{
+            'correct':1,
+            'incorrect':0,
+            'partial':0,
+            'missed':0,
+            'spurious':0,
+            'possible':1,
+            'actual':1,
+            'precision':1.0,
+            'recall':1.0
+        },
+        'strict':{
+            'correct':1,
+            'incorrect':0,
+            'partial':0,
+            'missed':0,
+            'spurious':0,
+            'possible':1,
+            'actual':1,
+            'precision':1.0,
+            'recall':1.0
+        },
+        'exact':{
+            'correct':1,
+            'incorrect':0,
+            'partial':0,
+            'missed':0,
+            'spurious':0,
+            'possible':1,
+            'actual':1,
+            'precision':1.0,
+            'recall':1.0
+        }
+    }
+}
+```
+
+### Nested lists
+
+```
+true = [
+    ['O', 'O', 'B-PER', 'I-PER', 'O'],
+    ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC', 'O'],
+]
+
+pred = [
+    ['O', 'O', 'B-PER', 'I-PER', 'O'],
+    ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC', 'O'],
+]
+
+evaluator = Evaluator(true, pred, tags=['LOC', 'PER'], loader="list")
+
+results, results_by_tag = evaluator.evaluate()
+```
+
+A working example of using nested lists is provided in the following notebook:
 
 - [examples/example-full-named-entity-evaluation.ipynb](examples/example-full-named-entity-evaluation.ipynb)
 
