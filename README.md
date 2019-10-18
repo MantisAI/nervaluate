@@ -1,8 +1,8 @@
 # nervaluate
 
-nervaluate is a python pip module for evaluating Named Entity Recognition (NER) models as defined in the SemEval 2013 - 9.1 task.
+nervaluate is a python module for evaluating Named Entity Recognition (NER) models as defined in the SemEval 2013 - 9.1 task.
 
-The evaluation metrics output by nervaluate go belong a simple token/tag based schema, and consider diferent scenarios based on wether all the tokens that belong to a named entity were classified or not, and also wether the correct entity type was assigned.
+The evaluation metrics output by nervaluate go beyond a simple token/tag based schema, and consider diferent scenarios based on wether all the tokens that belong to a named entity were classified or not, and also wether the correct entity type was assigned.
 
 This problem is described in detail in the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) which accompanied the blog post.
 
