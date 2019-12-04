@@ -29,7 +29,8 @@ def test_evaluator_simple_case():
             'possible': 3,
             'actual': 3,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         },
         'ent_type': {
             'correct': 3,
@@ -40,7 +41,8 @@ def test_evaluator_simple_case():
             'possible': 3,
             'actual': 3,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         },
         'partial': {
             'correct': 3,
@@ -51,7 +53,8 @@ def test_evaluator_simple_case():
             'possible': 3,
             'actual': 3,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         },
         'exact': {
             'correct': 3,
@@ -62,10 +65,10 @@ def test_evaluator_simple_case():
             'possible': 3,
             'actual': 3,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         }
     }
-
     assert results['strict'] == expected['strict']
     assert results['ent_type'] == expected['ent_type']
     assert results['partial'] == expected['partial']
@@ -103,7 +106,8 @@ def test_evaluator_simple_case_filtered_tags():
             'possible': 3,
             'actual': 3,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         },
         'ent_type': {
             'correct': 3,
@@ -114,7 +118,8 @@ def test_evaluator_simple_case_filtered_tags():
             'possible': 3,
             'actual': 3,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         },
         'partial': {
             'correct': 3,
@@ -125,7 +130,8 @@ def test_evaluator_simple_case_filtered_tags():
             'possible': 3,
             'actual': 3,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         },
         'exact': {
             'correct': 3,
@@ -136,7 +142,8 @@ def test_evaluator_simple_case_filtered_tags():
             'possible': 3,
             'actual': 3,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         }
     }
 
@@ -173,7 +180,8 @@ def test_evaluator_extra_classes():
             'possible': 1,
             'actual': 1,
             'precision': 0,
-            'recall': 0.0
+            'recall': 0.0,
+            'f1': 0
         },
         'ent_type': {
             'correct': 0,
@@ -184,7 +192,8 @@ def test_evaluator_extra_classes():
             'possible': 1,
             'actual': 1,
             'precision': 0,
-            'recall': 0.0
+            'recall': 0.0,
+            'f1': 0
         },
         'partial': {
             'correct': 1,
@@ -195,7 +204,8 @@ def test_evaluator_extra_classes():
             'possible': 1,
             'actual': 1,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         },
         'exact': {
             'correct': 1,
@@ -206,7 +216,8 @@ def test_evaluator_extra_classes():
             'possible': 1,
             'actual': 1,
             'precision': 1.0,
-            'recall': 1.0
+            'recall': 1.0,
+            'f1': 1.0
         }
     }
 
@@ -242,7 +253,8 @@ def test_evaluator_no_entities_in_prediction():
             'possible': 1,
             'actual': 0,
             'precision': 0,
-            'recall': 0
+            'recall': 0,
+            'f1': 0
         },
         'ent_type': {
             'correct': 0,
@@ -253,7 +265,8 @@ def test_evaluator_no_entities_in_prediction():
             'possible': 1,
             'actual': 0,
             'precision': 0,
-            'recall': 0
+            'recall': 0,
+            'f1': 0
         },
         'partial': {
             'correct': 0,
@@ -264,7 +277,8 @@ def test_evaluator_no_entities_in_prediction():
             'possible': 1,
             'actual': 0,
             'precision': 0,
-            'recall': 0
+            'recall': 0,
+            'f1': 0
         },
         'exact': {
             'correct': 0,
@@ -275,7 +289,8 @@ def test_evaluator_no_entities_in_prediction():
             'possible': 1,
             'actual': 0,
             'precision': 0,
-            'recall': 0
+            'recall': 0,
+            'f1': 0
         }
     }
 
@@ -311,7 +326,8 @@ def test_evaluator_compare_results_and_results_agg():
             'possible': 1,
             'actual': 1,
             'precision': 1,
-            'recall': 1
+            'recall': 1,
+            'f1': 1
         },
         'ent_type': {
             'correct': 1,
@@ -322,7 +338,8 @@ def test_evaluator_compare_results_and_results_agg():
             'possible': 1,
             'actual': 1,
             'precision': 1,
-            'recall': 1
+            'recall': 1,
+            'f1': 1
         },
         'partial': {
             'correct': 1,
@@ -333,7 +350,8 @@ def test_evaluator_compare_results_and_results_agg():
             'possible': 1,
             'actual': 1,
             'precision': 1,
-            'recall': 1
+            'recall': 1,
+            'f1': 1
         },
         'exact': {
             'correct': 1,
@@ -344,7 +362,8 @@ def test_evaluator_compare_results_and_results_agg():
             'possible': 1,
             'actual': 1,
             'precision': 1,
-            'recall': 1
+            'recall': 1,
+            'f1': 1
         }
     }
 
@@ -359,7 +378,8 @@ def test_evaluator_compare_results_and_results_agg():
             'possible': 1,
             'actual': 1,
             'precision': 1,
-            'recall': 1
+            'recall': 1,
+            'f1': 1
         },
         'ent_type': {
             'correct': 1,
@@ -370,7 +390,8 @@ def test_evaluator_compare_results_and_results_agg():
             'possible': 1,
             'actual': 1,
             'precision': 1,
-            'recall': 1
+            'recall': 1,
+            'f1': 1
         },
         'partial': {
             'correct': 1,
@@ -381,7 +402,8 @@ def test_evaluator_compare_results_and_results_agg():
             'possible': 1,
             'actual': 1,
             'precision': 1,
-            'recall': 1
+            'recall': 1,
+            'f1': 1
         },
         'exact': {
             'correct': 1,
@@ -392,7 +414,8 @@ def test_evaluator_compare_results_and_results_agg():
             'possible': 1,
             'actual': 1,
             'precision': 1,
-            'recall': 1
+            'recall': 1,
+            'f1': 1
         }
     }
     }
@@ -444,6 +467,7 @@ def test_evaluator_compare_results_and_results_agg_1():
             'actual': 3,
             'precision': 0.6666666666666666,
             'recall': 1.0,
+            'f1': 0.8
         },
         'ent_type': {
             'correct': 2,
@@ -455,6 +479,7 @@ def test_evaluator_compare_results_and_results_agg_1():
             'actual': 3,
             'precision': 0.6666666666666666,
             'recall': 1.0,
+            'f1': 0.8
         },
         'partial': {
             'correct': 2,
@@ -466,6 +491,7 @@ def test_evaluator_compare_results_and_results_agg_1():
             'actual': 3,
             'precision': 0.6666666666666666,
             'recall': 1.0,
+            'f1': 0.8
         },
         'exact': {
             'correct': 2,
@@ -477,6 +503,7 @@ def test_evaluator_compare_results_and_results_agg_1():
             'actual': 3,
             'precision': 0.6666666666666666,
             'recall': 1.0,
+            'f1': 0.8
         }
     }
 
@@ -491,7 +518,8 @@ def test_evaluator_compare_results_and_results_agg_1():
             'possible': 1,
             'actual': 2,
             'precision': 0.5,
-            'recall': 1
+            'recall': 1,
+            'f1': 0.6666666666666666
         },
         'ent_type': {
             'correct': 1,
@@ -502,7 +530,8 @@ def test_evaluator_compare_results_and_results_agg_1():
             'possible': 1,
             'actual': 2,
             'precision': 0.5,
-            'recall': 1
+            'recall': 1,
+            'f1': 0.6666666666666666
         },
         'partial': {
             'correct': 1,
@@ -513,7 +542,8 @@ def test_evaluator_compare_results_and_results_agg_1():
             'possible': 1,
             'actual': 2,
             'precision': 0.5,
-            'recall': 1
+            'recall': 1,
+            'f1': 0.6666666666666666
         },
         'exact': {
             'correct': 1,
@@ -524,7 +554,8 @@ def test_evaluator_compare_results_and_results_agg_1():
             'possible': 1,
             'actual': 2,
             'precision': 0.5,
-            'recall': 1
+            'recall': 1,
+            'f1': 0.6666666666666666
         }
     },
         'MISC': {
@@ -537,7 +568,8 @@ def test_evaluator_compare_results_and_results_agg_1():
             'possible': 1,
             'actual': 2,
             'precision': 0.5,
-            'recall': 1
+            'recall': 1,
+            'f1': 0.6666666666666666
         },
         'ent_type': {
             'correct': 1,
@@ -548,7 +580,8 @@ def test_evaluator_compare_results_and_results_agg_1():
             'possible': 1,
             'actual': 2,
             'precision': 0.5,
-            'recall': 1
+            'recall': 1,
+            'f1': 0.6666666666666666
         },
         'partial': {
             'correct': 1,
@@ -559,7 +592,8 @@ def test_evaluator_compare_results_and_results_agg_1():
             'possible': 1,
             'actual': 2,
             'precision': 0.5,
-            'recall': 1
+            'recall': 1,
+            'f1': 0.6666666666666666
         },
         'exact': {
             'correct': 1,
@@ -570,7 +604,8 @@ def test_evaluator_compare_results_and_results_agg_1():
             'possible': 1,
             'actual': 2,
             'precision': 0.5,
-            'recall': 1
+            'recall': 1,
+            'f1': 0.6666666666666666
         }
     }
     }

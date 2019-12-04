@@ -33,6 +33,7 @@ class Evaluator():
             'actual': 0,
             'precision': 0,
             'recall': 0,
+            'f1': 0,
         }
 
         # Copy results dict to cover the four schemes.
@@ -166,7 +167,7 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
     """
 
 
-    eval_metrics = {'correct': 0, 'incorrect': 0, 'partial': 0, 'missed': 0, 'spurious': 0, 'precision': 0, 'recall': 0}
+    eval_metrics = {'correct': 0, 'incorrect': 0, 'partial': 0, 'missed': 0, 'spurious': 0, 'precision': 0, 'recall': 0, 'f1': 0}
 
     # overall results
     
@@ -451,6 +452,7 @@ def compute_precision_recall(results, partial_or_type=False):
 
     results["precision"] = precision
     results["recall"] = recall
+    results["f1"] = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
 
     return results
 
