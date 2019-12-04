@@ -21,6 +21,6 @@ reqs:
 
 
 .PHONY: test
-test: 
-	tox
+test:
+	$(VIRTUALENV)/bin/pytest --disable-warnings --tb=line
 
