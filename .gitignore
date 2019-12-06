@@ -6,3 +6,4 @@
 nervaluate.egg-info/
 build/
 **/.python-version
+dist
