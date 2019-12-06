@@ -30,7 +30,10 @@ setup(
     author_email=about["__author_email__"],
     license=["__license__"],
     packages=["nervaluate"],
-    install_requires=[],
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'Operating System :: OS Independent',
+    ],
     tests_require=["pytest"],
     include_package_data=True,
     zip_safe=True,
