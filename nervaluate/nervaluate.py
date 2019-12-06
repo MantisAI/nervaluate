@@ -74,6 +74,7 @@ class Evaluator():
                 true_ents = collect_named_entities(true_ents)
                 pred_ents = collect_named_entities(pred_ents)
 
+
             # Compute results for one message
 
             tmp_results, tmp_agg_results = compute_metrics(
@@ -113,7 +114,7 @@ class Evaluator():
 
 def collect_named_entities(tokens):
     """
-    Creates a list of Entity named-tuples, storing the entity type and the 
+    Creates a list of Entity named-tuples, storing the entity type and the
     start and end offsets of the entity.
 
     :param tokens: a list of tags
@@ -163,14 +164,23 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
     :true_name_entitites: Collected true named entities output by collect_named_entities
     :pred_name_entitites:  Collected predicted named entities output by collect_named_entities
-    :tags: List of tags to be used 
+    :tags: List of tags to be used
     """
 
 
-    eval_metrics = {'correct': 0, 'incorrect': 0, 'partial': 0, 'missed': 0, 'spurious': 0, 'precision': 0, 'recall': 0, 'f1': 0}
+    eval_metrics = {
+        'correct': 0,
+        'incorrect': 0,
+        'partial': 0,
+        'missed': 0,
+        'spurious': 0,
+        'precision': 0,
+        'recall': 0,
+        'f1': 0
+    }
 
     # overall results
-    
+
     evaluation = {
         'strict': deepcopy(eval_metrics),
         'ent_type': deepcopy(eval_metrics),
@@ -194,8 +204,11 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
     # 2) Where there is a tag in the true data that the model is not capable of
     # predicting.
 
-    true_named_entities = [ent for ent in true_named_entities if ent["label"] in tags]
-    pred_named_entities = [ent for ent in pred_named_entities if ent["label"] in tags]
+    # Strip the spans down to just start, end, label. Note that failing
+    # to do this results in a bug. The exact cause is not clear.
+
+    true_named_entities = [clean_entities(ent) for ent in true_named_entities if ent["label"] in tags]
+    pred_named_entities = [clean_entities(ent) for ent in pred_named_entities if ent["label"] in tags]
 
     # go through each predicted named-entity
 
@@ -326,7 +339,7 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
                 # found in this example. This will mean that the sum of the
                 # evaluation_agg_entities will not equal evaluation.
 
-                for true in tags:                    
+                for true in tags:
 
                     evaluation_agg_entities_type[true]['strict']['spurious'] += 1
                     evaluation_agg_entities_type[true]['ent_type']['spurious'] += 1
@@ -471,3 +484,13 @@ def compute_precision_recall_wrapper(results):
 
     return results
 
+
+def clean_entities(ent):
+    """
+    Returns just the useufl keys if additional keys are present in the entity
+    dict.
+
+    This may happen if passing a list of spans directly from prodigy, which
+    typically may include "token_start" and "token_end".
+    """
+    return {"start": ent["start"], "end": ent["end"], "label": ent["label"]}

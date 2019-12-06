@@ -1,5 +1,5 @@
 __name__="nervaluate"
-__version__="0.1.2"
+__version__="0.1.3"
 __description__="NER evaluation done right"
 __url__="https://www.github.com/ivyleavedtoadflax/nervaluate"
 __author__="David Batista and Matthew Upson"
