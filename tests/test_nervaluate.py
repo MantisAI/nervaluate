@@ -1,32 +1,9 @@
-from nervaluate import compute_metrics
-from nervaluate import collect_named_entities
-from nervaluate import find_overlap
-from nervaluate import compute_actual_possible
-from nervaluate import compute_precision_recall
-from nervaluate import compute_precision_recall_wrapper
+#!/usr/bin/env python3
+# coding: utf-8
 
-
-def test_collect_named_entities_same_type_in_sequence():
-    tags = ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC', 'O']
-    result = collect_named_entities(tags)
-    expected = [{"label": "LOC", "start": 1, "end": 2},
-                {"label": "LOC", "start": 3, "end": 4}]
-    assert result == expected
-
-
-def test_collect_named_entities_entity_goes_until_last_token():
-    tags = ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC']
-    result = collect_named_entities(tags)
-    expected = [{"label": "LOC", "start": 1, "end": 2},
-                {"label": "LOC", "start": 3, "end": 4}]
-    assert result == expected
-
-
-def test_collect_named_entities_no_entity():
-    tags = ['O', 'O', 'O', 'O', 'O']
-    result = collect_named_entities(tags)
-    expected = []
-    assert result == expected
+from nervaluate import (compute_actual_possible, compute_metrics,
+                        compute_precision_recall,
+                        compute_precision_recall_wrapper, find_overlap)
 
 
 def test_compute_metrics_case_1():
@@ -837,68 +814,6 @@ def test_compute_metrics_no_predictions():
     assert results['partial'] == expected['partial']
     assert results['exact'] == expected['exact']
 
-def test_find_overlap_no_overlap():
-
-    pred_entity = {"label":"LOC", "start": 1,  "end": 10}
-    true_entity = {"label":"LOC", "start": 11, "end": 20}
-
-    pred_range = range(pred_entity["start"], pred_entity["end"])
-    true_range = range(true_entity["start"], true_entity["end"])
-
-    pred_set = set(pred_range)
-    true_set = set(true_range)
-
-    intersect = find_overlap(pred_set, true_set)
-
-    assert not intersect
-
-
-def test_find_overlap_total_overlap():
-
-    pred_entity = {"label":"LOC", "start": 10, "end": 22}
-    true_entity = {"label":"LOC", "start": 11, "end": 20}
-
-    pred_range = range(pred_entity["start"], pred_entity["end"])
-    true_range = range(true_entity["start"], true_entity["end"])
-
-    pred_set = set(pred_range)
-    true_set = set(true_range)
-
-    intersect = find_overlap(pred_set, true_set)
-
-    assert intersect
-
-
-def test_find_overlap_start_overlap():
-
-    pred_entity = {"label":"LOC", "start": 5,  "end": 12}
-    true_entity = {"label":"LOC", "start": 11, "end": 20}
-
-    pred_range = range(pred_entity["start"], pred_entity["end"])
-    true_range = range(true_entity["start"], true_entity["end"])
-
-    pred_set = set(pred_range)
-    true_set = set(true_range)
-
-    intersect = find_overlap(pred_set, true_set)
-
-    assert intersect
-
-
-def test_find_overlap_end_overlap():
-
-    pred_entity = {"label":"LOC", "start": 15, "end":25}
-    true_entity = {"label":"LOC", "start": 11, "end":20}
-
-    pred_range = range(pred_entity["start"], pred_entity["end"])
-    true_range = range(true_entity["start"], true_entity["end"])
-
-    pred_set = set(pred_range)
-    true_set = set(true_range)
-
-    intersect = find_overlap(pred_set, true_set)
-
-    assert intersect
 
 
 def test_compute_actual_possible():
@@ -946,12 +861,11 @@ def test_compute_precision_recall():
         'spurious': 2,
         'possible': 15,
         'actual': 13,
-        'precision': 0.46153846153846156, 
+        'precision': 0.46153846153846156,
         'recall': 0.4,
-        'f1': 0.42857142857142855
+        'f1': 0.42857142857142855,
     }
 
     out = compute_precision_recall(results)
 
     assert out == expected
-
