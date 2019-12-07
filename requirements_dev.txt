@@ -4,3 +4,4 @@ tox
 tox-travis
 twine
 wheel
+gitchangelog

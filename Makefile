@@ -27,6 +27,9 @@ dist:
 pypi_upload: dist
 	python -m twine upload dist/*
 
+.PHONY: changelog
+changelog:
+	@gitchangelog > CHANGELOG.rst
 
 .PHONY: test
 test: 
