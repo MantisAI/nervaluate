@@ -28,7 +28,7 @@ setup(
     url=about["__url__"],
     author=about["__author__"],
     author_email=about["__author_email__"],
-    license=["__license__"],
+    license=about["__license__"],
     packages=["nervaluate"],
     classifiers=[
         'Programming Language :: Python :: 3',
