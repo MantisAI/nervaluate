@@ -1,5 +1,10 @@
+#!/usr/bin/env python3
+# coding: utf-8
+
 import logging
 from copy import deepcopy
+
+from .utils import conll_to_spans, find_overlap, list_to_spans
 
 logging.basicConfig(
     format="%(asctime)s %(name)s %(levelname)s: %(message)s",
@@ -9,12 +14,9 @@ logging.basicConfig(
 
 class Evaluator():
 
-    def __init__(self, true, pred, tags, list=False):
+    def __init__(self, true, pred, tags, loader=None):
         """
         """
-
-        if len(true) != len(pred):
-            raise ValueError("Number of predicted documents does not equal true")
 
         self.true = true
         self.pred = pred
@@ -49,6 +51,13 @@ class Evaluator():
 
         self.evaluation_agg_entities_type = {e: deepcopy(self.results) for e in tags}
 
+        self.loaders = {
+            "list": list_to_spans,
+            "conll": conll_to_spans,
+        }
+
+        self.loader = loader
+
 
     def evaluate(self):
 
@@ -57,22 +66,21 @@ class Evaluator():
             len(self.pred), len(self.true)
         )
 
+        if self.loader:
+            loader = self.loaders[self.loader]
+
+            self.pred = loader(self.pred)
+            self.true = loader(self.true)
+
+            # Check that something got loaded
+
+            len_pred = len([pred for pred in self.pred if pred])
+            len_true = len([true for true in self.true if true])
+
+        if len(self.true) != len(self.pred):
+            raise ValueError("Number of predicted documents does not equal true")
+
         for true_ents, pred_ents in zip(self.true, self.pred):
-
-            if self.list:
-
-            # If entities passed as list, collect these into json format
-
-            # If recieving a list of entities, check that the length of the
-            # true and predicted examples are the same. This must be checked
-            # here, because another error may not be thrown if the lengths do
-            # not match.
-
-                if len(true_ents) != len(pred_ents):
-                    raise ValueError("Prediction length does not match true example length")
-
-                true_ents = collect_named_entities(true_ents)
-                pred_ents = collect_named_entities(pred_ents)
 
 
             # Compute results for one message
@@ -385,29 +393,6 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
             )
 
     return evaluation, evaluation_agg_entities_type
-
-
-def find_overlap(true_range, pred_range):
-    """Find the overlap between two ranges
-
-    Find the overlap between two ranges. Return the overlapping values if
-    present, else return an empty set().
-
-    Examples:
-
-    >>> find_overlap((1, 2), (2, 3))
-    2
-    >>> find_overlap((1, 2), (3, 4))
-    set()
-    """
-
-    true_set = set(true_range)
-    pred_set = set(pred_range)
-
-    overlaps = true_set.intersection(pred_set)
-
-    return overlaps
-
 
 def compute_actual_possible(results):
     """

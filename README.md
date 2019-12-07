@@ -24,7 +24,7 @@ In this case there exists an annotation, but with a different entity type, so we
 To install the package:
 
 ```
-pip install git+https://github.com/ivyleavedtoadflax/nervaluate
+pip install nervaluate
 ```
 
 To create a virtual environment for development:
@@ -49,10 +49,11 @@ make test
 
 ## Example:
 
-The package currently works with two formats:
+The main `Evaluator` class will accept a number of formats:
 
 * [prodi.gy](https://prodi.gy) style lists of spans.
 * Nested lists containing NER labels.
+* CoNLL style tab delimited strings.
 
 ### Prodigy spans
 
@@ -248,7 +249,24 @@ evaluator = Evaluator(true, pred, tags=['LOC', 'PER'], loader="list")
 results, results_by_tag = evaluator.evaluate()
 ```
 
-A working example of using nested lists is provided in the following notebook:
+### CoNLL style tab delimited
 
-- [examples/example-full-named-entity-evaluation.ipynb](examples/example-full-named-entity-evaluation.ipynb)
+```
 
+true = "word\tO\nword\tO\B-PER\nword\tI-PER\n"
+
+pred = "word\tO\nword\tO\B-PER\nword\tI-PER\n"
+
+evaluator = Evaluator(true, pred, tags=['PER'], loader="conll")
+
+results, results_by_tag = evaluator.evaluate()
+
+```
+
+## Extending the package to accept more formats
+
+Additional formats can easily be added to the module by creating a converstion function in `nervaluate/utils.py`, for example `conll_to_spans()`. This function must return the spans in the prodigy style dicts shown in the prodigy example above.
+
+The new function can then be added to the list of loaders in `nervaluate/nervaluate.py`, and can then be selection with the `loader` argument when instantiating the `Evaluator` class.
+
+A list of formats we intend to include is included in https://github.com/ivyleavedtoadflax/nervaluate/issues/3.
