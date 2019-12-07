@@ -2,6 +2,30 @@ Changelog
 =========
 
 
+0.1.7 (2019-12-07)
+------------------
+
+New
+~~~
+- Add tests. [Matthew Upson]
+
+  * Linting
+  * Rename existing tests to disambiguate
+- Add loaders to nervaluate. [Matthew Upson]
+
+  * Add list and conll formats
+
+Changes
+~~~~~~~
+- Update README. [Matthew Upson]
+
+Fix
+~~~
+- Issue with setup.py. [Matthew Upson]
+
+  * Add docstring to __version__.py
+
+
 0.1.6 (2019-12-07)
 ------------------
 
