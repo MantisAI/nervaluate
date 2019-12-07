@@ -669,7 +669,7 @@ def test_evaluator_on_single_token():
         ['PER'],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER'], list=True)
+    evaluator = Evaluator(true, pred, tags=['PER'], loader="list")
 
     results, results_agg = evaluator.evaluate()
 
@@ -684,6 +684,7 @@ def test_evaluator_on_single_token():
             'actual': 1,
             'precision': 1.0,
             'recall': 1.0,
+            'f1': 1.0,
         },
         'ent_type': {
             'correct': 1,
@@ -695,6 +696,7 @@ def test_evaluator_on_single_token():
             'actual': 1,
             'precision': 1.0,
             'recall': 1.0,
+            'f1': 1.0,
         },
         'partial': {
             'correct': 1,
@@ -706,6 +708,7 @@ def test_evaluator_on_single_token():
             'actual': 1,
             'precision': 1.0,
             'recall': 1.0,
+            'f1': 1.0,
         },
         'exact': {
             'correct': 1,
@@ -717,6 +720,7 @@ def test_evaluator_on_single_token():
             'actual': 1,
             'precision': 1.0,
             'recall': 1.0,
+            'f1': 1.0,
         }
     }
 
