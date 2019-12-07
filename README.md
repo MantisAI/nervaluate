@@ -2,14 +2,150 @@
 
 nervaluate is a python module for evaluating Named Entity Recognition (NER) models as defined in the SemEval 2013 - 9.1 task.
 
-The evaluation metrics output by nervaluate go beyond a simple token/tag based schema, and consider diferent scenarios based on wether all the tokens that belong to a named entity were classified or not, and also wether the correct entity type was assigned.
+The evaluation metrics output by nervaluate go beyond a simple token/tag based schema, and consider diferent scenarios based on wether all the tokens that belong to a named entity were classified or not, and also whether the correct entity type was assigned.
 
-This problem is described in detail in the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) which accompanied the blog post.
+This full problem is described in detail in the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) which accompanied the blog post.
 
 The code draws heavily on:
 
 * Segura-bedmar, I., & Mart, P. (2013). 2013 SemEval-2013 Task 9 Extraction of Drug-Drug Interactions from. Semeval, 2(DDIExtraction), 341–350. [link](https://www.aclweb.org/anthology/S13-2056)
 * https://www.cs.york.ac.uk/semeval-2013/task9/data/uploads/semeval_2013-task-9_1-evaluation-metrics.pdf
+
+## The problem 
+
+### Token level evaluation for NER is too simplistic
+
+When running machine learning models for NER, it is common to report metrics at the individual token level. This may not be the best approach, as a named entity can be made up of multiple tokens, so a full-entity accuracy would be desireable.
+
+When comparing the golden standard annotations with the output of a NER system different scenarios might occur:
+
+__I. Surface string and entity type match__
+
+|Token|Gold|Prediction|
+|---|---|---|
+|in|O|O|
+|New|B-LOC|B-LOC|
+|York|I-LOC|I-LOC|
+|.|O|O|
+
+__II. System hypothesized an incorrect entity__
+
+|Token|Gold|Prediction|
+|---|---|---|
+|an|O|O|
+|Awful|O|B-ORG|
+|Headache|O|I-ORG|
+|in|O|O|
+
+__III. System misses an entity__
+
+|Token|Gold|Prediction|
+|---|---|---|
+|in|O|O|
+|Palo|B-LOC|O|
+|Alto|I-LOC|O|
+|,|O|O|
+
+Based on these three scenarios we have a simple classification evaluation that can be measured in terms of false positives, true positives, false negatives and false positives, and subsequently compute precision, recall and f1-score for each named-entity type.
+
+However this simple schema ignores the possibility of partial matches or other scenarios when the NER system gets the named-entity surface string correct but the type wrong, and we might also want to evaluate these scenarios again at a full-entity level.
+
+For example:
+
+__IV. System assigns the wrong entity type__
+
+|Token|Gold|Prediction|
+|---|---|---|
+|I|O|O|
+|live|O|O|
+|in|O|O|
+|Palo|B-LOC|B-ORG|
+|Alto|I-LOC|I-ORG|
+|,|O|O|
+
+__V. System gets the boundaries of the surface string wrong__
+
+|Token|Gold|Prediction|
+|---|---|---|
+|Unless|O|B-PER|
+|Karl|B-PER|I-PER|
+|Smith|I-PER|I-PER|
+|resigns|O|O|
+
+__VI. System gets the boundaries and entity type wrong__
+
+|Token|Gold|Prediction|
+|---|---|---|
+|Unless|O|B-ORG|
+|Karl|B-PER|I-ORG|
+|Smith|I-PER|I-ORG|
+|resigns|O|O|
+
+How can we incorporate these described scenarios into evaluation metrics? See the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) for a great explanation, a summary is included here:
+
+We can use the following five metrics to consider difference categories of errors:
+
+|Error type|Explanation|
+|---|---|
+|Correct (COR)|both are the same|
+|Incorrect (INC)|the output of a system and the golden annotation don’t match|
+|Partial (PAR)|system and the golden annotation are somewhat “similar” but not the same|
+|Missing (MIS)|a golden annotation is not captured by a system|
+|Spurius (SPU)|system produces a response which doesn’t exit in the golden annotation|
+
+These five metrics can be measured in four different ways:
+
+|Evaluation schema|Explanation|
+|---|---|
+|Strict|exact boundary surface string match and entity type|
+|Exact|exact boundary match over the surface string, regardless of the type|
+|Partial|partial boundary match over the surface string, regardless of the type|
+|Type|some overlap between the system tagged entity and the gold annotation is required|
+
+These five errors and four evaluation schema interact in the following ways:
+
+|Scenario|Gold entity|Gold string|Pred entity|Pred string|Type|Partial|Exact|Strict|
+|---|---|---|---|---|---|---|---|---|
+|III|BRAND|tikosyn| | |MIS|MIS|MIS|MIS|
+|II| | |BRAND|healthy|SPU|SPU|SPU|SPU|
+|V|DRUG|warfarin|DRUG|of warfarin|COR|PAR|INC|INC|
+|IV|DRUG|propranolol|BRAND|propranolol|INC|COR|COR|INC|
+|I|DRUG|phenytoin|DRUG|phenytoin|COR|COR|COR|COR|
+|VI|GROUP|contraceptives|DRUG|oral contraceptives|INC|PAR|INC|INC|
+
+Then precision/recall/f1-score are calculated for each different evaluation schema. In order to achieve data, two more quantities need to be calculated:
+
+```
+POSSIBLE (POS) = COR + INC + PAR + MIS = TP + FN
+ACTUAL (ACT) = COR + INC + PAR + SPU = TP + FP
+```
+
+Then we can compute precision/recall/f1-score, where roughly describing precision is the percentage of correct named-entities found by the NER system, and recall is the percentage of the named-entities in the golden annotations that are retrieved by the NER system. This is computed in two different ways depending wether we want an exact match (i.e., strict and exact ) or a partial match (i.e., partial and type) scenario:
+
+__Exact Match (i.e., strict and exact )__
+```
+Precision = (COR / ACT) = TP / (TP + FP)
+Recall = (COR / POS) = TP / (TP+FN)
+```
+__Partial Match (i.e., partial and type)__
+```
+Precision = (COR + 0.5 × PAR) / ACT = TP / (TP + FP)
+Recall = (COR + 0.5 × PAR)/POS = COR / ACT = TP / (TP + FP)
+```
+
+__Putting all together:__
+
+|Measure|Type|Partial|Exact|Strict|
+|---|---|---|---|---|
+|Correct|3|3|3|2|
+|Incorrect|2|0|2|3|
+|Partial|0|2|0|0|
+|Missed|1|1|1|1|
+|Spurius|1|1|1|1|
+|Precision|0.5|0.66|0.5|0.33|
+|Recall|0.5|0.66|0.5|0.33|
+|F1|0.5|0.66|0.5|0.33|
+
 
 ## Notes:
 
