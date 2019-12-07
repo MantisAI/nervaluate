@@ -2,24 +2,20 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+0.1.6 (2019-12-07)
+------------------
+
+New
+~~~
+- Add gitchangelog and Makefile recipe. [Matthew Upson]
 
 Changes
 ~~~~~~~
+- Bump version to 0.1.6. [Matthew Upson]
+- Remove examples. [Matthew Upson]
+
+  These are not accessible from the package in any case.
 - Add dev requirements. [Matthew Upson]
-- Fix failing list test. [Matthew Upson]
-
-  * Also rename tests to disambiguate from conll
-- Linting. [Matthew Upson]
-- Move length check to after loader. [Matthew Upson]
-- Linting tests :lipstick: [Matthew Upson]
-
-Other
-~~~~~
-- Wip. [Matthew Upson]
-- Wip: Adjust conll tests to pass. [Matthew Upson]
-- Wip. [Matthew Upson]
 
 
 0.1.5 (2019-12-06)
