@@ -659,3 +659,70 @@ def test_evaluator_list_non_matching_corpus_length():
         evaluator = Evaluator(true, pred, tags=['PER', 'MISC'], loader="list")
         evaluator.evaluate()
 
+
+def test_list_simple_case_possible():
+    """ Addresses https://github.com/ivyleavedtoadflax/nervaluate/issues/25
+    """
+
+    true = [["O", "B-ORG", "I-ORG", "I-ORG", "I-ORG", "O"]]
+    pred = [["O", "B-ORG", "I-ORG", "B-ORG", "I-ORG", "O"]]
+
+    evaluator = Evaluator(true, pred, tags=["ORG"], loader="list")
+
+    results, results_agg = evaluator.evaluate()
+
+    expected = {
+        "strict": {
+            "correct": 0,
+            "incorrect": 2,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
+            "actual": 2,
+            "possible": 1,
+        },
+        "ent_type": {
+            "correct": 2,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
+            "actual": 2,
+            "possible": 1,
+        },
+        "partial": {
+            "correct": 0,
+            "incorrect": 0,
+            "partial": 2,
+            "missed": 0,
+            "spurious": 0,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
+            "actual": 2,
+            "possible": 1,
+        },
+        "exact": {
+            "correct": 0,
+            "incorrect": 2,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
+            "actual": 2,
+            "possible": 1,
+        },
+    }
+
+    assert results_agg["ORG"]["strict"] == expected["strict"]
+    assert results_agg["ORG"]["ent_type"] == expected["ent_type"]
+    assert results_agg["ORG"]["partial"] == expected["partial"]
+    assert results_agg["ORG"]["exact"] == expected["exact"]
