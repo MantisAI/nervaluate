@@ -55,6 +55,12 @@ def test_collect_named_entities_same_type_in_sequence():
                 {"label": "LOC", "start": 3, "end": 4}]
     assert result == expected
 
+def test_collect_named_entities_sequence_has_only_one_entity():
+    tags = ['B-LOC', 'I-LOC']
+    result = collect_named_entities(tags)
+    expected = [{"label": "LOC", "start": 0, "end": 1}]
+    assert result == expected
+
 
 def test_collect_named_entities_entity_goes_until_last_token():
     tags = ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC']

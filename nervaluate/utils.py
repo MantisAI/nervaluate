@@ -82,9 +82,9 @@ def collect_named_entities(tokens):
             start_offset = offset
             end_offset = None
 
-    # catches an entity that goes up until the last token
+    # Catches an entity that goes up until the last token
 
-    if ent_type and start_offset and end_offset is None:
+    if ent_type is not None and start_offset is not None and end_offset is None:
         named_entities.append({"label": ent_type, "start": start_offset, "end":len(tokens)-1})
 
     return named_entities
