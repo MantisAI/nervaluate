@@ -19,6 +19,7 @@ def split_list(x, split_chars=[""]):
 
     return out
 
+
 def conll_to_spans(doc):
 
     out = []
@@ -38,11 +39,13 @@ def conll_to_spans(doc):
 
     return spans
 
+
 def list_to_spans(doc):
 
     spans = [collect_named_entities(tokens) for tokens in doc]
 
     return spans
+
 
 def collect_named_entities(tokens):
     """
@@ -60,10 +63,12 @@ def collect_named_entities(tokens):
 
     for offset, token_tag in enumerate(tokens):
 
-        if token_tag == 'O':
+        if token_tag == "O":
             if ent_type is not None and start_offset is not None:
                 end_offset = offset - 1
-                named_entities.append({"label": ent_type, "start": start_offset, "end":end_offset})
+                named_entities.append(
+                    {"label": ent_type, "start": start_offset, "end": end_offset}
+                )
                 start_offset = None
                 end_offset = None
                 ent_type = None
@@ -72,10 +77,14 @@ def collect_named_entities(tokens):
             ent_type = token_tag[2:]
             start_offset = offset
 
-        elif ent_type != token_tag[2:] or (ent_type == token_tag[2:] and token_tag[:1] == 'B'):
+        elif ent_type != token_tag[2:] or (
+            ent_type == token_tag[2:] and token_tag[:1] == "B"
+        ):
 
             end_offset = offset - 1
-            named_entities.append({"label": ent_type, "start": start_offset, "end":end_offset})
+            named_entities.append(
+                {"label": ent_type, "start": start_offset, "end": end_offset}
+            )
 
             # start of a new entity
             ent_type = token_tag[2:]
@@ -85,7 +94,9 @@ def collect_named_entities(tokens):
     # Catches an entity that goes up until the last token
 
     if ent_type is not None and start_offset is not None and end_offset is None:
-        named_entities.append({"label": ent_type, "start": start_offset, "end":len(tokens)-1})
+        named_entities.append(
+            {"label": ent_type, "start": start_offset, "end": len(tokens) - 1}
+        )
 
     return named_entities
 
@@ -93,8 +104,8 @@ def collect_named_entities(tokens):
 def test_list_to_spans():
 
     before = [
-        ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC', 'O'],
-        ['O', 'B-GPE', 'I-GPE', 'B-GPE', 'I-GPE', 'O'],
+        ["O", "B-LOC", "I-LOC", "B-LOC", "I-LOC", "O"],
+        ["O", "B-GPE", "I-GPE", "B-GPE", "I-GPE", "O"],
     ]
 
     expected = [
@@ -105,14 +116,16 @@ def test_list_to_spans():
         [
             {"label": "GPE", "start": 1, "end": 2},
             {"label": "GPE", "start": 3, "end": 4},
-        ]
+        ],
     ]
 
     result = list_to_spans(before)
 
     assert result == expected
 
+
 test_list_to_spans()
+
 
 def find_overlap(true_range, pred_range):
     """Find the overlap between two ranges

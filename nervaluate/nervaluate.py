@@ -92,7 +92,9 @@ class Evaluator:
 
                 for metric in self.results[eval_schema]:
 
-                    self.results[eval_schema][metric] += tmp_results[eval_schema][metric]
+                    self.results[eval_schema][metric] += tmp_results[eval_schema][
+                        metric
+                    ]
 
             # Calculate global precision and recall
 
@@ -111,6 +113,7 @@ class Evaluator:
                         ] += tmp_agg_results[label][eval_schema][metric]
 
                 # Calculate precision recall at the individual entity level
+
 
                 self.evaluation_agg_entities_type[label] = compute_precision_recall_wrapper(
                     self.evaluation_agg_entities_type[label]
@@ -405,9 +408,9 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
         for eval_type in entity_level:
 
-            evaluation_agg_entities_type[entity_type][eval_type] = compute_actual_possible(
-                entity_level[eval_type]
-            )
+            evaluation_agg_entities_type[entity_type][
+                eval_type
+            ] = compute_actual_possible(entity_level[eval_type])
 
     return evaluation, evaluation_agg_entities_type
 

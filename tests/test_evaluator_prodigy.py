@@ -10,75 +10,80 @@ def test_evaluator_simple_case():
 
     true = [
         [{"label": "PER", "start": 2, "end": 4}],
-        [{"label": "LOC", "start": 1, "end": 2},
-         {"label": "LOC", "start": 3, "end": 4}]
+        [
+            {"label": "LOC", "start": 1, "end": 2},
+            {"label": "LOC", "start": 3, "end": 4},
+        ],
     ]
 
     pred = [
         [{"label": "PER", "start": 2, "end": 4}],
-        [{"label": "LOC", "start": 1, "end": 2},
-         {"label": "LOC", "start": 3, "end": 4}]
+        [
+            {"label": "LOC", "start": 1, "end": 2},
+            {"label": "LOC", "start": 3, "end": 4},
+        ],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['LOC', 'PER'])
+    evaluator = Evaluator(true, pred, tags=["LOC", "PER"])
 
     results, results_agg = evaluator.evaluate()
 
     expected = {
-        'strict': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "strict": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'ent_type': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "ent_type": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'partial': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "partial": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'exact': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
-        }
+        "exact": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
     }
 
-    assert results['strict'] == expected['strict']
-    assert results['ent_type'] == expected['ent_type']
-    assert results['partial'] == expected['partial']
-    assert results['exact'] == expected['exact']
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
+
 
 def test_evaluator_simple_case_filtered_tags():
     """
@@ -88,75 +93,79 @@ def test_evaluator_simple_case_filtered_tags():
 
     true = [
         [{"label": "PER", "start": 2, "end": 4}],
-        [{"label": "LOC", "start": 1, "end": 2},
-         {"label": "LOC", "start": 3, "end": 4}]
+        [
+            {"label": "LOC", "start": 1, "end": 2},
+            {"label": "LOC", "start": 3, "end": 4},
+        ],
     ]
 
     pred = [
         [{"label": "PER", "start": 2, "end": 4}],
-        [{"label": "LOC", "start": 1, "end": 2},
-         {"label": "LOC", "start": 3, "end": 4}]
+        [
+            {"label": "LOC", "start": 1, "end": 2},
+            {"label": "LOC", "start": 3, "end": 4},
+        ],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER', 'LOC'])
+    evaluator = Evaluator(true, pred, tags=["PER", "LOC"])
 
     results, results_agg = evaluator.evaluate()
 
     expected = {
-        'strict': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "strict": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'ent_type': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "ent_type": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'partial': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "partial": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'exact': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
-        }
+        "exact": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
     }
 
-    assert results['strict'] == expected['strict']
-    assert results['ent_type'] == expected['ent_type']
-    assert results['partial'] == expected['partial']
-    assert results['exact'] == expected['exact']
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
 
 
 def test_evaluator_extra_classes():
@@ -172,65 +181,66 @@ def test_evaluator_extra_classes():
         [{"label": "FOO", "start": 1, "end": 3}],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['ORG', 'FOO'])
+    evaluator = Evaluator(true, pred, tags=["ORG", "FOO"])
 
     results, results_agg = evaluator.evaluate()
 
     expected = {
-        'strict': {
-            'correct': 0,
-            'incorrect': 1,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 0,
-            'recall': 0.0,
-            'f1': 0
+        "strict": {
+            "correct": 0,
+            "incorrect": 1,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 0,
+            "recall": 0.0,
+            "f1": 0,
         },
-        'ent_type': {
-            'correct': 0,
-            'incorrect': 1,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 0,
-            'recall': 0.0,
-            'f1': 0
+        "ent_type": {
+            "correct": 0,
+            "incorrect": 1,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 0,
+            "recall": 0.0,
+            "f1": 0,
         },
-        'partial': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "partial": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'exact': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
-        }
+        "exact": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
     }
 
-    assert results['strict'] == expected['strict']
-    assert results['ent_type'] == expected['ent_type']
-    assert results['partial'] == expected['partial']
-    assert results['exact'] == expected['exact']
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
+
 
 def test_evaluator_no_entities_in_prediction():
     """
@@ -245,65 +255,66 @@ def test_evaluator_no_entities_in_prediction():
         [],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER'])
+    evaluator = Evaluator(true, pred, tags=["PER"])
 
     results, results_agg = evaluator.evaluate()
 
     expected = {
-        'strict': {
-            'correct': 0,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 1,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 0,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
+        "strict": {
+            "correct": 0,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 1,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 0,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         },
-        'ent_type': {
-            'correct': 0,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 1,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 0,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
+        "ent_type": {
+            "correct": 0,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 1,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 0,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         },
-        'partial': {
-            'correct': 0,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 1,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 0,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
+        "partial": {
+            "correct": 0,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 1,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 0,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         },
-        'exact': {
-            'correct': 0,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 1,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 0,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
-        }
+        "exact": {
+            "correct": 0,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 1,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 0,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
+        },
     }
 
-    assert results['strict'] == expected['strict']
-    assert results['ent_type'] == expected['ent_type']
-    assert results['partial'] == expected['partial']
-    assert results['exact'] == expected['exact']
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
+
 
 def test_evaluator_compare_results_and_results_agg():
     """
@@ -318,112 +329,112 @@ def test_evaluator_compare_results_and_results_agg():
         [{"label": "PER", "start": 2, "end": 4}],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER'])
+    evaluator = Evaluator(true, pred, tags=["PER"])
 
     results, results_agg = evaluator.evaluate()
 
     expected = {
-        'strict': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1,
-            'recall': 1,
-            'f1': 1
+        "strict": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1,
         },
-        'ent_type': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1,
-            'recall': 1,
-            'f1': 1
+        "ent_type": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1,
         },
-        'partial': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1,
-            'recall': 1,
-            'f1': 1
+        "partial": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1,
         },
-        'exact': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1,
-            'recall': 1,
-            'f1': 1
-        }
+        "exact": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1,
+            "recall": 1,
+            "f1": 1,
+        },
     }
 
     expected_agg = {
-        'PER': {
-        'strict': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1,
-            'recall': 1,
-            'f1': 1
-        },
-        'ent_type': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1,
-            'recall': 1,
-            'f1': 1
-        },
-        'partial': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1,
-            'recall': 1,
-            'f1': 1
-        },
-        'exact': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 1,
-            'actual': 1,
-            'precision': 1,
-            'recall': 1,
-            'f1': 1
+        "PER": {
+            "strict": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 0,
+                "possible": 1,
+                "actual": 1,
+                "precision": 1,
+                "recall": 1,
+                "f1": 1,
+            },
+            "ent_type": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 0,
+                "possible": 1,
+                "actual": 1,
+                "precision": 1,
+                "recall": 1,
+                "f1": 1,
+            },
+            "partial": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 0,
+                "possible": 1,
+                "actual": 1,
+                "precision": 1,
+                "recall": 1,
+                "f1": 1,
+            },
+            "exact": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 0,
+                "possible": 1,
+                "actual": 1,
+                "precision": 1,
+                "recall": 1,
+                "f1": 1,
+            },
         }
-    }
     }
 
     assert results_agg["PER"]["strict"] == expected_agg["PER"]["strict"]
@@ -431,15 +442,16 @@ def test_evaluator_compare_results_and_results_agg():
     assert results_agg["PER"]["partial"] == expected_agg["PER"]["partial"]
     assert results_agg["PER"]["exact"] == expected_agg["PER"]["exact"]
 
-    assert results['strict'] == expected['strict']
-    assert results['ent_type'] == expected['ent_type']
-    assert results['partial'] == expected['partial']
-    assert results['exact'] == expected['exact']
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
 
-    assert results['strict'] == expected_agg['PER']['strict']
-    assert results['ent_type'] == expected_agg['PER']['ent_type']
-    assert results['partial'] == expected_agg['PER']['partial']
-    assert results['exact'] == expected_agg['PER']['exact']
+    assert results["strict"] == expected_agg["PER"]["strict"]
+    assert results["ent_type"] == expected_agg["PER"]["ent_type"]
+    assert results["partial"] == expected_agg["PER"]["partial"]
+    assert results["exact"] == expected_agg["PER"]["exact"]
+
 
 def test_evaluator_compare_results_and_results_agg_1():
     """
@@ -455,166 +467,165 @@ def test_evaluator_compare_results_and_results_agg_1():
     pred = [
         [{"label": "PER", "start": 2, "end": 4}],
         [{"label": "ORG", "start": 2, "end": 4}],
-        [{"label": "MISC", "start": 2, "end": 4}]
+        [{"label": "MISC", "start": 2, "end": 4}],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'MISC'])
+    evaluator = Evaluator(true, pred, tags=["PER", "ORG", "MISC"])
 
     results, results_agg = evaluator.evaluate()
 
     expected = {
-        'strict': {
-            'correct': 2,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 2,
-            'actual': 3,
-            'precision': 0.6666666666666666,
-            'recall': 1.0,
-            'f1': 0.8
+        "strict": {
+            "correct": 2,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 1,
+            "possible": 2,
+            "actual": 3,
+            "precision": 0.6666666666666666,
+            "recall": 1.0,
+            "f1": 0.8,
         },
-        'ent_type': {
-            'correct': 2,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 2,
-            'actual': 3,
-            'precision': 0.6666666666666666,
-            'recall': 1.0,
-            'f1': 0.8
+        "ent_type": {
+            "correct": 2,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 1,
+            "possible": 2,
+            "actual": 3,
+            "precision": 0.6666666666666666,
+            "recall": 1.0,
+            "f1": 0.8,
         },
-        'partial': {
-            'correct': 2,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 2,
-            'actual': 3,
-            'precision': 0.6666666666666666,
-            'recall': 1.0,
-            'f1': 0.8
+        "partial": {
+            "correct": 2,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 1,
+            "possible": 2,
+            "actual": 3,
+            "precision": 0.6666666666666666,
+            "recall": 1.0,
+            "f1": 0.8,
         },
-        'exact': {
-            'correct': 2,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 2,
-            'actual': 3,
-            'precision': 0.6666666666666666,
-            'recall': 1.0,
-            'f1': 0.8
-        }
+        "exact": {
+            "correct": 2,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 1,
+            "possible": 2,
+            "actual": 3,
+            "precision": 0.6666666666666666,
+            "recall": 1.0,
+            "f1": 0.8,
+        },
     }
 
     expected_agg = {
-        'ORG': {
-        'strict': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 1,
-            'actual': 2,
-            'precision': 0.5,
-            'recall': 1,
-            'f1': 0.6666666666666666
-
+        "ORG": {
+            "strict": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 1,
+                "possible": 1,
+                "actual": 2,
+                "precision": 0.5,
+                "recall": 1,
+                "f1": 0.6666666666666666,
+            },
+            "ent_type": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 1,
+                "possible": 1,
+                "actual": 2,
+                "precision": 0.5,
+                "recall": 1,
+                "f1": 0.6666666666666666,
+            },
+            "partial": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 1,
+                "possible": 1,
+                "actual": 2,
+                "precision": 0.5,
+                "recall": 1,
+                "f1": 0.6666666666666666,
+            },
+            "exact": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 1,
+                "possible": 1,
+                "actual": 2,
+                "precision": 0.5,
+                "recall": 1,
+                "f1": 0.6666666666666666,
+            },
         },
-        'ent_type': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 1,
-            'actual': 2,
-            'precision': 0.5,
-            'recall': 1,
-            'f1': 0.6666666666666666
+        "MISC": {
+            "strict": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 1,
+                "possible": 1,
+                "actual": 2,
+                "precision": 0.5,
+                "recall": 1,
+                "f1": 0.6666666666666666,
+            },
+            "ent_type": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 1,
+                "possible": 1,
+                "actual": 2,
+                "precision": 0.5,
+                "recall": 1,
+                "f1": 0.6666666666666666,
+            },
+            "partial": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 1,
+                "possible": 1,
+                "actual": 2,
+                "precision": 0.5,
+                "recall": 1,
+                "f1": 0.6666666666666666,
+            },
+            "exact": {
+                "correct": 1,
+                "incorrect": 0,
+                "partial": 0,
+                "missed": 0,
+                "spurious": 1,
+                "possible": 1,
+                "actual": 2,
+                "precision": 0.5,
+                "recall": 1,
+                "f1": 0.6666666666666666,
+            },
         },
-        'partial': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 1,
-            'actual': 2,
-            'precision': 0.5,
-            'recall': 1,
-            'f1': 0.6666666666666666
-        },
-        'exact': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 1,
-            'actual': 2,
-            'precision': 0.5,
-            'recall': 1,
-            'f1': 0.6666666666666666
-        }
-    },
-        'MISC': {
-        'strict': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 1,
-            'actual': 2,
-            'precision': 0.5,
-            'recall': 1,
-            'f1': 0.6666666666666666
-        },
-        'ent_type': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 1,
-            'actual': 2,
-            'precision': 0.5,
-            'recall': 1,
-            'f1': 0.6666666666666666
-        },
-        'partial': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 1,
-            'actual': 2,
-            'precision': 0.5,
-            'recall': 1,
-            'f1': 0.6666666666666666
-        },
-        'exact': {
-            'correct': 1,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 1,
-            'possible': 1,
-            'actual': 2,
-            'precision': 0.5,
-            'recall': 1,
-            'f1': 0.6666666666666666
-        }
-    }
     }
 
     assert results_agg["ORG"]["strict"] == expected_agg["ORG"]["strict"]
@@ -627,156 +638,165 @@ def test_evaluator_compare_results_and_results_agg_1():
     assert results_agg["MISC"]["partial"] == expected_agg["MISC"]["partial"]
     assert results_agg["MISC"]["exact"] == expected_agg["MISC"]["exact"]
 
-    assert results['strict'] == expected['strict']
-    assert results['ent_type'] == expected['ent_type']
-    assert results['partial'] == expected['partial']
-    assert results['exact'] == expected['exact']
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
 
 
 def test_evaluator_with_extra_keys_in_pred():
 
     true = [
         [{"label": "PER", "start": 2, "end": 4}],
-        [{"label": "LOC", "start": 1, "end": 2},
-         {"label": "LOC", "start": 3, "end": 4}]
+        [
+            {"label": "LOC", "start": 1, "end": 2},
+            {"label": "LOC", "start": 3, "end": 4},
+        ],
     ]
 
     pred = [
         [{"label": "PER", "start": 2, "end": 4, "token_start": 0, "token_end": 5}],
-        [{"label": "LOC", "start": 1, "end": 2, "token_start": 0, "token_end": 6},
-         {"label": "LOC", "start": 3, "end": 4, "token_start": 0, "token_end": 3}]
+        [
+            {"label": "LOC", "start": 1, "end": 2, "token_start": 0, "token_end": 6},
+            {"label": "LOC", "start": 3, "end": 4, "token_start": 0, "token_end": 3},
+        ],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['LOC', 'PER'])
+    evaluator = Evaluator(true, pred, tags=["LOC", "PER"])
 
     results, results_agg = evaluator.evaluate()
 
     expected = {
-        'strict': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "strict": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'ent_type': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "ent_type": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'partial': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "partial": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'exact': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
-        }
+        "exact": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
     }
 
-    assert results['strict'] == expected['strict']
-    assert results['ent_type'] == expected['ent_type']
-    assert results['partial'] == expected['partial']
-    assert results['exact'] == expected['exact']
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
+
 
 def test_evaluator_with_extra_keys_in_true():
 
     true = [
         [{"label": "PER", "start": 2, "end": 4, "token_start": 0, "token_end": 4}],
-        [{"label": "LOC", "start": 1, "end": 2, "token_start": 0, "token_end": 5},
-         {"label": "LOC", "start": 3, "end": 4, "token_start": 7, "token_end": 9}]
+        [
+            {"label": "LOC", "start": 1, "end": 2, "token_start": 0, "token_end": 5},
+            {"label": "LOC", "start": 3, "end": 4, "token_start": 7, "token_end": 9},
+        ],
     ]
 
     pred = [
         [{"label": "PER", "start": 2, "end": 4}],
-        [{"label": "LOC", "start": 1, "end": 2},
-         {"label": "LOC", "start": 3, "end": 4}]
+        [
+            {"label": "LOC", "start": 1, "end": 2},
+            {"label": "LOC", "start": 3, "end": 4},
+        ],
     ]
 
-    evaluator = Evaluator(true, pred, tags=['LOC', 'PER'])
+    evaluator = Evaluator(true, pred, tags=["LOC", "PER"])
 
     results, results_agg = evaluator.evaluate()
 
     expected = {
-        'strict': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "strict": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'ent_type': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "ent_type": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'partial': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
+        "partial": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
         },
-        'exact': {
-            'correct': 3,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 3,
-            'actual': 3,
-            'precision': 1.0,
-            'recall': 1.0,
-            'f1': 1.0
-        }
+        "exact": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
     }
 
-    assert results['strict'] == expected['strict']
-    assert results['ent_type'] == expected['ent_type']
-    assert results['partial'] == expected['partial']
-    assert results['exact'] == expected['exact']
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
