@@ -18,7 +18,7 @@ reqs:
 
 .PHONY: dist
 dist:
-	rm -r dist
+	-rm -r dist
 	python setup.py bdist_wheel
 
 pypi_upload: dist

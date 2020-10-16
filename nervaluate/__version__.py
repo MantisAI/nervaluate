@@ -7,7 +7,7 @@ Example:
     >>> from nervaluate.__version__ import __version__
 """
 __name__ = "nervaluate"
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 __description__ = "NER evaluation done right"
 __url__ = "https://pypi.org/project/nervaluate"
 __author__ = "David Batista, Matthew Upson"
