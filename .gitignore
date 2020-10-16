@@ -6,4 +6,5 @@
 nervaluate.egg-info/
 build/
 **/.python-version
+coverage.xml
 dist

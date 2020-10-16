@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/ivyleavedtoadflax/nervaluate.svg?branch=master)](https://travis-ci.org/ivyleavedtoadflax/nervaluate) [![codecov](https://codecov.io/gh/ivyleavedtoadflax/nervaluate/branch/master/graph/badge.svg)](https://codecov.io/gh/ivyleavedtoadflax/nervaluate)
+![GitHub](https://img.shields.io/github/license/ivyleavedtoadflax/nervaluate)
+![PyPI](https://img.shields.io/pypi/v/nervaluate)
+
 # nervaluate
 
 nervaluate is a python module for evaluating Named Entity Recognition (NER) models as defined in the SemEval 2013 - 9.1 task.
