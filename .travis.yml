@@ -7,9 +7,3 @@ python:
 install: pip install tox-travis pytest-cov
 script: tox
 cache: pip
-
-[testenv]
-passenv =
-  CI
-  TRAVIS
-  TRAVIS_*
