@@ -871,3 +871,80 @@ def test_evaluator_with_extra_keys_in_true():
     assert results["ent_type"] == expected["ent_type"]
     assert results["partial"] == expected["partial"]
     assert results["exact"] == expected["exact"]
+
+def test_issue_29():
+
+    true = [
+        [
+            {"label": "PER", "start": 1, "end": 2},
+            {"label": "PER", "start": 3, "end": 10},
+        ]
+    ]
+
+    pred = [
+        [
+            {"label": "PER", "start": 1, "end": 2},
+            {"label": "PER", "start": 3, "end": 5},
+            {"label": "PER", "start": 6, "end": 10},
+        ]
+    ]
+
+    evaluator = Evaluator(true, pred, tags=["PER"])
+
+    results, results_agg = evaluator.evaluate()
+
+    expected = {
+        "strict": {
+            "correct": 1,
+            "incorrect": 2,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 3,
+            "precision": 0.3333333333333333,
+            "recall": 0.3333333333333333,
+            "f1": 0.3333333333333333,
+        },
+        "ent_type": {
+            "correct": 2,
+            "incorrect": 1,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 0.3333333333333333,
+            "f1": 0.3333333333333333,
+        },
+        "partial": {
+            "correct": 3,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 3,
+            "actual": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
+        "exact": {
+            "correct": 1,
+            "incorrect": 2,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 3,
+            "precision": 0.3333,
+            "recall": 0.3333,
+            "f1": 1.0,
+        },
+    }
+
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
