@@ -7,3 +7,5 @@ python:
 install: pip install tox-travis pytest-cov
 script: tox
 cache: pip
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
