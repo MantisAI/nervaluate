@@ -2,6 +2,35 @@ Changelog
 =========
 
 
+0.1.8 (2020-10-16)
+------------------
+
+New
+~~~
+- Add test for whole span length entities (see #32) [Matthew Upson]
+- Summarise blog post in README. [Matthew Upson]
+
+Changes
+~~~~~~~
+- Fix tests to match #32. [Matthew Upson]
+
+Fix
+~~~
+- Correct catch sequence of just one entity. [Matthew Upson]
+
+  Incorporate edits in #28 but includes tests.
+
+Other
+~~~~~
+- Add code coverage. [ivyleavedtoadflax]
+- Crucial fixes for evaluation. [Alex Flückiger]
+- Update utils.py. [ivyleavedtoadflax]
+
+  Tiny change to kick off CI
+- Fix to catch last entites Small change to catch entities that go up
+  until last character when there is no tag. [pim]
+
+
 0.1.7 (2019-12-07)
 ------------------
 
