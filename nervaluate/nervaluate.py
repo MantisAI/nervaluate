@@ -12,8 +12,8 @@ logging.basicConfig(
     level="INFO",
 )
 
-class Evaluator():
 
+class Evaluator:
     def __init__(self, true, pred, tags, loader=None):
         """
         """
@@ -26,26 +26,26 @@ class Evaluator():
         # Setup dict into which metrics will be stored.
 
         self.metrics_results = {
-            'correct': 0,
-            'incorrect': 0,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 0,
-            'actual': 0,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0,
+            "correct": 0,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 0,
+            "actual": 0,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         }
 
         # Copy results dict to cover the four schemes.
 
         self.results = {
-            'strict': deepcopy(self.metrics_results),
-            'ent_type': deepcopy(self.metrics_results),
-            'partial':deepcopy(self.metrics_results),
-            'exact':deepcopy(self.metrics_results),
-            }
+            "strict": deepcopy(self.metrics_results),
+            "ent_type": deepcopy(self.metrics_results),
+            "partial": deepcopy(self.metrics_results),
+            "exact": deepcopy(self.metrics_results),
+        }
 
         # Create an accumulator to store results
 
@@ -58,12 +58,12 @@ class Evaluator():
 
         self.loader = loader
 
-
     def evaluate(self):
 
         logging.debug(
             "Imported %s predictions for %s true examples",
-            len(self.pred), len(self.true)
+            len(self.pred),
+            len(self.true),
         )
 
         if self.loader:
@@ -82,7 +82,6 @@ class Evaluator():
 
         for true_ents, pred_ents in zip(self.true, self.pred):
 
-
             # Compute results for one message
 
             tmp_results, tmp_agg_results = compute_metrics(
@@ -97,7 +96,9 @@ class Evaluator():
 
                 for metric in self.results[eval_schema]:
 
-                    self.results[eval_schema][metric] += tmp_results[eval_schema][metric]
+                    self.results[eval_schema][metric] += tmp_results[eval_schema][
+                        metric
+                    ]
 
             # Calculate global precision and recall
 
@@ -111,11 +112,17 @@ class Evaluator():
 
                     for metric in tmp_agg_results[label][eval_schema]:
 
-                        self.evaluation_agg_entities_type[label][eval_schema][metric] += tmp_agg_results[label][eval_schema][metric]
+                        self.evaluation_agg_entities_type[label][eval_schema][
+                            metric
+                        ] += tmp_agg_results[label][eval_schema][metric]
 
                 # Calculate precision recall at the individual entity level
 
-                self.evaluation_agg_entities_type[label] = compute_precision_recall_wrapper(self.evaluation_agg_entities_type[label])
+                self.evaluation_agg_entities_type[
+                    label
+                ] = compute_precision_recall_wrapper(
+                    self.evaluation_agg_entities_type[label]
+                )
 
         return self.results, self.evaluation_agg_entities_type
 
@@ -136,10 +143,12 @@ def collect_named_entities(tokens):
 
     for offset, token_tag in enumerate(tokens):
 
-        if token_tag == 'O':
+        if token_tag == "O":
             if ent_type is not None and start_offset is not None:
                 end_offset = offset - 1
-                named_entities.append({"label": ent_type, "start": start_offset, "end":end_offset})
+                named_entities.append(
+                    {"label": ent_type, "start": start_offset, "end": end_offset}
+                )
                 start_offset = None
                 end_offset = None
                 ent_type = None
@@ -148,10 +157,14 @@ def collect_named_entities(tokens):
             ent_type = token_tag[2:]
             start_offset = offset
 
-        elif ent_type != token_tag[2:] or (ent_type == token_tag[2:] and token_tag[:1] == 'B'):
+        elif ent_type != token_tag[2:] or (
+            ent_type == token_tag[2:] and token_tag[:1] == "B"
+        ):
 
             end_offset = offset - 1
-            named_entities.append({"label": ent_type, "start": start_offset, "end":end_offset})
+            named_entities.append(
+                {"label": ent_type, "start": start_offset, "end": end_offset}
+            )
 
             # start of a new entity
             ent_type = token_tag[2:]
@@ -161,7 +174,9 @@ def collect_named_entities(tokens):
     # catches an entity that goes up until the last token
 
     if ent_type and start_offset and end_offset is None:
-        named_entities.append({"label": ent_type, "start": start_offset, "end":len(tokens)-1})
+        named_entities.append(
+            {"label": ent_type, "start": start_offset, "end": len(tokens) - 1}
+        )
 
     return named_entities
 
@@ -175,25 +190,24 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
     :tags: List of tags to be used
     """
 
-
     eval_metrics = {
-        'correct': 0,
-        'incorrect': 0,
-        'partial': 0,
-        'missed': 0,
-        'spurious': 0,
-        'precision': 0,
-        'recall': 0,
-        'f1': 0
+        "correct": 0,
+        "incorrect": 0,
+        "partial": 0,
+        "missed": 0,
+        "spurious": 0,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
     }
 
     # overall results
 
     evaluation = {
-        'strict': deepcopy(eval_metrics),
-        'ent_type': deepcopy(eval_metrics),
-        'partial': deepcopy(eval_metrics),
-        'exact': deepcopy(eval_metrics)
+        "strict": deepcopy(eval_metrics),
+        "ent_type": deepcopy(eval_metrics),
+        "partial": deepcopy(eval_metrics),
+        "exact": deepcopy(eval_metrics),
     }
 
     # results by entity type
@@ -215,8 +229,12 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
     # Strip the spans down to just start, end, label. Note that failing
     # to do this results in a bug. The exact cause is not clear.
 
-    true_named_entities = [clean_entities(ent) for ent in true_named_entities if ent["label"] in tags]
-    pred_named_entities = [clean_entities(ent) for ent in pred_named_entities if ent["label"] in tags]
+    true_named_entities = [
+        clean_entities(ent) for ent in true_named_entities if ent["label"] in tags
+    ]
+    pred_named_entities = [
+        clean_entities(ent) for ent in pred_named_entities if ent["label"] in tags
+    ]
 
     # go through each predicted named-entity
 
@@ -231,16 +249,16 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
         if pred in true_named_entities:
             true_which_overlapped_with_pred.append(pred)
-            evaluation['strict']['correct'] += 1
-            evaluation['ent_type']['correct'] += 1
-            evaluation['exact']['correct'] += 1
-            evaluation['partial']['correct'] += 1
+            evaluation["strict"]["correct"] += 1
+            evaluation["ent_type"]["correct"] += 1
+            evaluation["exact"]["correct"] += 1
+            evaluation["partial"]["correct"] += 1
 
             # for the agg. by label results
-            evaluation_agg_entities_type[pred["label"]]['strict']['correct'] += 1
-            evaluation_agg_entities_type[pred["label"]]['ent_type']['correct'] += 1
-            evaluation_agg_entities_type[pred["label"]]['exact']['correct'] += 1
-            evaluation_agg_entities_type[pred["label"]]['partial']['correct'] += 1
+            evaluation_agg_entities_type[pred["label"]]["strict"]["correct"] += 1
+            evaluation_agg_entities_type[pred["label"]]["ent_type"]["correct"] += 1
+            evaluation_agg_entities_type[pred["label"]]["exact"]["correct"] += 1
+            evaluation_agg_entities_type[pred["label"]]["partial"]["correct"] += 1
 
         else:
 
@@ -253,20 +271,29 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
                 # Scenario IV: Offsets match, but entity type is wrong
 
-                if true["start"] == pred["start"] and pred["end"] == true["end"] \
-                        and true["label"] != pred["label"]:
+                if (
+                    true["start"] == pred["start"]
+                    and pred["end"] == true["end"]
+                    and true["label"] != pred["label"]
+                ):
 
                     # overall results
-                    evaluation['strict']['incorrect'] += 1
-                    evaluation['ent_type']['incorrect'] += 1
-                    evaluation['partial']['correct'] += 1
-                    evaluation['exact']['correct'] += 1
+                    evaluation["strict"]["incorrect"] += 1
+                    evaluation["ent_type"]["incorrect"] += 1
+                    evaluation["partial"]["correct"] += 1
+                    evaluation["exact"]["correct"] += 1
 
                     # aggregated by entity type results
-                    evaluation_agg_entities_type[true["label"]]['strict']['incorrect'] += 1
-                    evaluation_agg_entities_type[true["label"]]['ent_type']['incorrect'] += 1
-                    evaluation_agg_entities_type[true["label"]]['partial']['correct'] += 1
-                    evaluation_agg_entities_type[true["label"]]['exact']['correct'] += 1
+                    evaluation_agg_entities_type[true["label"]]["strict"][
+                        "incorrect"
+                    ] += 1
+                    evaluation_agg_entities_type[true["label"]]["ent_type"][
+                        "incorrect"
+                    ] += 1
+                    evaluation_agg_entities_type[true["label"]]["partial"][
+                        "correct"
+                    ] += 1
+                    evaluation_agg_entities_type[true["label"]]["exact"]["correct"] += 1
 
                     true_which_overlapped_with_pred.append(true)
                     found_overlap = True
@@ -286,16 +313,24 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
                     if pred["label"] == true["label"]:
 
                         # overall results
-                        evaluation['strict']['incorrect'] += 1
-                        evaluation['ent_type']['correct'] += 1
-                        evaluation['partial']['partial'] += 1
-                        evaluation['exact']['incorrect'] += 1
+                        evaluation["strict"]["incorrect"] += 1
+                        evaluation["ent_type"]["correct"] += 1
+                        evaluation["partial"]["partial"] += 1
+                        evaluation["exact"]["incorrect"] += 1
 
                         # aggregated by entity type results
-                        evaluation_agg_entities_type[true["label"]]['strict']['incorrect'] += 1
-                        evaluation_agg_entities_type[true["label"]]['ent_type']['correct'] += 1
-                        evaluation_agg_entities_type[true["label"]]['partial']['partial'] += 1
-                        evaluation_agg_entities_type[true["label"]]['exact']['incorrect'] += 1
+                        evaluation_agg_entities_type[true["label"]]["strict"][
+                            "incorrect"
+                        ] += 1
+                        evaluation_agg_entities_type[true["label"]]["ent_type"][
+                            "correct"
+                        ] += 1
+                        evaluation_agg_entities_type[true["label"]]["partial"][
+                            "partial"
+                        ] += 1
+                        evaluation_agg_entities_type[true["label"]]["exact"][
+                            "incorrect"
+                        ] += 1
 
                         found_overlap = True
 
@@ -306,18 +341,26 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
                     else:
                         # overall results
-                        evaluation['strict']['incorrect'] += 1
-                        evaluation['ent_type']['incorrect'] += 1
-                        evaluation['partial']['partial'] += 1
-                        evaluation['exact']['incorrect'] += 1
+                        evaluation["strict"]["incorrect"] += 1
+                        evaluation["ent_type"]["incorrect"] += 1
+                        evaluation["partial"]["partial"] += 1
+                        evaluation["exact"]["incorrect"] += 1
 
                         # aggregated by entity type results
                         # Results against the true entity
 
-                        evaluation_agg_entities_type[true["label"]]['strict']['incorrect'] += 1
-                        evaluation_agg_entities_type[true["label"]]['partial']['partial'] += 1
-                        evaluation_agg_entities_type[true["label"]]['ent_type']['incorrect'] += 1
-                        evaluation_agg_entities_type[true["label"]]['exact']['incorrect'] += 1
+                        evaluation_agg_entities_type[true["label"]]["strict"][
+                            "incorrect"
+                        ] += 1
+                        evaluation_agg_entities_type[true["label"]]["partial"][
+                            "partial"
+                        ] += 1
+                        evaluation_agg_entities_type[true["label"]]["ent_type"][
+                            "incorrect"
+                        ] += 1
+                        evaluation_agg_entities_type[true["label"]]["exact"][
+                            "incorrect"
+                        ] += 1
 
                         # Results against the predicted entity
 
@@ -333,10 +376,10 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
                 # Overall results
 
-                evaluation['strict']['spurious'] += 1
-                evaluation['ent_type']['spurious'] += 1
-                evaluation['partial']['spurious'] += 1
-                evaluation['exact']['spurious'] += 1
+                evaluation["strict"]["spurious"] += 1
+                evaluation["ent_type"]["spurious"] += 1
+                evaluation["partial"]["spurious"] += 1
+                evaluation["exact"]["spurious"] += 1
 
                 # Aggregated by entity type results
 
@@ -349,10 +392,10 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
                 for true in tags:
 
-                    evaluation_agg_entities_type[true]['strict']['spurious'] += 1
-                    evaluation_agg_entities_type[true]['ent_type']['spurious'] += 1
-                    evaluation_agg_entities_type[true]['partial']['spurious'] += 1
-                    evaluation_agg_entities_type[true]['exact']['spurious'] += 1
+                    evaluation_agg_entities_type[true]["strict"]["spurious"] += 1
+                    evaluation_agg_entities_type[true]["ent_type"]["spurious"] += 1
+                    evaluation_agg_entities_type[true]["partial"]["spurious"] += 1
+                    evaluation_agg_entities_type[true]["exact"]["spurious"] += 1
 
     # Scenario III: Entity was missed entirely.
 
@@ -361,16 +404,16 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
             continue
         else:
             # overall results
-            evaluation['strict']['missed'] += 1
-            evaluation['ent_type']['missed'] += 1
-            evaluation['partial']['missed'] += 1
-            evaluation['exact']['missed'] += 1
+            evaluation["strict"]["missed"] += 1
+            evaluation["ent_type"]["missed"] += 1
+            evaluation["partial"]["missed"] += 1
+            evaluation["exact"]["missed"] += 1
 
             # for the agg. by label
-            evaluation_agg_entities_type[true["label"]]['strict']['missed'] += 1
-            evaluation_agg_entities_type[true["label"]]['ent_type']['missed'] += 1
-            evaluation_agg_entities_type[true["label"]]['partial']['missed'] += 1
-            evaluation_agg_entities_type[true["label"]]['exact']['missed'] += 1
+            evaluation_agg_entities_type[true["label"]]["strict"]["missed"] += 1
+            evaluation_agg_entities_type[true["label"]]["ent_type"]["missed"] += 1
+            evaluation_agg_entities_type[true["label"]]["partial"]["missed"] += 1
+            evaluation_agg_entities_type[true["label"]]["exact"]["missed"] += 1
 
     # Compute 'possible', 'actual' according to SemEval-2013 Task 9.1 on the
     # overall results, and use these to calculate precision and recall.
@@ -388,11 +431,12 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
         for eval_type in entity_level:
 
-            evaluation_agg_entities_type[entity_type][eval_type] = compute_actual_possible(
-                entity_level[eval_type]
-            )
+            evaluation_agg_entities_type[entity_type][
+                eval_type
+            ] = compute_actual_possible(entity_level[eval_type])
 
     return evaluation, evaluation_agg_entities_type
+
 
 def compute_actual_possible(results):
     """
@@ -404,11 +448,11 @@ def compute_actual_possible(results):
     calculating precision and recall.
     """
 
-    correct = results['correct']
-    incorrect = results['incorrect']
-    partial = results['partial']
-    missed = results['missed']
-    spurious = results['spurious']
+    correct = results["correct"]
+    incorrect = results["incorrect"]
+    partial = results["partial"]
+    missed = results["missed"]
+    spurious = results["spurious"]
 
     # Possible: number annotations in the gold-standard which contribute to the
     # final score
@@ -437,8 +481,8 @@ def compute_precision_recall(results, partial_or_type=False):
 
     actual = results["actual"]
     possible = results["possible"]
-    partial = results['partial']
-    correct = results['correct']
+    partial = results["partial"]
+    correct = results["correct"]
 
     if partial_or_type:
         precision = (correct + 0.5 * partial) / actual if actual > 0 else 0
@@ -450,7 +494,11 @@ def compute_precision_recall(results, partial_or_type=False):
 
     results["precision"] = precision
     results["recall"] = recall
-    results["f1"] = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+    results["f1"] = (
+        2 * (precision * recall) / (precision + recall)
+        if (precision + recall) > 0
+        else 0
+    )
 
     return results
 
@@ -460,10 +508,16 @@ def compute_precision_recall_wrapper(results):
     Wraps the compute_precision_recall function and runs on a dict of results
     """
 
-    results_a = {key: compute_precision_recall(value, True) for key, value in results.items() if
-                 key in ['partial', 'ent_type']}
-    results_b = {key: compute_precision_recall(value) for key, value in results.items() if
-                 key in ['strict', 'exact']}
+    results_a = {
+        key: compute_precision_recall(value, True)
+        for key, value in results.items()
+        if key in ["partial", "ent_type"]
+    }
+    results_b = {
+        key: compute_precision_recall(value)
+        for key, value in results.items()
+        if key in ["strict", "exact"]
+    }
 
     results = {**results_a, **results_b}
 
