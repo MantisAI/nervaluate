@@ -872,6 +872,7 @@ def test_evaluator_with_extra_keys_in_true():
     assert results["partial"] == expected["partial"]
     assert results["exact"] == expected["exact"]
 
+
 def test_issue_29():
 
     true = [
@@ -896,51 +897,51 @@ def test_issue_29():
     expected = {
         "strict": {
             "correct": 1,
-            "incorrect": 2,
-            "partial": 0,
-            "missed": 0,
-            "spurious": 0,
-            "possible": 2,
-            "actual": 3,
-            "precision": 0.3333333333333333,
-            "recall": 0.3333333333333333,
-            "f1": 0.3333333333333333,
-        },
-        "ent_type": {
-            "correct": 2,
             "incorrect": 1,
             "partial": 0,
             "missed": 0,
-            "spurious": 0,
+            "spurious": 1,
             "possible": 2,
             "actual": 3,
-            "precision": 1.0,
-            "recall": 0.3333333333333333,
-            "f1": 0.3333333333333333,
+            "precision": 0.3333333333333333,
+            "recall": 0.5,
+            "f1": 0.4,
         },
-        "partial": {
-            "correct": 3,
+        "ent_type": {
+            "correct": 2,
             "incorrect": 0,
             "partial": 0,
             "missed": 0,
-            "spurious": 0,
-            "possible": 3,
+            "spurious": 1,
+            "possible": 2,
             "actual": 3,
-            "precision": 1.0,
+            "precision": 0.6666666666666666,
             "recall": 1.0,
-            "f1": 1.0,
+            "f1": 0.8,
+        },
+        "partial": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 1,
+            "missed": 0,
+            "spurious": 1,
+            "possible": 2,
+            "actual": 3,
+            "precision": 0.5,
+            "recall": 0.75,
+            "f1": 0.6,
         },
         "exact": {
             "correct": 1,
-            "incorrect": 2,
+            "incorrect": 1,
             "partial": 0,
             "missed": 0,
-            "spurious": 0,
+            "spurious": 1,
             "possible": 2,
             "actual": 3,
-            "precision": 0.3333,
-            "recall": 0.3333,
-            "f1": 1.0,
+            "precision": 0.3333333333333333,
+            "recall": 0.5,
+            "f1": 0.4,
         },
     }
 
