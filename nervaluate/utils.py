@@ -101,32 +101,6 @@ def collect_named_entities(tokens):
     return named_entities
 
 
-def test_list_to_spans():
-
-    before = [
-        ["O", "B-LOC", "I-LOC", "B-LOC", "I-LOC", "O"],
-        ["O", "B-GPE", "I-GPE", "B-GPE", "I-GPE", "O"],
-    ]
-
-    expected = [
-        [
-            {"label": "LOC", "start": 1, "end": 2},
-            {"label": "LOC", "start": 3, "end": 4},
-        ],
-        [
-            {"label": "GPE", "start": 1, "end": 2},
-            {"label": "GPE", "start": 3, "end": 4},
-        ],
-    ]
-
-    result = list_to_spans(before)
-
-    assert result == expected
-
-
-test_list_to_spans()
-
-
 def find_overlap(true_range, pred_range):
     """Find the overlap between two ranges
 
