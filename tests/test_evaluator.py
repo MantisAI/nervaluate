@@ -800,3 +800,74 @@ def test_evaluator_with_extra_keys_in_true():
     assert results["ent_type"] == expected["ent_type"]
     assert results["partial"] == expected["partial"]
     assert results["exact"] == expected["exact"]
+
+
+def test_evaluator_with_extra_keys_in_true():
+
+    true = [
+        [{"label": "PER", "start": 0, "end": 5, "token_start": 0, "token_end": 25}],
+    ]
+
+    pred = [
+        [{"label": "PER", "start": 0, "end": 5}],
+    ]
+
+    evaluator = Evaluator(true, pred, tags=["PER"])
+
+    results, results_agg = evaluator.evaluate()
+
+    expected = {
+        "strict": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
+        "ent_type": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
+        "partial": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
+        "exact": {
+            "correct": 1,
+            "incorrect": 0,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 1,
+            "actual": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+        },
+    }
+
+    assert results["strict"] == expected["strict"]
+    assert results["ent_type"] == expected["ent_type"]
+    assert results["partial"] == expected["partial"]
+    assert results["exact"] == expected["exact"]
