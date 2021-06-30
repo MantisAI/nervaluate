@@ -6,3 +6,5 @@ tox-travis
 twine
 wheel
 gitchangelog
+typer
+spacy==2.3.5
