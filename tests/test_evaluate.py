@@ -1,18 +1,16 @@
 import os
 import pytest
-
-from nervaluate.nervaluate_cli import nervaluate
+from nervaluate.evaluate import evaluate
 
 
 @pytest.fixture
-def data_path(tmp_path):
-    return os.path.join(tmp_path, "data.json")
+def test_evaluate(tmp_path):
+    true_path = os.path.join(tmp_path, "true_path.json")
+    pred_path = os.path.join(tmp_path, "pred_path.json")
 
+    tags = 'PER, LOC, MISC'
 
-def test_nervaluate(data_path):
-    show_results_by_tag = True
-
-    output = nervaluate(data_path=data_path, show_results_by_tag=show_results_by_tag)
+    output = evaluate(true_path=true_path, pred_path=pred_path, tags=tags, loader=None, by_tag=False, pretty=False)
 
     results = output["results"]
 

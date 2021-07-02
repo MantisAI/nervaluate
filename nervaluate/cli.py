@@ -1,9 +1,10 @@
 import typer
 
-from nervaluate.nervaluate_cli import nervaluate
+from nervaluate.evaluate import evaluate
 
 app = typer.Typer()
-app.command()(nervaluate)
+
+app.command()(evaluate)
 
 if __name__ == "__main__":
     app()
