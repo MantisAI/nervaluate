@@ -1,8 +1,9 @@
 codecov
+gitchangelog
 pytest
 pytest-cov
 tox
-tox-travis
+tox-gh-actions
 twine
 wheel
 gitchangelog
