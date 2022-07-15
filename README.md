@@ -134,7 +134,7 @@ Recall = (COR / POS) = TP / (TP+FN)
 __Partial Match (i.e., partial and type)__
 ```
 Precision = (COR + 0.5 × PAR) / ACT = TP / (TP + FP)
-Recall = (COR + 0.5 × PAR)/POS = COR / ACT = TP / (TP + FP)
+Recall = (COR + 0.5 × PAR)/POS = COR / ACT = TP / (TP + FN)
 ```
 
 __Putting all together:__
