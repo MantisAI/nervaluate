@@ -236,15 +236,20 @@ def test_list_to_spans():
 
 def test_list_to_spans_single_token():
 
-    before = [
-        ["B-LOC"],
-    ]
+    before = [["B-LOC"]]
 
-    expected = [
-        [
-            {"label": "LOC", "start": 0, "end": 1},
-        ]
-    ]
+    expected = [[{"label": "LOC", "start": 0, "end": 0}]]
+
+    result = list_to_spans(before)
+
+    assert result == expected
+
+
+def test_list_to_spans_single_outside():
+
+    before = [["O"]]
+
+    expected = [[]]
 
     result = list_to_spans(before)
 
