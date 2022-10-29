@@ -3,7 +3,7 @@
 #################################################################################
 
 PYTHON_VERSION = python3.8
-VIRTUALENV := build/virtualenv
+VIRTUALENV := .venv
 
 #################################################################################
 # COMMANDS                                                                      #
@@ -12,13 +12,14 @@ VIRTUALENV := build/virtualenv
 # Set the default location for the virtualenv to be stored
 # Create the virtualenv by installing the requirements and test requirements
 
-$(VIRTUALENV)/.installed:
+.PHONY: virtualenv
+virtualenv:
 	@if [ -d $(VIRTUALENV) ]; then rm -rf $(VIRTUALENV); fi
 	@mkdir -p $(VIRTUALENV)
 	virtualenv --python $(PYTHON_VERSION) $(VIRTUALENV)
 	$(VIRTUALENV)/bin/pip3 install -r requirements_dev.txt
 	$(VIRTUALENV)/bin/python setup.py develop --no-deps
-	touch $@
+	${VIRTUALENV}/bin/pre-commit install
 
 .PHONY: update-requirements-txt
 update-requirements-txt: VIRTUALENV := /tmp/update-requirements-virtualenv
@@ -30,11 +31,8 @@ update-requirements-txt:
 	echo "# Created by 'make update-requirements-txt'. DO NOT EDIT!" > requirements.txt
 	$(VIRTUALENV)/bin/pip freeze | grep -v pkg-resources==0.0.0 >> requirements.txt
 
-.PHONY: virtualenv
-virtualenv: $(VIRTUALENV)/.installed
-
 .PHONY: reqs
-reqs: 
+reqs:
 	pip3 install -r requirements_dev.txt
 
 .PHONY: dist
@@ -50,6 +48,5 @@ changelog:
 	@gitchangelog > CHANGELOG.rst
 
 .PHONY: test
-test: 
+test:
 	tox
-
