@@ -2,7 +2,6 @@
 # coding: utf-8
 
 import pytest
-
 from nervaluate import (
     collect_named_entities,
     conll_to_spans,
@@ -210,3 +209,48 @@ def test_find_overlap_end_overlap():
     intersect = find_overlap(pred_set, true_set)
 
     assert intersect
+
+
+def test_list_to_spans():
+
+    before = [
+        ["O", "B-LOC", "I-LOC", "B-LOC", "I-LOC", "O"],
+        ["O", "B-GPE", "I-GPE", "B-GPE", "I-GPE", "O"],
+    ]
+
+    expected = [
+        [
+            {"label": "LOC", "start": 1, "end": 2},
+            {"label": "LOC", "start": 3, "end": 4},
+        ],
+        [
+            {"label": "GPE", "start": 1, "end": 2},
+            {"label": "GPE", "start": 3, "end": 4},
+        ],
+    ]
+
+    result = list_to_spans(before)
+
+    assert result == expected
+
+
+def test_list_to_spans_single_token():
+
+    before = [["B-LOC"]]
+
+    expected = [[{"label": "LOC", "start": 0, "end": 0}]]
+
+    result = list_to_spans(before)
+
+    assert result == expected
+
+
+def test_list_to_spans_single_outside():
+
+    before = [["O"]]
+
+    expected = [[]]
+
+    result = list_to_spans(before)
+
+    assert result == expected
