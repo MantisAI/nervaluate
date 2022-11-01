@@ -6,3 +6,4 @@ tox
 tox-gh-actions
 twine
 wheel
+pre-commit

@@ -15,7 +15,7 @@ The code draws heavily on:
 * Segura-bedmar, I., & Mart, P. (2013). 2013 SemEval-2013 Task 9 Extraction of Drug-Drug Interactions from. Semeval, 2(DDIExtraction), 341–350. [link](https://www.aclweb.org/anthology/S13-2056)
 * https://www.cs.york.ac.uk/semeval-2013/task9/data/uploads/semeval_2013-task-9_1-evaluation-metrics.pdf
 
-## The problem 
+## The problem
 
 ### Token level evaluation for NER is too simplistic
 
@@ -167,6 +167,8 @@ To install the package:
 pip install nervaluate
 ```
 
+### For development
+
 To create a virtual environment for development:
 
 ```
@@ -174,8 +176,9 @@ make virtualenv
 
 # Then to activate the virtualenv:
 
-source /build/virtualenv/bin/activate
+source .venv/bin/activate
 ```
+We use [pre-commit](https://pre-commit.com/) to automatically run code quality checks. This will be automatically installed and configured.
 
 Alternatively you can use your own virtualenv manager and simply `make reqs` to install requirements.
 
