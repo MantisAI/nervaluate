@@ -1,13 +1,7 @@
-#!/usr/bin/env python3
-# coding: utf-8
-
-import pytest
-
 from nervaluate import Evaluator
 
 
 def test_evaluator_simple_case():
-
     true = [
         [{"label": "PER", "start": 2, "end": 4}],
         [
@@ -645,7 +639,6 @@ def test_evaluator_compare_results_and_results_agg_1():
 
 
 def test_evaluator_with_extra_keys_in_pred():
-
     true = [
         [{"label": "PER", "start": 2, "end": 4}],
         [
@@ -724,7 +717,6 @@ def test_evaluator_with_extra_keys_in_pred():
 
 
 def test_evaluator_with_extra_keys_in_true():
-
     true = [
         [{"label": "PER", "start": 2, "end": 4, "token_start": 0, "token_end": 4}],
         [
@@ -803,7 +795,6 @@ def test_evaluator_with_extra_keys_in_true():
 
 
 def test_evaluator_with_extra_keys_in_true():
-
     true = [
         [{"label": "PER", "start": 0, "end": 5, "token_start": 0, "token_end": 25}],
     ]
@@ -874,7 +865,6 @@ def test_evaluator_with_extra_keys_in_true():
 
 
 def test_issue_29():
-
     true = [
         [
             {"label": "PER", "start": 1, "end": 2},

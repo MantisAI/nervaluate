@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-# coding: utf-8
-
-import pytest
-
 from nervaluate import Evaluator
 
 
@@ -49,13 +44,9 @@ def test_loaders_produce_the_same_results():
         [{"label": "MISC", "start": 0, "end": 5}],
     ]
 
-    evaluator_list = Evaluator(
-        true_list, pred_list, tags=["PER", "ORG", "MISC"], loader="list"
-    )
+    evaluator_list = Evaluator(true_list, pred_list, tags=["PER", "ORG", "MISC"], loader="list")
 
-    evaluator_conll = Evaluator(
-        true_conll, pred_conll, tags=["PER", "ORG", "MISC"], loader="conll"
-    )
+    evaluator_conll = Evaluator(true_conll, pred_conll, tags=["PER", "ORG", "MISC"], loader="conll")
 
     evaluator_prod = Evaluator(true_prod, pred_prod, tags=["PER", "ORG", "MISC"])
 
@@ -65,4 +56,3 @@ def test_loaders_produce_the_same_results():
 
     assert evaluator_prod.pred == evaluator_list.pred == evaluator_conll.pred
     assert evaluator_prod.true == evaluator_list.true == evaluator_conll.true
-

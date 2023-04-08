@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-# coding: utf-8
-
-import pytest
-
 from nervaluate import (
     collect_named_entities,
     conll_to_spans,
@@ -13,7 +8,6 @@ from nervaluate import (
 
 
 def test_list_to_spans():
-
     before = [
         ["O", "B-LOC", "I-LOC", "B-LOC", "I-LOC", "O"],
         ["O", "B-GPE", "I-GPE", "B-GPE", "I-GPE", "O"],
@@ -36,7 +30,6 @@ def test_list_to_spans():
 
 
 def test_list_to_spans_1():
-
     before = [
         ["O", "O", "O", "O", "O", "O"],
         ["O", "O", "B-ORG", "I-ORG", "O", "O"],
@@ -55,7 +48,6 @@ def test_list_to_spans_1():
 
 
 def test_conll_to_spans():
-
     before = (
         ",\tO\n"
         "Davos\tB-PER\n"
@@ -85,7 +77,6 @@ def test_conll_to_spans():
 
 
 def test_conll_to_spans_1():
-
     before = (
         "word\tO\nword\tO\nword\tO\nword\tO\nword\tO\nword\tO\n\n"
         "word\tO\nword\tO\nword\tB-ORG\nword\tI-ORG\nword\tO\nword\tO\n\n"
@@ -104,11 +95,8 @@ def test_conll_to_spans_1():
 
 
 def test_split_list():
-
     before = ["aa", "bb", "cc", "", "dd", "ee", "ff"]
-
     expected = [["aa", "bb", "cc"], ["dd", "ee", "ff"]]
-
     out = split_list(before)
 
     assert expected == out
@@ -149,7 +137,6 @@ def test_collect_named_entities_no_entity():
 
 
 def test_find_overlap_no_overlap():
-
     pred_entity = {"label": "LOC", "start": 1, "end": 10}
     true_entity = {"label": "LOC", "start": 11, "end": 20}
 
@@ -165,7 +152,6 @@ def test_find_overlap_no_overlap():
 
 
 def test_find_overlap_total_overlap():
-
     pred_entity = {"label": "LOC", "start": 10, "end": 22}
     true_entity = {"label": "LOC", "start": 11, "end": 20}
 
@@ -181,7 +167,6 @@ def test_find_overlap_total_overlap():
 
 
 def test_find_overlap_start_overlap():
-
     pred_entity = {"label": "LOC", "start": 5, "end": 12}
     true_entity = {"label": "LOC", "start": 11, "end": 20}
 
@@ -197,7 +182,6 @@ def test_find_overlap_start_overlap():
 
 
 def test_find_overlap_end_overlap():
-
     pred_entity = {"label": "LOC", "start": 15, "end": 25}
     true_entity = {"label": "LOC", "start": 11, "end": 20}
 

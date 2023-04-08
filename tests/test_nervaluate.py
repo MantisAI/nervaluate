@@ -1,12 +1,8 @@
-#!/usr/bin/env python3
-# coding: utf-8
-
 from nervaluate import (
     compute_actual_possible,
     compute_metrics,
     compute_precision_recall,
-    compute_precision_recall_wrapper,
-    find_overlap,
+    compute_precision_recall_wrapper
 )
 
 
@@ -29,9 +25,7 @@ def test_compute_metrics_case_1():
         {"label": "LOC", "start": 225, "end": 243},
     ]
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER", "LOC", "MISC"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC", "MISC"])
 
     results = compute_precision_recall_wrapper(results)
 
@@ -90,14 +84,11 @@ def test_compute_metrics_case_1():
 
 
 def test_compute_metrics_agg_scenario_3():
-
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
 
     pred_named_entities = []
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
 
     expected_agg = {
         "PER": {
@@ -159,14 +150,11 @@ def test_compute_metrics_agg_scenario_3():
 
 
 def test_compute_metrics_agg_scenario_2():
-
     true_named_entities = []
 
     pred_named_entities = [{"label": "PER", "start": 59, "end": 69}]
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
 
     expected_agg = {
         "PER": {
@@ -228,14 +216,11 @@ def test_compute_metrics_agg_scenario_2():
 
 
 def test_compute_metrics_agg_scenario_5():
-
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
 
     pred_named_entities = [{"label": "PER", "start": 57, "end": 69}]
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
 
     expected_agg = {
         "PER": {
@@ -297,14 +282,11 @@ def test_compute_metrics_agg_scenario_5():
 
 
 def test_compute_metrics_agg_scenario_4():
-
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
 
     pred_named_entities = [{"label": "LOC", "start": 59, "end": 69}]
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER", "LOC"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC"])
 
     expected_agg = {
         "PER": {
@@ -418,14 +400,11 @@ def test_compute_metrics_agg_scenario_4():
 
 
 def test_compute_metrics_agg_scenario_1():
-
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
 
     pred_named_entities = [{"label": "PER", "start": 59, "end": 69}]
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
 
     expected_agg = {
         "PER": {
@@ -487,14 +466,11 @@ def test_compute_metrics_agg_scenario_1():
 
 
 def test_compute_metrics_agg_scenario_6():
-
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
 
     pred_named_entities = [{"label": "LOC", "start": 54, "end": 69}]
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER", "LOC"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC"])
 
     expected_agg = {
         "PER": {
@@ -608,7 +584,6 @@ def test_compute_metrics_agg_scenario_6():
 
 
 def test_compute_metrics_extra_tags_in_prediction():
-
     true_named_entities = [
         {"label": "PER", "start": 50, "end": 52},
         {"label": "ORG", "start": 59, "end": 69},
@@ -621,9 +596,7 @@ def test_compute_metrics_extra_tags_in_prediction():
         {"label": "MISC", "start": 71, "end": 72},  # Wrong type
     ]
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER", "LOC", "ORG"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC", "ORG"])
 
     expected = {
         "strict": {
@@ -683,7 +656,6 @@ def test_compute_metrics_extra_tags_in_prediction():
 
 
 def test_compute_metrics_extra_tags_in_true():
-
     true_named_entities = [
         {"label": "PER", "start": 50, "end": 52},
         {"label": "ORG", "start": 59, "end": 69},
@@ -696,9 +668,7 @@ def test_compute_metrics_extra_tags_in_true():
         {"label": "ORG", "start": 71, "end": 72},  # Spurious
     ]
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER", "LOC", "ORG"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC", "ORG"])
 
     expected = {
         "strict": {
@@ -758,7 +728,6 @@ def test_compute_metrics_extra_tags_in_true():
 
 
 def test_compute_metrics_no_predictions():
-
     true_named_entities = [
         {"label": "PER", "start": 50, "end": 52},
         {"label": "ORG", "start": 59, "end": 69},
@@ -767,9 +736,7 @@ def test_compute_metrics_no_predictions():
 
     pred_named_entities = []
 
-    results, results_agg = compute_metrics(
-        true_named_entities, pred_named_entities, ["PER", "ORG", "MISC"]
-    )
+    results, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER", "ORG", "MISC"])
 
     expected = {
         "strict": {
@@ -829,7 +796,6 @@ def test_compute_metrics_no_predictions():
 
 
 def test_compute_actual_possible():
-
     results = {
         "correct": 6,
         "incorrect": 3,
@@ -854,7 +820,6 @@ def test_compute_actual_possible():
 
 
 def test_compute_precision_recall():
-
     results = {
         "correct": 6,
         "incorrect": 3,

@@ -1,16 +1,5 @@
-#################################################################################
-# GLOBALS                                                                       #
-#################################################################################
-
 PYTHON_VERSION = python3.8
 VIRTUALENV := .venv
-
-#################################################################################
-# COMMANDS                                                                      #
-#################################################################################
-
-# Set the default location for the virtualenv to be stored
-# Create the virtualenv by installing the requirements and test requirements
 
 .PHONY: virtualenv
 virtualenv:
@@ -38,10 +27,14 @@ reqs:
 .PHONY: dist
 dist:
 	-rm -r dist
-	python setup.py bdist_wheel
+	python -m pip install --upgrade build
+	python -m build
 
 pypi_upload: dist
 	python -m twine upload dist/*
+
+clean:
+	rm -rf dist src/nervaluate.egg-info .tox .coverage coverage.xml
 
 .PHONY: changelog
 changelog:
@@ -50,3 +43,13 @@ changelog:
 .PHONY: test
 test:
 	tox
+
+.PHONY: lint
+lint:
+	black --check -t py38 -l 120 .
+	pylint src --rcfile=pylint.cfg
+	flake8 src
+
+.PHONY: mypy
+mypy:
+	mypy --config setup.cfg src
