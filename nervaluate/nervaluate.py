@@ -4,7 +4,7 @@
 import logging
 from copy import deepcopy
 
-from nervaluate.utils import conll_to_spans, find_overlap, list_to_spans
+from .utils import conll_to_spans, find_overlap, list_to_spans
 
 logging.basicConfig(
     format="%(asctime)s %(name)s %(levelname)s: %(message)s",
