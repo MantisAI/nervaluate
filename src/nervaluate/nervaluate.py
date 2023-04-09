@@ -1,6 +1,6 @@
 import logging
 from copy import deepcopy
-from typing import List
+from typing import List, Dict
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
@@ -12,7 +12,7 @@ logging.basicConfig(
 
 
 class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public-methods
-    def __init__(self, true, pred, tags, loader=None):
+    def __init__(self, true: List[List[dict]], pred: List[List[dict]], tags: List[str], loader=None) -> None:
         self.true = true
         self.pred = pred
         self.tags = tags
@@ -89,7 +89,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         return self.results, self.evaluation_agg_entities_type
 
 
-def collect_named_entities(tokens: List[str]):
+def collect_named_entities(tokens: List[str]) -> List[dict]:
     """
     Creates a list of Entity named-tuples, storing the entity type and the
     start and end offsets of the entity.
@@ -136,7 +136,7 @@ def collect_named_entities(tokens: List[str]):
 
 # flake8: noqa: C901
 def compute_metrics(
-    true_named_entities, pred_named_entities, tags
+    true_named_entities, pred_named_entities, tags: List[str]
 ):  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     """
     Compute metrics on the collected true and predicted named entities
@@ -348,7 +348,7 @@ def compute_metrics(
     return evaluation, evaluation_agg_entities_type
 
 
-def compute_actual_possible(results):
+def compute_actual_possible(results: Dict) -> Dict:
     """
     Takes a result dict that has been output by compute metrics.
     Returns the results' dict with actual, possible populated.
@@ -377,7 +377,7 @@ def compute_actual_possible(results):
     return results
 
 
-def compute_precision_recall(results, partial_or_type=False):
+def compute_precision_recall(results: Dict, partial_or_type: bool = False) -> Dict:
     """
     Takes a result dict that has been output by compute metrics.
     Returns the results' dict with precision and recall populated.
@@ -407,7 +407,7 @@ def compute_precision_recall(results, partial_or_type=False):
     return results
 
 
-def compute_precision_recall_wrapper(results):
+def compute_precision_recall_wrapper(results: Dict) -> Dict:
     """
     Wraps the compute_precision_recall function and runs on a dict of results
     """
@@ -422,9 +422,9 @@ def compute_precision_recall_wrapper(results):
     return results
 
 
-def clean_entities(ent):
+def clean_entities(ent: Dict) -> Dict:
     """
-    Returns just the useufl keys if additional keys are present in the entity
+    Returns just the useful keys if additional keys are present in the entity
     dict.
 
     This may happen if passing a list of spans directly from prodigy, which
