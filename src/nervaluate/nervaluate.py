@@ -1,22 +1,22 @@
 import logging
 from copy import deepcopy
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
-logging.basicConfig(
-    format="%(asctime)s %(name)s %(levelname)s: %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    level="INFO",
-)
-
 
 class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public-methods
-    def __init__(self, true: List[List[dict]], pred: List[List[dict]], tags: List[str], loader=None) -> None:
+    def __init__(
+        self,
+        true: Union[List[List[str]], List[str], List[List[Dict]], str],
+        pred: Union[List[List[str]], List[str], List[List[Dict]], str],
+        tags: List[str],
+        loader: str = "default",
+    ) -> None:
         self.true = true
         self.pred = pred
         self.tags = tags
-        self.list = list
+        # self.list = []
 
         # Setup dict into which metrics will be stored.
         self.metrics_results = {
@@ -52,7 +52,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
     def evaluate(self):
         logging.debug("Imported %s predictions for %s true examples", len(self.pred), len(self.true))
 
-        if self.loader:
+        if self.loader != "default":
             loader = self.loaders[self.loader]
             self.pred = loader(self.pred)
             self.true = loader(self.true)
@@ -284,7 +284,6 @@ def compute_metrics(
                     break
 
             # Scenario II: Entities are spurious (i.e., over-generated).
-
             if not found_overlap:
                 # Overall results
                 evaluation["strict"]["spurious"] += 1

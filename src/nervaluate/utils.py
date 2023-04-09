@@ -1,4 +1,7 @@
-def split_list(token: str, split_chars=None):
+from typing import List, Dict, Optional
+
+
+def split_list(token: List[str], split_chars: Optional[List[str]] = None) -> List[List[str]]:
     if split_chars is None:
         split_chars = [""]
     out = []
@@ -14,13 +17,12 @@ def split_list(token: str, split_chars=None):
     return out
 
 
-def conll_to_spans(doc):
+def conll_to_spans(doc) -> List[List[Dict]]:
     out = []
-    doc = split_list(doc.split("\n"))
+    doc = split_list(doc.split("\n"), split_chars=None)
 
     for example in doc:
         labels = []
-
         for token in example:
             token = token.split("\t")
             label = token[1]
@@ -37,7 +39,7 @@ def list_to_spans(doc):
     return spans
 
 
-def collect_named_entities(tokens: str):
+def collect_named_entities(tokens: str) -> List[Dict]:
     """
     Creates a list of Entity named-tuples, storing the entity type and the
     start and end offsets of the entity.
@@ -81,7 +83,7 @@ def collect_named_entities(tokens: str):
     return named_entities
 
 
-def find_overlap(true_range, pred_range):
+def find_overlap(true_range, pred_range) -> set:
     """Find the overlap between two ranges
 
     Find the overlap between two ranges. Return the overlapping values if
