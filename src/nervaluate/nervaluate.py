@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 
 
-class Evaluator:
+class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public-methods
     def __init__(self, true, pred, tags, loader=None):
         self.true = true
         self.pred = pred
@@ -134,13 +134,21 @@ def collect_named_entities(tokens: List[str]):
     return named_entities
 
 
-def compute_metrics(true_named_entities, pred_named_entities, tags):
+# flake8: noqa: C901
+def compute_metrics(
+    true_named_entities, pred_named_entities, tags
+):  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     """
     Compute metrics on the collected true and predicted named entities
 
-    :true_name_entities: Collected true named entities output by collect_named_entities
-    :pred_name_entities:  Collected predicted named entities output by collect_named_entities
-    :tags: List of tags to be used
+    :true_name_entities:
+        collected true named entities output by collect_named_entities
+
+    :pred_name_entities:
+        collected predicted named entities output by collect_named_entities
+
+    :tags:
+        list of tags to be used
     """
 
     eval_metrics = {
@@ -155,7 +163,6 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
     }
 
     # overall results
-
     evaluation = {
         "strict": deepcopy(eval_metrics),
         "ent_type": deepcopy(eval_metrics),
@@ -308,7 +315,6 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
                     evaluation_agg_entities_type[true]["exact"]["spurious"] += 1
 
     # Scenario III: Entity was missed entirely.
-
     for true in true_named_entities:
         if true in true_which_overlapped_with_pred:
             continue
@@ -327,13 +333,11 @@ def compute_metrics(true_named_entities, pred_named_entities, tags):
 
     # Compute 'possible', 'actual' according to SemEval-2013 Task 9.1 on the
     # overall results, and use these to calculate precision and recall.
-
     for eval_type in evaluation:
         evaluation[eval_type] = compute_actual_possible(evaluation[eval_type])
 
     # Compute 'possible', 'actual', and precision and recall on entity level
     # results. Start by cycling through the accumulated results.
-
     for entity_type, entity_level in evaluation_agg_entities_type.items():
         # Cycle through the evaluation types for each dict containing entity
         # level results.
