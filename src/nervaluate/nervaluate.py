@@ -1,6 +1,6 @@
 import logging
 from copy import deepcopy
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
@@ -49,7 +49,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
         self.loader = loader
 
-    def evaluate(self):
+    def evaluate(self) -> Tuple[Dict, Dict]:
         logging.debug("Imported %s predictions for %s true examples", len(self.pred), len(self.true))
 
         if self.loader != "default":
@@ -136,7 +136,9 @@ def collect_named_entities(tokens: List[str]) -> List[dict]:
 
 # flake8: noqa: C901
 def compute_metrics(
-    true_named_entities, pred_named_entities, tags: List[str]
+    true_named_entities,
+    pred_named_entities,
+    tags: List[str]
 ):  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     """
     Compute metrics on the collected true and predicted named entities
