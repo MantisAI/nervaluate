@@ -1,5 +1,6 @@
 import logging
 from copy import deepcopy
+from typing import List
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
@@ -88,12 +89,12 @@ class Evaluator:
         return self.results, self.evaluation_agg_entities_type
 
 
-def collect_named_entities(tokens):
+def collect_named_entities(tokens: List[str]):
     """
     Creates a list of Entity named-tuples, storing the entity type and the
     start and end offsets of the entity.
 
-    :param tokens: a list of tags
+    :param  tokens: a list of tags
     :return: a list of Entity named-tuples
     """
 

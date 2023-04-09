@@ -2,7 +2,7 @@ from nervaluate import (
     compute_actual_possible,
     compute_metrics,
     compute_precision_recall,
-    compute_precision_recall_wrapper
+    compute_precision_recall_wrapper,
 )
 
 

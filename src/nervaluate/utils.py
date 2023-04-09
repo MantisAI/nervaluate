@@ -1,4 +1,3 @@
-
 def split_list(token: str, split_chars=None):
     if split_chars is None:
         split_chars = [""]
