@@ -135,10 +135,8 @@ def collect_named_entities(tokens: List[str]) -> List[dict]:
 
 
 # flake8: noqa: C901
-def compute_metrics(
-    true_named_entities,
-    pred_named_entities,
-    tags: List[str]
+def compute_metrics(  # type: ignore
+    true_named_entities, pred_named_entities, tags: List[str]
 ):  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     """
     Compute metrics on the collected true and predicted named entities

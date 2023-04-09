@@ -17,15 +17,15 @@ def split_list(token: List[str], split_chars: Optional[List[str]] = None) -> Lis
     return out
 
 
-def conll_to_spans(doc) -> List[List[Dict]]:
+def conll_to_spans(doc: str) -> List[List[Dict]]:
     out = []
-    doc = split_list(doc.split("\n"), split_chars=None)
+    doc_parts = split_list(doc.split("\n"), split_chars=None)
 
-    for example in doc:
+    for example in doc_parts:
         labels = []
         for token in example:
-            token = token.split("\t")
-            label = token[1]
+            token_parts = token.split("\t")
+            label = token_parts[1]
             labels.append(label)
         out.append(labels)
 
@@ -34,7 +34,7 @@ def conll_to_spans(doc) -> List[List[Dict]]:
     return spans
 
 
-def list_to_spans(doc):
+def list_to_spans(doc):  # type: ignore
     spans = [collect_named_entities(tokens) for tokens in doc]
     return spans
 
@@ -76,7 +76,6 @@ def collect_named_entities(tokens: str) -> List[Dict]:
             end_offset = None
 
     # Catches an entity that goes up until the last token
-
     if ent_type is not None and start_offset is not None and end_offset is None:
         named_entities.append({"label": ent_type, "start": start_offset, "end": len(tokens) - 1})
 
