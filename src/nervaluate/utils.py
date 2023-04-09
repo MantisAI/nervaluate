@@ -83,7 +83,7 @@ def collect_named_entities(tokens: str) -> List[Dict]:
     return named_entities
 
 
-def find_overlap(true_range, pred_range) -> set:
+def find_overlap(true_range: range, pred_range: range) -> set:
     """Find the overlap between two ranges
 
     Find the overlap between two ranges. Return the overlapping values if
