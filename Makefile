@@ -47,8 +47,8 @@ test:
 .PHONY: lint
 lint:
 	black --check -t py38 -l 120 .
-	pylint src --rcfile=pylint.cfg
-	flake8 src
+	pylint src tests --rcfile=pylint.cfg
+	flake8 src tests --config=setup.cfg
 
 .PHONY: mypy
 mypy:
