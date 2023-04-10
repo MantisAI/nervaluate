@@ -60,7 +60,7 @@ Based on these three scenarios we have a simple classification evaluation that c
 positives, true positives, false negatives and false positives, and subsequently compute precision, recall and 
 F1-score for each named-entity type.
 
-However this simple schema ignores the possibility of partial matches or other scenarios when the NER system gets 
+However, this simple schema ignores the possibility of partial matches or other scenarios when the NER system gets
 the named-entity surface string correct but the type wrong, and we might also want to evaluate these scenarios 
 again at a full-entity level.
 
@@ -172,7 +172,7 @@ In scenarios IV and VI the entity type of the `true` and `pred` does not match, 
 the true entity, not the predicted one. You can argue that the predicted entity could also be scored as spurious, 
 but according to the definition of `spurius`:
 
-* Spurius (SPU) : system produces a response which doesn’t exist in the golden annotation;
+* Spurius (SPU) : system produces a response which does not exist in the golden annotation;
 
 In this case there exists an annotation, but with a different entity type, so we assume it's only incorrect.
 
