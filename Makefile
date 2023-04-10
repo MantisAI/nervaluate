@@ -40,6 +40,9 @@ clean:
 changelog:
 	@gitchangelog > CHANGELOG.rst
 
+
+## code quality related measures
+
 .PHONY: test
 test:
 	tox
@@ -53,3 +56,6 @@ lint:
 .PHONY: mypy
 mypy:
 	mypy --config setup.cfg src
+
+pre-commit-all:
+	pre-commit run --all-files
