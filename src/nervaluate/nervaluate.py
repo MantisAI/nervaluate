@@ -8,8 +8,8 @@ from .utils import conll_to_spans, find_overlap, list_to_spans
 class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public-methods
     def __init__(
         self,
-        true: Union[List[List[str]], List[str], List[List[Dict]], str],
-        pred: Union[List[List[str]], List[str], List[List[Dict]], str],
+        true: Union[List[List[str]], List[str], List[Dict], str],
+        pred: Union[List[List[str]], List[str], List[Dict], str],
         tags: List[str],
         loader: str = "default",
     ) -> None:
