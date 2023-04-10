@@ -1,9 +1,12 @@
 codecov
+flake8
 gitchangelog
+mypy
+pre-commit
+pylint
 pytest
 pytest-cov
 tox
 tox-gh-actions
 twine
 wheel
-pre-commit

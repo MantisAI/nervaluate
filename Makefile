@@ -7,7 +7,6 @@ virtualenv:
 	@mkdir -p $(VIRTUALENV)
 	virtualenv --python $(PYTHON_VERSION) $(VIRTUALENV)
 	$(VIRTUALENV)/bin/pip3 install -r requirements_dev.txt
-	$(VIRTUALENV)/bin/python setup.py develop --no-deps
 	${VIRTUALENV}/bin/pre-commit install
 
 .PHONY: update-requirements-txt
@@ -41,7 +40,7 @@ changelog:
 	@gitchangelog > CHANGELOG.rst
 
 
-## code quality related measures
+# code quality related measures
 
 .PHONY: test
 test:
@@ -49,9 +48,9 @@ test:
 
 .PHONY: lint
 lint:
-	black --check -t py38 -l 120 .
-	pylint src tests --rcfile=pylint.cfg
-	flake8 src tests --config=setup.cfg
+	black --check -t py38 -l 120 src tests
+	pylint --rcfile=pylint.cfg src tests
+	flake8 --config=setup.cfg src tests
 
 .PHONY: mypy
 mypy:
