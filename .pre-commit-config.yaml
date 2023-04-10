@@ -5,12 +5,14 @@ repos:
   hooks:
   - id: check-yaml
 
+# black
 - repo: https://github.com/psf/black
   rev: 22.3.0
   hooks:
   - id: black
     args: [-t, py38, -l 120]
 
+# pylint
 - repo: local
   hooks:
   - id: pylint
@@ -19,3 +21,18 @@ repos:
     language: system
     types: [ python ]
     args: [src, --rcfile=pylint.cfg]
+
+# mypy
+- repo: local
+  # We do not use pre-commit/mirrors-mypy, as it comes with opinionated defaults (like --ignore-missing-imports)
+  # and is difficult to configure to run with the dependencies correctly installed.
+  hooks:
+    - id: mypy
+      name: mypy
+      entry: "./run-mypy"
+      language: python
+      language_version: python3.8
+      additional_dependencies: ["mypy==0.790"]
+      types: [python]
+      require_serial: true  # use require_serial so that script is only called once per commit
+      verbose: true  # print the number of files as a sanity-check

@@ -34,7 +34,7 @@ pypi_upload: dist
 	python -m twine upload dist/*
 
 clean:
-	rm -rf dist src/nervaluate.egg-info .tox .coverage coverage.xml
+	rm -rf dist src/nervaluate.egg-info .tox .coverage coverage.xml .mypy_cache
 
 .PHONY: changelog
 changelog:
