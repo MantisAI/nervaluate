@@ -32,7 +32,6 @@ repos:
       entry: "./run-mypy"
       language: python
       language_version: python3.8
-      additional_dependencies: ["mypy==0.790"]
       types: [python]
       require_serial: true  # use require_serial so that script is only called once per commit
       verbose: true  # print the number of files as a sanity-check
