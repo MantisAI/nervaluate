@@ -114,6 +114,7 @@ def collect_named_entities(tokens: List[str]) -> List[dict]:
 
         elif ent_type is None:
             ent_type = token_tag[2:]
+
             start_offset = offset
 
         elif ent_type != token_tag[2:] or (ent_type == token_tag[2:] and token_tag[:1] == "B"):
