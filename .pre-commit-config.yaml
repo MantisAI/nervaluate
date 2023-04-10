@@ -12,6 +12,7 @@ repos:
   - id: black
     args: [-t, py38, -l 120]
 
+
 # pylint
 - repo: local
   hooks:
@@ -21,6 +22,7 @@ repos:
     language: system
     types: [ python ]
     args: [src, --rcfile=pylint.cfg]
+
 
 # flake8
 - repo: local
