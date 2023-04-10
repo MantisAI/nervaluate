@@ -9,3 +9,5 @@ build/
 coverage.xml
 dist/
 nervaluate.egg-info/
+**/.DS_Store
+.idea
