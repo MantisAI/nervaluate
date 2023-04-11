@@ -8,6 +8,7 @@ virtualenv:
 	virtualenv --python $(PYTHON_VERSION) $(VIRTUALENV)
 	$(VIRTUALENV)/bin/pip3 install -r requirements_dev.txt
 	${VIRTUALENV}/bin/pre-commit install
+	source ${VIRTUALENV}/bin/activate && pip3 install --editable .
 
 .PHONY: update-requirements-txt
 update-requirements-txt: VIRTUALENV := /tmp/update-requirements-virtualenv
@@ -33,7 +34,7 @@ pypi_upload: dist
 	python -m twine upload dist/*
 
 clean:
-	rm -rf dist src/nervaluate.egg-info .tox .coverage coverage.xml .mypy_cache
+	rm -rf dist src/nervaluate.egg-info .tox .coverage coverage.xml .mypy_cache .venv .pytest_cache
 
 .PHONY: changelog
 changelog:
