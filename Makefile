@@ -1,16 +1,5 @@
-#################################################################################
-# GLOBALS                                                                       #
-#################################################################################
-
 PYTHON_VERSION = python3.8
 VIRTUALENV := .venv
-
-#################################################################################
-# COMMANDS                                                                      #
-#################################################################################
-
-# Set the default location for the virtualenv to be stored
-# Create the virtualenv by installing the requirements and test requirements
 
 .PHONY: virtualenv
 virtualenv:
@@ -18,8 +7,8 @@ virtualenv:
 	@mkdir -p $(VIRTUALENV)
 	virtualenv --python $(PYTHON_VERSION) $(VIRTUALENV)
 	$(VIRTUALENV)/bin/pip3 install -r requirements_dev.txt
-	$(VIRTUALENV)/bin/python setup.py develop --no-deps
 	${VIRTUALENV}/bin/pre-commit install
+	source ${VIRTUALENV}/bin/activate && pip3 install --editable .
 
 .PHONY: update-requirements-txt
 update-requirements-txt: VIRTUALENV := /tmp/update-requirements-virtualenv
@@ -38,15 +27,35 @@ reqs:
 .PHONY: dist
 dist:
 	-rm -r dist
-	python setup.py bdist_wheel
+	python -m pip install --upgrade build
+	python -m build
 
 pypi_upload: dist
 	python -m twine upload dist/*
+
+clean:
+	rm -rf dist src/nervaluate.egg-info .tox .coverage coverage.xml .mypy_cache .venv .pytest_cache
 
 .PHONY: changelog
 changelog:
 	@gitchangelog > CHANGELOG.rst
 
+
+# code quality related measures
+
 .PHONY: test
 test:
 	tox
+
+.PHONY: lint
+lint:
+	black --check -t py38 -l 120 src tests
+	pylint --rcfile=pylint.cfg src tests
+	flake8 --config=setup.cfg src tests
+
+.PHONY: mypy
+mypy:
+	mypy --config setup.cfg src
+
+pre-commit-all:
+	pre-commit run --all-files
