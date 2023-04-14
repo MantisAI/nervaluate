@@ -1,4 +1,3 @@
-codecov
 flake8
 gitchangelog
 mypy
