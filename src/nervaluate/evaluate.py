@@ -1,5 +1,6 @@
 import logging
 from copy import deepcopy
+from enum import Enum
 from typing import List, Dict, Union, Tuple
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
@@ -385,3 +386,51 @@ def clean_entities(ent: Dict) -> Dict:
     typically may include 'token_start' and 'token_end'.
     """
     return {"start": ent["start"], "end": ent["end"], "label": ent["label"]}
+
+
+class EvalScenario(Enum):
+    """Enum for the different scenarios that can be used to evaluate the model output"""
+
+    STRICT = 1
+    EXACT = 2
+    PARTIAL = 3
+    TYPE = 4
+
+
+def summary_report(  # pylint: disable=too-many-locals
+    results_agg_entities_type: Dict, scenario: EvalScenario = EvalScenario.STRICT, digits: int = 2
+) -> None:
+
+    target_names = sorted(results_agg_entities_type.keys())
+    headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
+    rows = [headers]
+
+    for ent_type, results in sorted(results_agg_entities_type.items()):
+        for k, v in results.items():
+            if k != scenario.name.lower():
+                continue
+            rows.append(
+                [
+                    ent_type,
+                    v["correct"],
+                    v["incorrect"],
+                    v["partial"],
+                    v["missed"],
+                    v["spurious"],
+                    v["precision"],
+                    v["recall"],
+                    v["f1"],
+                ]
+            )
+
+    name_width = max(len(cn) for cn in target_names)
+    width = max(name_width, digits)
+    head_fmt = "{:>{width}s} " + " {:>9}" * len(headers)
+    report = head_fmt.format("", *headers, width=width)
+    report += "\n\n"
+    row_fmt = "{:>{width}s} " + " {:>9.{digits}f}" * 7 + " {:>9}\n"
+
+    for row in rows[1:]:
+        report += row_fmt.format(*row, width=width, digits=digits)
+
+    print(report)
