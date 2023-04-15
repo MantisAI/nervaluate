@@ -388,7 +388,7 @@ def clean_entities(ent: Dict) -> Dict:
     return {"start": ent["start"], "end": ent["end"], "label": ent["label"]}
 
 
-class EvalScenario(Enum):
+class EvaluationScenario(Enum):
     """Enum for the different scenarios that can be used to evaluate the model output"""
 
     STRICT = 1
@@ -398,8 +398,8 @@ class EvalScenario(Enum):
 
 
 def summary_report(  # pylint: disable=too-many-locals
-    results_agg_entities_type: Dict, scenario: EvalScenario = EvalScenario.STRICT, digits: int = 2
-) -> None:
+    results_agg_entities_type: Dict, scenario: EvaluationScenario = EvaluationScenario.STRICT, digits: int = 2
+) -> str:
 
     target_names = sorted(results_agg_entities_type.keys())
     headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
@@ -407,6 +407,7 @@ def summary_report(  # pylint: disable=too-many-locals
 
     for ent_type, results in sorted(results_agg_entities_type.items()):
         for k, v in results.items():
+            print(k)
             if k != scenario.name.lower():
                 continue
             rows.append(
@@ -425,12 +426,12 @@ def summary_report(  # pylint: disable=too-many-locals
 
     name_width = max(len(cn) for cn in target_names)
     width = max(name_width, digits)
-    head_fmt = "{:>{width}s} " + " {:>9}" * len(headers)
+    head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
     report = head_fmt.format("", *headers, width=width)
     report += "\n\n"
-    row_fmt = "{:>{width}s} " + " {:>9.{digits}f}" * 7 + " {:>9}\n"
+    row_fmt = "{:>{width}s} " + " {:>11.{digits}f}" * 7 + " {:>9}\n"
 
     for row in rows[1:]:
         report += row_fmt.format(*row, width=width, digits=digits)
 
-    print(report)
+    return report
