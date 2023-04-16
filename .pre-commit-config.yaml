@@ -37,7 +37,6 @@ repos:
       language: python
       language_version: python3.8
       types: [python]
-      exclude: ^tests/
       require_serial: true  # use require_serial so that script is only called once per commit
       verbose: true  # print the number of files as a sanity-check
       args: [--config, setup.cfg]

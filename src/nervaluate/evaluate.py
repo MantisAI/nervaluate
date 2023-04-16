@@ -400,14 +400,12 @@ class EvaluationScenario(Enum):
 def summary_report(  # pylint: disable=too-many-locals
     results_agg_entities_type: Dict, scenario: EvaluationScenario = EvaluationScenario.STRICT, digits: int = 2
 ) -> str:
-
     target_names = sorted(results_agg_entities_type.keys())
     headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
     rows = [headers]
 
     for ent_type, results in sorted(results_agg_entities_type.items()):
         for k, v in results.items():
-            print(k)
             if k != scenario.name.lower():
                 continue
             rows.append(
@@ -429,7 +427,7 @@ def summary_report(  # pylint: disable=too-many-locals
     head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
     report = head_fmt.format("", *headers, width=width)
     report += "\n\n"
-    row_fmt = "{:>{width}s} " + " {:>11.{digits}f}" * 7 + " {:>9}\n"
+    row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
 
     for row in rows[1:]:
         report += row_fmt.format(*row, width=width, digits=digits)
