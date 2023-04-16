@@ -2,7 +2,7 @@ import nltk
 import sklearn_crfsuite
 
 from sklearn.metrics import classification_report
-from nervaluate import collect_named_entities
+from nervaluate import collect_named_entities, summary_report_ent, summary_report_overall
 from nervaluate import Evaluator
 
 
@@ -67,6 +67,7 @@ def sent2tokens(sent):
 
 
 def main():
+    print("Loading CoNLL 2002 NER Spanish data")
     nltk.corpus.conll2002.fileids()
     train_sents = list(nltk.corpus.conll2002.iob_sents("esp.train"))
     test_sents = list(nltk.corpus.conll2002.iob_sents("esp.testb"))
@@ -77,6 +78,7 @@ def main():
     x_test = [sent2features(s) for s in test_sents]
     y_test = [sent2labels(s) for s in test_sents]
 
+    print("Train a CRF on the CoNLL 2002 NER Spanish data")
     crf = sklearn_crfsuite.CRF(algorithm="lbfgs", c1=0.1, c2=0.1, max_iterations=10, all_possible_transitions=True)
     try:
         crf.fit(x_train, y_train)
@@ -100,6 +102,18 @@ def main():
     test_collected = [collect_named_entities(msg) for msg in y_test]
 
     evaluator = Evaluator(test_collected, pred_collected, ["LOC", "MISC", "PER", "ORG"])
+    results, results_agg = evaluator.evaluate()
+
+    print("\n\nOverall")
+    print(summary_report_overall(results))
+    print("\n\n'Strict'")
+    print(summary_report_ent(results_agg, scenario="strict"))
+    print("\n\n'Ent_Type'")
+    print(summary_report_ent(results_agg, scenario="ent_type"))
+    print("\n\n'Partial'")
+    print(summary_report_ent(results_agg, scenario="partial"))
+    print("\n\n'Exact'")
+    print(summary_report_ent(results_agg, scenario="exact"))
 
 
 if __name__ == "__main__":

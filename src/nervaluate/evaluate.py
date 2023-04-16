@@ -1,6 +1,5 @@
 import logging
 from copy import deepcopy
-from enum import Enum
 from typing import List, Dict, Union, Tuple
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
@@ -388,25 +387,20 @@ def clean_entities(ent: Dict) -> Dict:
     return {"start": ent["start"], "end": ent["end"], "label": ent["label"]}
 
 
-class EvaluationScenario(Enum):
-    """Enum for the different scenarios that can be used to evaluate the model output"""
-
-    STRICT = 1
-    EXACT = 2
-    PARTIAL = 3
-    TYPE = 4
-
-
-def summary_report(  # pylint: disable=too-many-locals
-    results_agg_entities_type: Dict, scenario: EvaluationScenario = EvaluationScenario.STRICT, digits: int = 2
+def summary_report_ent(  # pylint: disable=too-many-locals
+    results_agg_entities_type: Dict, scenario: str = "strict", digits: int = 2
 ) -> str:
+
+    if scenario not in {"strict", "ent_type", "partial", "exact"}:
+        raise Exception("Invalid scenario: must be one of 'strict', 'ent_type', 'partial', 'exact'")
+
     target_names = sorted(results_agg_entities_type.keys())
     headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
     rows = [headers]
 
     for ent_type, results in sorted(results_agg_entities_type.items()):
         for k, v in results.items():
-            if k != scenario.name.lower():
+            if k != scenario:
                 continue
             rows.append(
                 [
@@ -422,6 +416,39 @@ def summary_report(  # pylint: disable=too-many-locals
                 ]
             )
 
+    name_width = max(len(cn) for cn in target_names)
+    width = max(name_width, digits)
+    head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
+    report = head_fmt.format("", *headers, width=width)
+    report += "\n\n"
+    row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
+
+    for row in rows[1:]:
+        report += row_fmt.format(*row, width=width, digits=digits)
+
+    return report
+
+
+def summary_report_overall(results: Dict, digits: int = 2) -> str:
+    headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
+    rows = [headers]
+
+    for k, v in results.items():
+        rows.append(
+            [
+                k,
+                v["correct"],
+                v["incorrect"],
+                v["partial"],
+                v["missed"],
+                v["spurious"],
+                v["precision"],
+                v["recall"],
+                v["f1"],
+            ]
+        )
+
+    target_names = sorted(results.keys())
     name_width = max(len(cn) for cn in target_names)
     width = max(name_width, digits)
     head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
