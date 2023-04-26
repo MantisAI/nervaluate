@@ -89,51 +89,6 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         return self.results, self.evaluation_agg_entities_type
 
 
-def collect_named_entities(tokens: List[str]) -> List[dict]:
-    """
-    Creates a list of Entity named-tuples, storing the entity type and the
-    start and end offsets of the entity.
-
-    :param  tokens: a list of tags
-    :return: a list of Entity named-tuples
-    """
-
-    named_entities = []
-    start_offset = None
-    end_offset = None
-    ent_type = None
-
-    for offset, token_tag in enumerate(tokens):
-        if token_tag == "O":
-            if ent_type is not None and start_offset is not None:
-                end_offset = offset - 1
-                named_entities.append({"label": ent_type, "start": start_offset, "end": end_offset})
-                start_offset = None
-                end_offset = None
-                ent_type = None
-
-        elif ent_type is None:
-            ent_type = token_tag[2:]
-            start_offset = offset
-
-        elif ent_type != token_tag[2:] or (ent_type == token_tag[2:] and token_tag[:1] == "B"):
-            end_offset = offset - 1
-            named_entities.append({"label": ent_type, "start": start_offset, "end": end_offset})
-
-            # start of a new entity
-            ent_type = token_tag[2:]
-            start_offset = offset
-            end_offset = None
-
-    # catches an entity that goes up until the last token
-    if ent_type and start_offset is not None and end_offset is None:
-        # including entities stretching from the first (start_offset = 0) to the last token in a segment
-        # requires an explicit 'start_offset is not None' as 'start_offset = 0' evaluates mistakenly to False
-        named_entities.append({"label": ent_type, "start": start_offset, "end": len(tokens) - 1})
-
-    return named_entities
-
-
 # flake8: noqa: C901
 def compute_metrics(  # type: ignore
     true_named_entities, pred_named_entities, tags: List[str]
@@ -430,3 +385,78 @@ def clean_entities(ent: Dict) -> Dict:
     typically may include 'token_start' and 'token_end'.
     """
     return {"start": ent["start"], "end": ent["end"], "label": ent["label"]}
+
+
+def summary_report_ent(  # pylint: disable=too-many-locals
+    results_agg_entities_type: Dict, scenario: str = "strict", digits: int = 2
+) -> str:
+
+    if scenario not in {"strict", "ent_type", "partial", "exact"}:
+        raise Exception("Invalid scenario: must be one of 'strict', 'ent_type', 'partial', 'exact'")
+
+    target_names = sorted(results_agg_entities_type.keys())
+    headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
+    rows = [headers]
+
+    for ent_type, results in sorted(results_agg_entities_type.items()):
+        for k, v in results.items():
+            if k != scenario:
+                continue
+            rows.append(
+                [
+                    ent_type,
+                    v["correct"],
+                    v["incorrect"],
+                    v["partial"],
+                    v["missed"],
+                    v["spurious"],
+                    v["precision"],
+                    v["recall"],
+                    v["f1"],
+                ]
+            )
+
+    name_width = max(len(cn) for cn in target_names)
+    width = max(name_width, digits)
+    head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
+    report = head_fmt.format("", *headers, width=width)
+    report += "\n\n"
+    row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
+
+    for row in rows[1:]:
+        report += row_fmt.format(*row, width=width, digits=digits)
+
+    return report
+
+
+def summary_report_overall(results: Dict, digits: int = 2) -> str:
+    headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
+    rows = [headers]
+
+    for k, v in results.items():
+        rows.append(
+            [
+                k,
+                v["correct"],
+                v["incorrect"],
+                v["partial"],
+                v["missed"],
+                v["spurious"],
+                v["precision"],
+                v["recall"],
+                v["f1"],
+            ]
+        )
+
+    target_names = sorted(results.keys())
+    name_width = max(len(cn) for cn in target_names)
+    width = max(name_width, digits)
+    head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
+    report = head_fmt.format("", *headers, width=width)
+    report += "\n\n"
+    row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
+
+    for row in rows[1:]:
+        report += row_fmt.format(*row, width=width, digits=digits)
+
+    return report

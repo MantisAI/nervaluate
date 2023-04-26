@@ -33,12 +33,18 @@ dist:
 pypi_upload: dist
 	python -m twine upload dist/*
 
-clean:
-	rm -rf dist src/nervaluate.egg-info .tox .coverage coverage.xml .mypy_cache .venv .pytest_cache
-
 .PHONY: changelog
 changelog:
 	@gitchangelog > CHANGELOG.rst
+
+
+# cleaning stuff
+
+clean:
+	rm -rf dist src/nervaluate.egg-info .tox .coverage coverage.xml .mypy_cache .pytest_cache
+
+clean_venv:
+	rm -rf .venv
 
 
 # code quality related measures

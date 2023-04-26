@@ -39,7 +39,7 @@ def list_to_spans(doc):  # type: ignore
     return spans
 
 
-def collect_named_entities(tokens: str) -> List[Dict]:
+def collect_named_entities(tokens: List[str]) -> List[Dict]:
     """
     Creates a list of Entity named-tuples, storing the entity type and the
     start and end offsets of the entity.
