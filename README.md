@@ -433,3 +433,70 @@ The new function can then be added to the list of loaders in `nervaluate/nervalu
 with the `loader` argument when instantiating the `Evaluator` class.
 
 A list of formats we intend to include is included in https://github.com/ivyleavedtoadflax/nervaluate/issues/3.
+
+
+## Contributing to the nervaluate package
+
+Improvements, adding new features and bug fixes are welcome. If you wish to participate in the development of nervaluate 
+please read the following guidelines.
+
+## The contribution process at a glance
+
+1. Preparing the development environment
+2. Code away!
+3. Continuous Integration
+4. Submit your changes by opening a pull request
+
+Small fixes and additions can be submitted directly as pull requests, but larger changes should be discussed in 
+an issue first. You can expect a reply within a few days, but please be patient if it takes a bit longer. 
+
+
+## Preparing the development environment
+
+Make sure you have Python3.9 installed on your system
+
+macOs
+```sh
+brew install python@3.9
+python3.9 -m pip install --user --upgrade pip
+python3.9 -m pip install virtualenv
+```
+
+Clone the repository and prepare the development environment:
+
+```sh
+git clone git@github.com:MantisAI/nervaluate.git
+cd nervaluate
+python3.9 -m virtualenv venv
+source venv/bin/activate
+pip install -r requirements_dev.txt
+pip install -e .
+```
+
+
+## Continuous Integration
+
+BREDS runs a continuous integration (CI) on all pull requests. This means that if you open a pull request (PR), a full 
+test suite is run on your PR: 
+
+- The code is formatted using `black` and `isort` 
+- Unused imports are auto-removed using `pycln`
+- Linting is done using `pyling` and `flake8`
+- Type checking is done using `mypy`
+- Tests are run using `pytest`
+
+Nevertheless, if you prefer to run the tests & formatting locally, it's possible too. 
+
+```sh
+make all
+```
+
+## Opening a Pull Request
+
+Every PR should be accompanied by short description of the changes, including:
+- Impact and  motivation for the changes
+- Any open issues that are closed by this PR
+
+---
+
+Give a ⭐️ if this project helped you!

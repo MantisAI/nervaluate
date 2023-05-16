@@ -390,7 +390,6 @@ def clean_entities(ent: Dict) -> Dict:
 def summary_report_ent(  # pylint: disable=too-many-locals
     results_agg_entities_type: Dict, scenario: str = "strict", digits: int = 2
 ) -> str:
-
     if scenario not in {"strict", "ent_type", "partial", "exact"}:
         raise Exception("Invalid scenario: must be one of 'strict', 'ent_type', 'partial', 'exact'")
 
