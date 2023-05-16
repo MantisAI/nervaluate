@@ -1,8 +1,9 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+
+[project]
 name = "nervaluate"
 version = "0.2.0"
 authors = [
@@ -12,6 +13,8 @@ authors = [
 description = "NER evaluation considering partial match scoring"
 readme = "README.md"
 requires-python = ">=3.8"
+keywords = ["named-entity-recognition", "ner", "evaluation-metrics", "partial-match-scoring", "nlp"]
+license = {text = "MIT License"}
 classifiers=[
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent"
