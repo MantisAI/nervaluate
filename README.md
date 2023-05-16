@@ -190,33 +190,8 @@ In this case there exists an annotation, but with a different entity type, so we
 
 ## Installation
 
-To install the package:
-
 ```
 pip install nervaluate
-```
-
-### For development
-
-To create a virtual environment for development:
-
-```
-make virtualenv
-
-# Then to activate the virtualenv:
-
-source .venv/bin/activate
-```
-We use [pre-commit](https://pre-commit.com/) to automatically run code quality checks. This will be automatically installed and configured.
-
-Alternatively you can use your own virtualenv manager and simply `make reqs` to install requirements.
-
-To run tests:
-
-```
-# Will run tox
-
-make test
 ```
 
 ## Example:

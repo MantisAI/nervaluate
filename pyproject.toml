@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "nervaluate"
-version = "0.1.9"
+version = "0.2.0"
 authors = [
     { name="David S. Batista", email="dsbatista@gmail.com" },
     { name="Matthew Upson", email="matthew.a.upson@gmail.com" }
