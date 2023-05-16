@@ -491,8 +491,7 @@ pip install -e .
 BREDS runs a continuous integration (CI) on all pull requests. This means that if you open a pull request (PR), a full 
 test suite is run on your PR: 
 
-- The code is formatted using `black` and `isort` 
-- Unused imports are auto-removed using `pycln`
+- The code is formatted using `black`
 - Linting is done using `pyling` and `flake8`
 - Type checking is done using `mypy`
 - Tests are run using `pytest`
