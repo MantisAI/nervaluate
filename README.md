@@ -1,5 +1,17 @@
-[![Build Status](https://travis-ci.org/ivyleavedtoadflax/nervaluate.svg?branch=master)](https://travis-ci.org/ivyleavedtoadflax/nervaluate) [![codecov](https://codecov.io/gh/ivyleavedtoadflax/nervaluate/branch/master/graph/badge.svg)](https://codecov.io/gh/ivyleavedtoadflax/nervaluate)
+[![python](https://img.shields.io/badge/Python-3.9-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+&nbsp;
+![example event parameter](https://github.com/davidsbatista/BREDS/actions/workflows/code_checks.yml/badge.svg?event=pull_request)
+&nbsp;
+![code coverage](https://raw.githubusercontent.com/MantisAI/nervaluate/coverage-badge/coverage.svg?raw=true)
+&nbsp;
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+&nbsp;
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+&nbsp;
 ![GitHub](https://img.shields.io/github/license/ivyleavedtoadflax/nervaluate)
+&nbsp;
+[![Pull Requests Welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen.svg)](https://github.com/davidsbatista/BREDS/blob/main/CONTRIBUTING.md)
+&nbsp;
 ![PyPI](https://img.shields.io/pypi/v/nervaluate)
 
 # nervaluate
