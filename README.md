@@ -10,7 +10,7 @@
 &nbsp;
 ![GitHub](https://img.shields.io/github/license/ivyleavedtoadflax/nervaluate)
 &nbsp;
-[![Pull Requests Welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen.svg)](https://github.com/davidsbatista/BREDS/blob/main/CONTRIBUTING.md)
+[![Pull Requests Welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen.svg)]
 &nbsp;
 ![PyPI](https://img.shields.io/pypi/v/nervaluate)
 
