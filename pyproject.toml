@@ -7,8 +7,8 @@ build-backend = "setuptools.build_meta"
 name = "nervaluate"
 version = "0.2.0"
 authors = [
-    { name="David S. Batista", email="dsbatista@gmail.com" },
-    { name="Matthew Upson", email="matthew.a.upson@gmail.com" }
+    { name="David S. Batista"},
+    { name="Matthew Upson"}
 ]
 description = "NER evaluation considering partial match scoring"
 readme = "README.md"
