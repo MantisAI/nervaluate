@@ -444,9 +444,9 @@ Make sure you have Python3.9 installed on your system
 
 macOs
 ```sh
-brew install python@3.9
-python3.9 -m pip install --user --upgrade pip
-python3.9 -m pip install virtualenv
+brew install python@3.8
+python3.8 -m pip install --user --upgrade pip
+python3.8 -m pip install virtualenv
 ```
 
 Clone the repository and prepare the development environment:
@@ -463,8 +463,8 @@ pip install -e .
 
 ## Continuous Integration
 
-BREDS runs a continuous integration (CI) on all pull requests. This means that if you open a pull request (PR), a full 
-test suite is run on your PR: 
+nervaluate runs a continuous integration (CI) on all pull requests. This means that if you open a pull request (PR), 
+a full  test suite is run on your PR: 
 
 - The code is formatted using `black`
 - Linting is done using `pyling` and `flake8`
