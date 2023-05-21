@@ -440,7 +440,7 @@ an issue first. You can expect a reply within a few days, but please be patient 
 
 ## Preparing the development environment
 
-Make sure you have Python3.9 installed on your system
+Make sure you have Python3.8 installed on your system
 
 macOs
 ```sh
@@ -454,7 +454,7 @@ Clone the repository and prepare the development environment:
 ```sh
 git clone git@github.com:MantisAI/nervaluate.git
 cd nervaluate
-python3.9 -m virtualenv venv
+python3.8 -m virtualenv venv
 source venv/bin/activate
 pip install -r requirements_dev.txt
 pip install -e .
