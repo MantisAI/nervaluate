@@ -8,6 +8,6 @@ authors:
   given-names: "Matthew Antony"
   orcid: "https://orcid.org/0000-0002-1040-8048"
 title: "nervaluate"
-version: 0.1.8
+version: 0.2.0
 date-released: 2020-10-17
 url: "https://github.com/mantisnlp/nervaluate"

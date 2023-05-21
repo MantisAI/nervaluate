@@ -198,7 +198,7 @@ Other
 - Use find_overlap to find all overlap cases. [Matthew Upson]
 
   Adds the find_overlap function which captures the three possible overlap
-  scenarios (Total, Start, and End). This is examplained in graph below.
+  scenarios (Total, Start, and End). This is explained in graph below.
 
   Character Offset:   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
   True:               |   |   |   |LOC|LOC|LOC|LOC|LOC|   |   |

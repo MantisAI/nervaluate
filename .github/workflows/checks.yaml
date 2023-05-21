@@ -1,0 +1,44 @@
+name: CI Code Checks
+on: [pull_request]
+jobs:
+  build:
+    name: code checks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements_dev.txt
+
+    - name: Checking formatting and analysing the code with pylint and flake8
+      run: make lint
+
+    - name: Running tests
+      run: make test
+
+    - name: Creating coverage folder
+      run: |
+        mkdir -p coverage
+
+    - name: Coverage Badge
+      uses: tj-actions/coverage-badge-py@v1.8
+      with:
+        output: coverage/coverage.svg
+
+    - name: Publish coverage report to coverage-badge branch
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: coverage-badge
+        folder: coverage
+
+    - name: Type checking with mypy
+      run: mypy --config setup.cfg src

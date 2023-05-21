@@ -1,5 +1,17 @@
-[![Build Status](https://travis-ci.org/ivyleavedtoadflax/nervaluate.svg?branch=master)](https://travis-ci.org/ivyleavedtoadflax/nervaluate) [![codecov](https://codecov.io/gh/ivyleavedtoadflax/nervaluate/branch/master/graph/badge.svg)](https://codecov.io/gh/ivyleavedtoadflax/nervaluate)
+[![python](https://img.shields.io/badge/Python-3.9-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+&nbsp;
+![example event parameter](https://github.com/davidsbatista/BREDS/actions/workflows/code_checks.yml/badge.svg?event=pull_request)
+&nbsp;
+![code coverage](https://raw.githubusercontent.com/MantisAI/nervaluate/coverage-badge/coverage.svg?raw=true)
+&nbsp;
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+&nbsp;
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+&nbsp;
 ![GitHub](https://img.shields.io/github/license/ivyleavedtoadflax/nervaluate)
+&nbsp;
+[![Pull Requests Welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen.svg)]
+&nbsp;
 ![PyPI](https://img.shields.io/pypi/v/nervaluate)
 
 # nervaluate
@@ -178,33 +190,8 @@ In this case there exists an annotation, but with a different entity type, so we
 
 ## Installation
 
-To install the package:
-
 ```
 pip install nervaluate
-```
-
-### For development
-
-To create a virtual environment for development:
-
-```
-make virtualenv
-
-# Then to activate the virtualenv:
-
-source .venv/bin/activate
-```
-We use [pre-commit](https://pre-commit.com/) to automatically run code quality checks. This will be automatically installed and configured.
-
-Alternatively you can use your own virtualenv manager and simply `make reqs` to install requirements.
-
-To run tests:
-
-```
-# Will run tox
-
-make test
 ```
 
 ## Example:
@@ -433,3 +420,69 @@ The new function can then be added to the list of loaders in `nervaluate/nervalu
 with the `loader` argument when instantiating the `Evaluator` class.
 
 A list of formats we intend to include is included in https://github.com/ivyleavedtoadflax/nervaluate/issues/3.
+
+
+## Contributing to the nervaluate package
+
+Improvements, adding new features and bug fixes are welcome. If you wish to participate in the development of nervaluate 
+please read the following guidelines.
+
+## The contribution process at a glance
+
+1. Preparing the development environment
+2. Code away!
+3. Continuous Integration
+4. Submit your changes by opening a pull request
+
+Small fixes and additions can be submitted directly as pull requests, but larger changes should be discussed in 
+an issue first. You can expect a reply within a few days, but please be patient if it takes a bit longer. 
+
+
+## Preparing the development environment
+
+Make sure you have Python3.8 installed on your system
+
+macOs
+```sh
+brew install python@3.8
+python3.8 -m pip install --user --upgrade pip
+python3.8 -m pip install virtualenv
+```
+
+Clone the repository and prepare the development environment:
+
+```sh
+git clone git@github.com:MantisAI/nervaluate.git
+cd nervaluate
+python3.8 -m virtualenv venv
+source venv/bin/activate
+pip install -r requirements_dev.txt
+pip install -e .
+```
+
+
+## Continuous Integration
+
+nervaluate runs a continuous integration (CI) on all pull requests. This means that if you open a pull request (PR), 
+a full  test suite is run on your PR: 
+
+- The code is formatted using `black`
+- Linting is done using `pyling` and `flake8`
+- Type checking is done using `mypy`
+- Tests are run using `pytest`
+
+Nevertheless, if you prefer to run the tests & formatting locally, it's possible too. 
+
+```sh
+make all
+```
+
+## Opening a Pull Request
+
+Every PR should be accompanied by short description of the changes, including:
+- Impact and  motivation for the changes
+- Any open issues that are closed by this PR
+
+---
+
+Give a ⭐️ if this project helped you!

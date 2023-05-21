@@ -1,17 +1,20 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
+
 
 [project]
 name = "nervaluate"
-version = "0.1.9"
+version = "0.2.0"
 authors = [
-    { name="David S. Batista", email="dsbatista@gmail.com" },
-    { name="Matthew Upson", email="matthew.a.upson@gmail.com" }
+    { name="David S. Batista"},
+    { name="Matthew Upson"}
 ]
 description = "NER evaluation considering partial match scoring"
 readme = "README.md"
 requires-python = ">=3.8"
+keywords = ["named-entity-recognition", "ner", "evaluation-metrics", "partial-match-scoring", "nlp"]
+license = {text = "MIT License"}
 classifiers=[
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent"
