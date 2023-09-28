@@ -816,3 +816,74 @@ def test_compute_precision_recall():
     out = compute_precision_recall(results)
 
     assert out == expected
+
+
+def test_compute_metrics_one_pred_two_true():
+    true_named_entities_1 = [
+        {"start": 0, "end": 12, "label": "A"},
+        {"start": 14, "end": 17, "label": "B"},
+    ]
+    true_named_entities_2 = [
+        {"start": 14, "end": 17, "label": "B"},
+        {"start": 0, "end": 12, "label": "A"},
+    ]
+    pred_named_entities = [
+        {"start": 0, "end": 17, "label": "A"},
+    ]
+
+    results1, _ = compute_metrics(true_named_entities_1, pred_named_entities, ["A", "B"])
+    results2, _ = compute_metrics(true_named_entities_2, pred_named_entities, ["A", "B"])
+
+    expected = {
+        'ent_type': {
+            'correct': 1,
+            'incorrect': 1,
+            'partial': 0,
+            'missed': 0,
+            'spurious': 0,
+            'possible': 2,
+            'actual': 2,
+            'precision': 0,
+            'recall': 0,
+            'f1': 0
+        },
+        'partial': {
+            'correct': 0,
+            'incorrect': 0,
+            'partial': 2,
+            'missed': 0,
+            'spurious': 0,
+            'possible': 2,
+            'actual': 2,
+            'precision': 0,
+            'recall': 0,
+            'f1': 0
+        },
+        'strict': {
+            'correct': 0,
+            'incorrect': 2,
+            'partial': 0,
+            'missed': 0,
+            'spurious': 0,
+            'possible': 2,
+            'actual': 2,
+            'precision': 0,
+            'recall': 0,
+            'f1': 0
+        },
+        'exact': {
+            'correct': 0,
+            'incorrect': 2,
+            'partial': 0,
+            'missed': 0,
+            'spurious': 0,
+            'possible': 2,
+            'actual': 2,
+            'precision': 0,
+            'recall': 0,
+            'f1': 0
+        }
+    }
+
+    assert results1 == expected
+    assert results2 == expected
