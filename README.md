@@ -118,7 +118,7 @@ We can use the following five metrics to consider difference categories of error
 |Incorrect (INC)|the output of a system and the golden annotation don’t match|
 |Partial (PAR)|system and the golden annotation are somewhat “similar” but not the same|
 |Missing (MIS)|a golden annotation is not captured by a system|
-|Spurius (SPU)|system produces a response which doesn’t exit in the golden annotation|
+|Spurious (SPU)|system produces a response which doesn’t exit in the golden annotation|
 
 These five metrics can be measured in four different ways:
 
@@ -172,7 +172,7 @@ __Putting all together:__
 |Incorrect|2|0|2|3|
 |Partial|0|2|0|0|
 |Missed|1|1|1|1|
-|Spurius|1|1|1|1|
+|Spurious|1|1|1|1|
 |Precision|0.5|0.66|0.5|0.33|
 |Recall|0.5|0.66|0.5|0.33|
 |F1|0.5|0.66|0.5|0.33|
@@ -182,9 +182,9 @@ __Putting all together:__
 
 In scenarios IV and VI the entity type of the `true` and `pred` does not match, in both cases we only scored against 
 the true entity, not the predicted one. You can argue that the predicted entity could also be scored as spurious, 
-but according to the definition of `spurius`:
+but according to the definition of `spurious`:
 
-* Spurius (SPU) : system produces a response which does not exist in the golden annotation;
+* Spurious (SPU) : system produces a response which does not exist in the golden annotation;
 
 In this case there exists an annotation, but with a different entity type, so we assume it's only incorrect.
 

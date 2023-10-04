@@ -1,5 +1,7 @@
 name: CI Code Checks
 on: [pull_request]
+permissions:
+  contents: write
 jobs:
   build:
     name: code checks
