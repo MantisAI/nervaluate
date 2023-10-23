@@ -144,6 +144,10 @@ def compute_metrics(  # type: ignore
     true_named_entities = [clean_entities(ent) for ent in true_named_entities if ent["label"] in tags]
     pred_named_entities = [clean_entities(ent) for ent in pred_named_entities if ent["label"] in tags]
 
+    # Sort the lists to improve the speed of the overlap comparison
+    true_named_entities.sort(key=lambda x: x["start"])
+    pred_named_entities.sort(key=lambda x: x["end"])
+
     # go through each predicted named-entity
     for pred in pred_named_entities:
         found_overlap = False
@@ -169,6 +173,10 @@ def compute_metrics(  # type: ignore
         else:
             # check for overlaps with any of the true entities
             for true in true_named_entities:
+                # Only enter this block if an overlap is possible
+                if pred["end"] < true["start"]:
+                    break
+
                 # overlapping needs to take into account last token as well
                 pred_range = range(pred["start"], pred["end"] + 1)
                 true_range = range(true["start"], true["end"] + 1)
@@ -214,29 +222,27 @@ def compute_metrics(  # type: ignore
 
                         found_overlap = True
 
-                        break
+                    else:
+                        # Scenario VI: Entities overlap, but the entity type is
+                        # different.
 
-                    # Scenario VI: Entities overlap, but the entity type is
-                    # different.
+                        # overall results
+                        evaluation["strict"]["incorrect"] += 1
+                        evaluation["ent_type"]["incorrect"] += 1
+                        evaluation["partial"]["partial"] += 1
+                        evaluation["exact"]["incorrect"] += 1
 
-                    # overall results
-                    evaluation["strict"]["incorrect"] += 1
-                    evaluation["ent_type"]["incorrect"] += 1
-                    evaluation["partial"]["partial"] += 1
-                    evaluation["exact"]["incorrect"] += 1
+                        # aggregated by entity type results
+                        # Results against the true entity
 
-                    # aggregated by entity type results
-                    # Results against the true entity
+                        evaluation_agg_entities_type[true["label"]]["strict"]["incorrect"] += 1
+                        evaluation_agg_entities_type[true["label"]]["partial"]["partial"] += 1
+                        evaluation_agg_entities_type[true["label"]]["ent_type"]["incorrect"] += 1
+                        evaluation_agg_entities_type[true["label"]]["exact"]["incorrect"] += 1
 
-                    evaluation_agg_entities_type[true["label"]]["strict"]["incorrect"] += 1
-                    evaluation_agg_entities_type[true["label"]]["partial"]["partial"] += 1
-                    evaluation_agg_entities_type[true["label"]]["ent_type"]["incorrect"] += 1
-                    evaluation_agg_entities_type[true["label"]]["exact"]["incorrect"] += 1
-
-                    # Results against the predicted entity
-                    # evaluation_agg_entities_type[pred['label']]['strict']['spurious'] += 1
-                    found_overlap = True
-                    break
+                        # Results against the predicted entity
+                        # evaluation_agg_entities_type[pred['label']]['strict']['spurious'] += 1
+                        found_overlap = True
 
             # Scenario II: Entities are spurious (i.e., over-generated).
             if not found_overlap:
