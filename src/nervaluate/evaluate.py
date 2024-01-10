@@ -22,9 +22,13 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         self.metrics_results = {
             "correct": 0,
             "incorrect": 0,
+            "incorrect_indices": [],
             "partial": 0,
+            "partial_indices": [],
             "missed": 0,
+            "missed_indices": [],
             "spurious": 0,
+            "spurious_indices": [],
             "possible": 0,
             "actual": 0,
             "precision": 0,
@@ -60,9 +64,9 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         if len(self.true) != len(self.pred):
             raise ValueError("Number of predicted documents does not equal true")
 
-        for true_ents, pred_ents in zip(self.true, self.pred):
+        for index, (true_ents, pred_ents) in enumerate(zip(self.true, self.pred)):
             # Compute results for one message
-            tmp_results, tmp_agg_results = compute_metrics(true_ents, pred_ents, self.tags)
+            tmp_results, tmp_agg_results = compute_metrics(true_ents, pred_ents, self.tags, index)
 
             # Cycle through each result and accumulate
             # TODO: Combine these loops below:
@@ -91,7 +95,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
 # flake8: noqa: C901
 def compute_metrics(  # type: ignore
-    true_named_entities, pred_named_entities, tags: List[str]
+    true_named_entities, pred_named_entities, tags: List[str], index: int = 0
 ):  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     """
     Compute metrics on the collected true and predicted named entities
@@ -109,9 +113,13 @@ def compute_metrics(  # type: ignore
     eval_metrics = {
         "correct": 0,
         "incorrect": 0,
+        "incorrect_indices": [],
         "partial": 0,
+        "partial_indices": [],
         "missed": 0,
+        "missed_indices": [],
         "spurious": 0,
+        "spurious_indices": [],
         "precision": 0,
         "recall": 0,
         "f1": 0,
@@ -185,13 +193,17 @@ def compute_metrics(  # type: ignore
                 if true["start"] == pred["start"] and pred["end"] == true["end"] and true["label"] != pred["label"]:
                     # overall results
                     evaluation["strict"]["incorrect"] += 1
+                    evaluation["strict"]["incorrect_indices"].append(index)
                     evaluation["ent_type"]["incorrect"] += 1
+                    evaluation["ent_type"]["incorrect_indices"].append(index)
                     evaluation["partial"]["correct"] += 1
                     evaluation["exact"]["correct"] += 1
 
                     # aggregated by entity type results
                     evaluation_agg_entities_type[true["label"]]["strict"]["incorrect"] += 1
+                    evaluation_agg_entities_type[true["label"]]["strict"]["incorrect_indices"].append(index)
                     evaluation_agg_entities_type[true["label"]]["ent_type"]["incorrect"] += 1
+                    evaluation_agg_entities_type[true["label"]]["ent_type"]["incorrect_indices"].append(index)
                     evaluation_agg_entities_type[true["label"]]["partial"]["correct"] += 1
                     evaluation_agg_entities_type[true["label"]]["exact"]["correct"] += 1
 
@@ -210,15 +222,21 @@ def compute_metrics(  # type: ignore
                     if pred["label"] == true["label"]:
                         # overall results
                         evaluation["strict"]["incorrect"] += 1
+                        evaluation["strict"]["incorrect_indices"].append(index)
                         evaluation["ent_type"]["correct"] += 1
                         evaluation["partial"]["partial"] += 1
+                        evaluation["partial"]["partial_indices"].append(index)
                         evaluation["exact"]["incorrect"] += 1
+                        evaluation["exact"]["incorrect_indices"].append(index)
 
                         # aggregated by entity type results
                         evaluation_agg_entities_type[true["label"]]["strict"]["incorrect"] += 1
+                        evaluation_agg_entities_type[true["label"]]["strict"]["incorrect_indices"].append(index)
                         evaluation_agg_entities_type[true["label"]]["ent_type"]["correct"] += 1
                         evaluation_agg_entities_type[true["label"]]["partial"]["partial"] += 1
+                        evaluation_agg_entities_type[true["label"]]["partial"]["partial_indices"].append(index)
                         evaluation_agg_entities_type[true["label"]]["exact"]["incorrect"] += 1
+                        evaluation_agg_entities_type[true["label"]]["exact"]["incorrect_indices"].append(index)
 
                         found_overlap = True
 
@@ -228,17 +246,25 @@ def compute_metrics(  # type: ignore
 
                         # overall results
                         evaluation["strict"]["incorrect"] += 1
+                        evaluation["strict"]["incorrect_indices"].append(index)
                         evaluation["ent_type"]["incorrect"] += 1
+                        evaluation["ent_type"]["incorrect_indices"].append(index)
                         evaluation["partial"]["partial"] += 1
+                        evaluation["partial"]["partial_indices"].append(index)
                         evaluation["exact"]["incorrect"] += 1
+                        evaluation["exact"]["incorrect_indices"].append(index)
 
                         # aggregated by entity type results
                         # Results against the true entity
 
                         evaluation_agg_entities_type[true["label"]]["strict"]["incorrect"] += 1
+                        evaluation_agg_entities_type[true["label"]]["strict"]["incorrect_indices"].append(index)
                         evaluation_agg_entities_type[true["label"]]["partial"]["partial"] += 1
+                        evaluation_agg_entities_type[true["label"]]["partial"]["partial_indices"].append(index)
                         evaluation_agg_entities_type[true["label"]]["ent_type"]["incorrect"] += 1
+                        evaluation_agg_entities_type[true["label"]]["ent_type"]["incorrect_indices"].append(index)
                         evaluation_agg_entities_type[true["label"]]["exact"]["incorrect"] += 1
+                        evaluation_agg_entities_type[true["label"]]["exact"]["incorrect_indices"].append(index)
 
                         # Results against the predicted entity
                         # evaluation_agg_entities_type[pred['label']]['strict']['spurious'] += 1
@@ -248,9 +274,13 @@ def compute_metrics(  # type: ignore
             if not found_overlap:
                 # Overall results
                 evaluation["strict"]["spurious"] += 1
+                evaluation["strict"]["spurious_indices"].append(index)
                 evaluation["ent_type"]["spurious"] += 1
+                evaluation["ent_type"]["spurious_indices"].append(index)
                 evaluation["partial"]["spurious"] += 1
+                evaluation["partial"]["spurious_indices"].append(index)
                 evaluation["exact"]["spurious"] += 1
+                evaluation["exact"]["spurious_indices"].append(index)
 
                 # Aggregated by entity type results
 
@@ -270,9 +300,13 @@ def compute_metrics(  # type: ignore
 
                 for true in spurious_tags:
                     evaluation_agg_entities_type[true]["strict"]["spurious"] += 1
+                    evaluation_agg_entities_type[true]["strict"]["spurious_indices"].append(index)
                     evaluation_agg_entities_type[true]["ent_type"]["spurious"] += 1
+                    evaluation_agg_entities_type[true]["ent_type"]["spurious_indices"].append(index)
                     evaluation_agg_entities_type[true]["partial"]["spurious"] += 1
+                    evaluation_agg_entities_type[true]["partial"]["spurious_indices"].append(index)
                     evaluation_agg_entities_type[true]["exact"]["spurious"] += 1
+                    evaluation_agg_entities_type[true]["exact"]["spurious_indices"].append(index)
 
     # Scenario III: Entity was missed entirely.
     for true in true_named_entities:
@@ -281,15 +315,23 @@ def compute_metrics(  # type: ignore
 
         # overall results
         evaluation["strict"]["missed"] += 1
+        evaluation["strict"]["missed_indices"].append(index)
         evaluation["ent_type"]["missed"] += 1
+        evaluation["ent_type"]["missed_indices"].append(index)
         evaluation["partial"]["missed"] += 1
+        evaluation["partial"]["missed_indices"].append(index)
         evaluation["exact"]["missed"] += 1
+        evaluation["exact"]["missed_indices"].append(index)
 
         # for the agg. by label
         evaluation_agg_entities_type[true["label"]]["strict"]["missed"] += 1
+        evaluation_agg_entities_type[true["label"]]["strict"]["missed_indices"].append(index)
         evaluation_agg_entities_type[true["label"]]["ent_type"]["missed"] += 1
+        evaluation_agg_entities_type[true["label"]]["ent_type"]["missed_indices"].append(index)
         evaluation_agg_entities_type[true["label"]]["partial"]["missed"] += 1
+        evaluation_agg_entities_type[true["label"]]["partial"]["missed_indices"].append(index)
         evaluation_agg_entities_type[true["label"]]["exact"]["missed"] += 1
+        evaluation_agg_entities_type[true["label"]]["exact"]["missed_indices"].append(index)
 
     # Compute 'possible', 'actual' according to SemEval-2013 Task 9.1 on the
     # overall results, and use these to calculate precision and recall.
