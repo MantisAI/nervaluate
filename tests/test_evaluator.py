@@ -17,7 +17,7 @@ def test_evaluator_simple_case():
         ],
     ]
     evaluator = Evaluator(true, pred, tags=["LOC", "PER"])
-    results, _ = evaluator.evaluate()
+    results, _, _, _ = evaluator.evaluate()
     expected = {
         "strict": {
             "correct": 3,
@@ -92,7 +92,7 @@ def test_evaluator_simple_case_filtered_tags():
         ],
     ]
     evaluator = Evaluator(true, pred, tags=["PER", "LOC"])
-    results, _ = evaluator.evaluate()
+    results, _, _, _ = evaluator.evaluate()
     expected = {
         "strict": {
             "correct": 3,
@@ -159,7 +159,7 @@ def test_evaluator_extra_classes():
         [{"label": "FOO", "start": 1, "end": 3}],
     ]
     evaluator = Evaluator(true, pred, tags=["ORG", "FOO"])
-    results, _ = evaluator.evaluate()
+    results, _, _, _ = evaluator.evaluate()
     expected = {
         "strict": {
             "correct": 0,
@@ -226,7 +226,7 @@ def test_evaluator_no_entities_in_prediction():
         [],
     ]
     evaluator = Evaluator(true, pred, tags=["PER"])
-    results, _ = evaluator.evaluate()
+    results, _, _, _ = evaluator.evaluate()
     expected = {
         "strict": {
             "correct": 0,
@@ -293,7 +293,7 @@ def test_evaluator_compare_results_and_results_agg():
         [{"label": "PER", "start": 2, "end": 4}],
     ]
     evaluator = Evaluator(true, pred, tags=["PER"])
-    results, results_agg = evaluator.evaluate()
+    results, results_agg, _, _ = evaluator.evaluate()
     expected = {
         "strict": {
             "correct": 1,
@@ -426,7 +426,7 @@ def test_evaluator_compare_results_and_results_agg_1():
         [{"label": "MISC", "start": 2, "end": 4}],
     ]
     evaluator = Evaluator(true, pred, tags=["PER", "ORG", "MISC"])
-    results, results_agg = evaluator.evaluate()
+    results, results_agg, _, _ = evaluator.evaluate()
     expected = {
         "strict": {
             "correct": 2,
@@ -612,7 +612,7 @@ def test_evaluator_with_extra_keys_in_pred():
         ],
     ]
     evaluator = Evaluator(true, pred, tags=["LOC", "PER"])
-    results, _ = evaluator.evaluate()
+    results, _, _, _ = evaluator.evaluate()
     expected = {
         "strict": {
             "correct": 3,
@@ -686,7 +686,7 @@ def test_evaluator_with_extra_keys_in_true():
         ],
     ]
     evaluator = Evaluator(true, pred, tags=["LOC", "PER"])
-    results, _ = evaluator.evaluate()
+    results, _, _, _ = evaluator.evaluate()
     expected = {
         "strict": {
             "correct": 3,
@@ -759,7 +759,7 @@ def test_issue_29():
         ]
     ]
     evaluator = Evaluator(true, pred, tags=["PER"])
-    results, _ = evaluator.evaluate()
+    results, _, _, _ = evaluator.evaluate()
     expected = {
         "strict": {
             "correct": 1,
