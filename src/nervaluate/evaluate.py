@@ -209,12 +209,21 @@ def compute_metrics(  # type: ignore
             evaluation["ent_type"]["correct"] += 1
             evaluation["exact"]["correct"] += 1
             evaluation["partial"]["correct"] += 1
+            evaluation_indices["strict"]["correct_indices"].append(index)
+            evaluation_indices["ent_type"]["correct_indices"].append(index)
+            evaluation_indices["exact"]["correct_indices"].append(index)
+            evaluation_indices["partial"]["correct_indices"].append(index)
+
 
             # for the agg. by label results
             evaluation_agg_entities_type[pred["label"]]["strict"]["correct"] += 1
             evaluation_agg_entities_type[pred["label"]]["ent_type"]["correct"] += 1
             evaluation_agg_entities_type[pred["label"]]["exact"]["correct"] += 1
             evaluation_agg_entities_type[pred["label"]]["partial"]["correct"] += 1
+            evaluation_agg_indices[pred["label"]]["strict"]["correct_indices"].append(index)
+            evaluation_agg_indices[pred["label"]]["ent_type"]["correct_indices"].append(index)
+            evaluation_agg_indices[pred["label"]]["exact"]["correct_indices"].append(index)
+            evaluation_agg_indices[pred["label"]]["partial"]["correct_indices"].append(index)
 
         else:
             # check for overlaps with any of the true entities
