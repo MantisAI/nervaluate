@@ -51,7 +51,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
         self.loader = loader
 
-        self.eval_indices = {
+        self.eval_indices: Dict[str, List[int]] = {
             "correct_indices": [],
             "incorrect_indices": [],
             "partial_indices": [],
@@ -68,7 +68,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         }
         self.evaluation_agg_indices = {e: deepcopy(self.evaluation_indices) for e in tags}
 
-    def evaluate(self) -> Tuple[Dict, Dict]:
+    def evaluate(self) -> Tuple[Dict, Dict, Dict, Dict]:
         logging.debug("Imported %s predictions for %s true examples", len(self.pred), len(self.true))
 
         if self.loader != "default":
@@ -81,7 +81,9 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
         for index, (true_ents, pred_ents) in enumerate(zip(self.true, self.pred)):
             # Compute results for one message
-            tmp_results, tmp_agg_results, tmp_results_indices, tmp_agg_results_indices = compute_metrics(true_ents, pred_ents, self.tags, index)
+            tmp_results, tmp_agg_results, tmp_results_indices, tmp_agg_results_indices = compute_metrics(
+                true_ents, pred_ents, self.tags, index
+            )
 
             # Cycle through each result and accumulate
             # TODO: Combine these loops below:
@@ -106,7 +108,9 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
                     # Accumulate indices for each error type per entity type
                     for error_type in self.evaluation_agg_indices[label][eval_schema]:
-                        self.evaluation_agg_indices[label][eval_schema][error_type] += tmp_agg_results_indices[label][eval_schema][error_type]
+                        self.evaluation_agg_indices[label][eval_schema][error_type] += tmp_agg_results_indices[label][
+                            eval_schema
+                        ][error_type]
 
                 # Calculate precision recall at the individual entity level
                 self.evaluation_agg_entities_type[label] = compute_precision_recall_wrapper(
@@ -158,7 +162,7 @@ def compute_metrics(  # type: ignore
     # results by entity type
     evaluation_agg_entities_type = {e: deepcopy(evaluation) for e in tags}
 
-    eval_ent_indices = {
+    eval_ent_indices: Dict[str, List[int]] = {
         "correct_indices": [],
         "incorrect_indices": [],
         "partial_indices": [],
@@ -214,7 +218,6 @@ def compute_metrics(  # type: ignore
             evaluation_ent_indices["ent_type"]["correct_indices"].append(instance_index)
             evaluation_ent_indices["exact"]["correct_indices"].append(instance_index)
             evaluation_ent_indices["partial"]["correct_indices"].append(instance_index)
-
 
             # for the agg. by label results
             evaluation_agg_entities_type[pred["label"]]["strict"]["correct"] += 1
@@ -310,7 +313,9 @@ def compute_metrics(  # type: ignore
                         evaluation_agg_entities_type[true["label"]]["partial"]["partial"] += 1
                         evaluation_agg_ent_indices[true["label"]]["partial"]["partial_indices"].append(instance_index)
                         evaluation_agg_entities_type[true["label"]]["ent_type"]["incorrect"] += 1
-                        evaluation_agg_ent_indices[true["label"]]["ent_type"]["incorrect_indices"].append(instance_index)
+                        evaluation_agg_ent_indices[true["label"]]["ent_type"]["incorrect_indices"].append(
+                            instance_index
+                        )
                         evaluation_agg_entities_type[true["label"]]["exact"]["incorrect"] += 1
                         evaluation_agg_ent_indices[true["label"]]["exact"]["incorrect_indices"].append(instance_index)
 
