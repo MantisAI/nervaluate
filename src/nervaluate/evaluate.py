@@ -1,6 +1,6 @@
 import logging
 from copy import deepcopy
-from typing import List, Dict, Union, Tuple
+from typing import List, Dict, Union, Tuple, Optional
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
@@ -616,5 +616,59 @@ def summary_report_overall(results: Dict, digits: int = 2) -> str:
 
     for row in rows[1:]:
         report += row_fmt.format(*row, width=width, digits=digits)
+
+    return report
+
+
+def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds: Optional[List] = None) -> str:
+    """
+    Usage: print(summary_report_ents_indices(evaluation_agg_indices, 'partial', preds))
+    """
+    report = ""
+    for entity_type, entity_results in evaluation_agg_indices.items():
+        report += f"\nEntity Type: {entity_type}\n"
+        error_data = entity_results[error_schema]
+        report += f"  Error Schema: '{error_schema}'\n"
+        for category, indices in error_data.items():
+            category_name = category.replace("_", " ").capitalize()
+            report += f"    ({entity_type}) {category_name}:\n"
+            if indices:
+                for instance_index, entity_index in indices:
+                    if preds is not None:
+                        pred = preds[instance_index][entity_index]
+                        prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"
+                        report += f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
+                    else:
+                        report += f"      - Instance {instance_index}, Entity {entity_index}\n"
+            else:
+                report += "      - None\n"
+    return report
+
+
+def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds: Optional[List] = None) -> str:
+    """
+    Usage: print(summary_report_overall_indices(evaluation_indices, 'partial', preds))
+    """
+    report = ""
+    assert error_schema in evaluation_indices, f"Error schema '{error_schema}' not found in the results."
+
+    error_data = evaluation_indices[error_schema]
+    report += f"Indices for error schema '{error_schema}':\n\n"
+
+    for category, indices in error_data.items():
+        category_name = category.replace("_", " ").capitalize()
+        report += f"{category_name} indices:\n"
+        if indices:
+            for instance_index, entity_index in indices:
+                if preds is not None:
+                    # Retrieve the corresponding prediction
+                    pred = preds[instance_index][entity_index]
+                    prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"
+                    report += f"  - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
+                else:
+                    report += f"  - Instance {instance_index}, Entity {entity_index}\n"
+        else:
+            report += "  - None\n"
+        report += "\n"
 
     return report
