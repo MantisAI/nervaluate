@@ -412,7 +412,7 @@ def compute_metrics(  # type: ignore
                     )
 
     # Scenario III: Entity was missed entirely.
-    for true in true_named_entities:
+    for within_instance_index, true in enumerate(true_named_entities):
         if true in true_which_overlapped_with_pred:
             continue
 
@@ -620,7 +620,7 @@ def summary_report_overall(results: Dict, digits: int = 2) -> str:
     return report
 
 
-def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds: Optional[List] = None) -> str:
+def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds: Optional[List] = [[]]) -> str:
     """
     Usage: print(summary_report_ents_indices(evaluation_agg_indices, 'partial', preds))
     """
@@ -634,8 +634,8 @@ def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str,
             report += f"    ({entity_type}) {category_name}:\n"
             if indices:
                 for instance_index, entity_index in indices:
-                    if preds is not None:
-                        pred = preds[instance_index][entity_index]
+                    if preds is not [[]]:
+                        pred = preds[instance_index][entity_index]  # type: ignore
                         prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"
                         report += f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
                     else:
@@ -645,7 +645,7 @@ def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str,
     return report
 
 
-def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds: Optional[List] = None) -> str:
+def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds: Optional[List] = [[]]) -> str:
     """
     Usage: print(summary_report_overall_indices(evaluation_indices, 'partial', preds))
     """
@@ -660,9 +660,9 @@ def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, 
         report += f"{category_name} indices:\n"
         if indices:
             for instance_index, entity_index in indices:
-                if preds is not None:
+                if preds is not [[]]:
                     # Retrieve the corresponding prediction
-                    pred = preds[instance_index][entity_index]
+                    pred = preds[instance_index][entity_index]  # type: ignore
                     prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"
                     report += f"  - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
                 else:
