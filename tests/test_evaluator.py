@@ -1,3 +1,4 @@
+# pylint: disable=C0302
 from nervaluate import Evaluator
 
 
@@ -815,3 +816,244 @@ def test_issue_29():
     assert results["ent_type"] == expected["ent_type"]
     assert results["partial"] == expected["partial"]
     assert results["exact"] == expected["exact"]
+
+
+def test_evaluator_compare_results_indices_and_results_agg_indices():
+    """Check that the label level results match the total results."""
+    true = [
+        [{"label": "PER", "start": 2, "end": 4}],
+    ]
+    pred = [
+        [{"label": "PER", "start": 2, "end": 4}],
+    ]
+    evaluator = Evaluator(true, pred, tags=["PER"])
+    _, _, evaluation_indices, evaluation_agg_indices = evaluator.evaluate()
+    expected_evaluation_indices = {
+        "strict": {
+            "correct_indices": [(0, 0)],
+            "incorrect_indices": [],
+            "partial_indices": [],
+            "missed_indices": [],
+            "spurious_indices": [],
+        },
+        "ent_type": {
+            "correct_indices": [(0, 0)],
+            "incorrect_indices": [],
+            "partial_indices": [],
+            "missed_indices": [],
+            "spurious_indices": [],
+        },
+        "partial": {
+            "correct_indices": [(0, 0)],
+            "incorrect_indices": [],
+            "partial_indices": [],
+            "missed_indices": [],
+            "spurious_indices": [],
+        },
+        "exact": {
+            "correct_indices": [(0, 0)],
+            "incorrect_indices": [],
+            "partial_indices": [],
+            "missed_indices": [],
+            "spurious_indices": [],
+        },
+    }
+    expected_evaluation_agg_indices = {
+        "PER": {
+            "strict": {
+                "correct_indices": [(0, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+            "ent_type": {
+                "correct_indices": [(0, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+            "partial": {
+                "correct_indices": [(0, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+            "exact": {
+                "correct_indices": [(0, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+        }
+    }
+    assert evaluation_agg_indices["PER"]["strict"] == expected_evaluation_agg_indices["PER"]["strict"]
+    assert evaluation_agg_indices["PER"]["ent_type"] == expected_evaluation_agg_indices["PER"]["ent_type"]
+    assert evaluation_agg_indices["PER"]["partial"] == expected_evaluation_agg_indices["PER"]["partial"]
+    assert evaluation_agg_indices["PER"]["exact"] == expected_evaluation_agg_indices["PER"]["exact"]
+
+    assert evaluation_indices["strict"] == expected_evaluation_indices["strict"]
+    assert evaluation_indices["ent_type"] == expected_evaluation_indices["ent_type"]
+    assert evaluation_indices["partial"] == expected_evaluation_indices["partial"]
+    assert evaluation_indices["exact"] == expected_evaluation_indices["exact"]
+
+    assert evaluation_indices["strict"] == expected_evaluation_agg_indices["PER"]["strict"]
+    assert evaluation_indices["ent_type"] == expected_evaluation_agg_indices["PER"]["ent_type"]
+    assert evaluation_indices["partial"] == expected_evaluation_agg_indices["PER"]["partial"]
+    assert evaluation_indices["exact"] == expected_evaluation_agg_indices["PER"]["exact"]
+
+
+def test_evaluator_compare_results_indices_and_results_agg_indices_1():
+    """Test case when model predicts a label not in the test data."""
+    true = [
+        [],
+        [{"label": "ORG", "start": 2, "end": 4}],
+        [{"label": "MISC", "start": 2, "end": 4}],
+    ]
+    pred = [
+        [{"label": "PER", "start": 2, "end": 4}],
+        [{"label": "ORG", "start": 2, "end": 4}],
+        [{"label": "MISC", "start": 2, "end": 4}],
+    ]
+    evaluator = Evaluator(true, pred, tags=["PER", "ORG", "MISC"])
+    _, _, evaluation_indices, evaluation_agg_indices = evaluator.evaluate()
+
+    expected_evaluation_indices = {
+        "strict": {
+            "correct_indices": [(1, 0), (2, 0)],
+            "incorrect_indices": [],
+            "partial_indices": [],
+            "missed_indices": [],
+            "spurious_indices": [(0, 0)],
+        },
+        "ent_type": {
+            "correct_indices": [(1, 0), (2, 0)],
+            "incorrect_indices": [],
+            "partial_indices": [],
+            "missed_indices": [],
+            "spurious_indices": [(0, 0)],
+        },
+        "partial": {
+            "correct_indices": [(1, 0), (2, 0)],
+            "incorrect_indices": [],
+            "partial_indices": [],
+            "missed_indices": [],
+            "spurious_indices": [(0, 0)],
+        },
+        "exact": {
+            "correct_indices": [(1, 0), (2, 0)],
+            "incorrect_indices": [],
+            "partial_indices": [],
+            "missed_indices": [],
+            "spurious_indices": [(0, 0)],
+        },
+    }
+    expected_evaluation_agg_indices = {
+        "PER": {
+            "strict": {
+                "correct_indices": [],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [(0, 0)],
+            },
+            "ent_type": {
+                "correct_indices": [],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [(0, 0)],
+            },
+            "partial": {
+                "correct_indices": [],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [(0, 0)],
+            },
+            "exact": {
+                "correct_indices": [],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [(0, 0)],
+            },
+        },
+        "ORG": {
+            "strict": {
+                "correct_indices": [(1, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+            "ent_type": {
+                "correct_indices": [(1, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+            "partial": {
+                "correct_indices": [(1, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+            "exact": {
+                "correct_indices": [(1, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+        },
+        "MISC": {
+            "strict": {
+                "correct_indices": [(2, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+            "ent_type": {
+                "correct_indices": [(2, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+            "partial": {
+                "correct_indices": [(2, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+            "exact": {
+                "correct_indices": [(2, 0)],
+                "incorrect_indices": [],
+                "partial_indices": [],
+                "missed_indices": [],
+                "spurious_indices": [],
+            },
+        },
+    }
+    assert evaluation_agg_indices["ORG"]["strict"] == expected_evaluation_agg_indices["ORG"]["strict"]
+    assert evaluation_agg_indices["ORG"]["ent_type"] == expected_evaluation_agg_indices["ORG"]["ent_type"]
+    assert evaluation_agg_indices["ORG"]["partial"] == expected_evaluation_agg_indices["ORG"]["partial"]
+    assert evaluation_agg_indices["ORG"]["exact"] == expected_evaluation_agg_indices["ORG"]["exact"]
+
+    assert evaluation_agg_indices["MISC"]["strict"] == expected_evaluation_agg_indices["MISC"]["strict"]
+    assert evaluation_agg_indices["MISC"]["ent_type"] == expected_evaluation_agg_indices["MISC"]["ent_type"]
+    assert evaluation_agg_indices["MISC"]["partial"] == expected_evaluation_agg_indices["MISC"]["partial"]
+    assert evaluation_agg_indices["MISC"]["exact"] == expected_evaluation_agg_indices["MISC"]["exact"]
+
+    assert evaluation_indices["strict"] == expected_evaluation_indices["strict"]
+    assert evaluation_indices["ent_type"] == expected_evaluation_indices["ent_type"]
+    assert evaluation_indices["partial"] == expected_evaluation_indices["partial"]
+    assert evaluation_indices["exact"] == expected_evaluation_indices["exact"]
