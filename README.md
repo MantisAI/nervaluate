@@ -223,7 +223,7 @@ evaluator = Evaluator(true, pred, tags=['LOC', 'PER'])
 
 # Returns overall metrics and metrics for each tag
 
-results, results_per_tag = evaluator.evaluate()
+results, results_per_tag, result_indices, result_indices_by_tag = evaluator.evaluate()
 
 print(results)
 ```
@@ -378,6 +378,33 @@ print(results_by_tag)
 }
 ```
 
+```
+from nervaluate import summary_report_overall_indices
+
+print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='partial', preds=pred))
+```
+
+```
+Indices for error schema 'partial':
+
+Correct indices:
+  - Instance 0, Entity 0: Label=PER, Start=2, End=4
+  - Instance 1, Entity 0: Label=LOC, Start=1, End=2
+  - Instance 1, Entity 1: Label=LOC, Start=3, End=4
+
+Incorrect indices:
+  - None
+
+Partial indices:
+  - None
+
+Missed indices:
+  - None
+
+Spurious indices:
+  - None
+```
+
 ### Nested lists
 
 ```
@@ -393,7 +420,7 @@ pred = [
 
 evaluator = Evaluator(true, pred, tags=['LOC', 'PER'], loader="list")
 
-results, results_by_tag = evaluator.evaluate()
+results, results_by_tag, result_indices, result_indices_by_tag = evaluator.evaluate()
 ```
 
 ### CoNLL style tab delimited
@@ -406,7 +433,7 @@ pred = "word\tO\nword\tO\B-PER\nword\tI-PER\n"
 
 evaluator = Evaluator(true, pred, tags=['PER'], loader="conll")
 
-results, results_by_tag = evaluator.evaluate()
+results, results_by_tag, result_indices, result_indices_by_tag = evaluator.evaluate()
 
 ```
 
