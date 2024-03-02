@@ -835,54 +835,54 @@ def test_compute_metrics_one_pred_two_true():
     results2, _, _, _ = compute_metrics(true_named_entities_2, pred_named_entities, ["A", "B"])
 
     expected = {
-        'ent_type': {
-            'correct': 1,
-            'incorrect': 1,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 2,
-            'actual': 2,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
+        "ent_type": {
+            "correct": 1,
+            "incorrect": 1,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 2,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         },
-        'partial': {
-            'correct': 0,
-            'incorrect': 0,
-            'partial': 2,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 2,
-            'actual': 2,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
+        "partial": {
+            "correct": 0,
+            "incorrect": 0,
+            "partial": 2,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 2,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         },
-        'strict': {
-            'correct': 0,
-            'incorrect': 2,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 2,
-            'actual': 2,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
+        "strict": {
+            "correct": 0,
+            "incorrect": 2,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 2,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         },
-        'exact': {
-            'correct': 0,
-            'incorrect': 2,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 2,
-            'actual': 2,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
-        }
+        "exact": {
+            "correct": 0,
+            "incorrect": 2,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 2,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
+        },
     }
 
     assert results1 == expected
