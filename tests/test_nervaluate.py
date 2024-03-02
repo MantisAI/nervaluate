@@ -23,7 +23,7 @@ def test_compute_metrics_case_1():
         {"label": "LOC", "start": 208, "end": 219},
         {"label": "LOC", "start": 225, "end": 243},
     ]
-    results, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC", "MISC"])
+    results, _, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC", "MISC"])
     results = compute_precision_recall_wrapper(results)
     expected = {
         "strict": {
@@ -81,7 +81,7 @@ def test_compute_metrics_case_1():
 def test_compute_metrics_agg_scenario_3():
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
     pred_named_entities = []
-    _, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
+    _, results_agg, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
     expected_agg = {
         "PER": {
             "strict": {
@@ -144,7 +144,7 @@ def test_compute_metrics_agg_scenario_3():
 def test_compute_metrics_agg_scenario_2():
     true_named_entities = []
     pred_named_entities = [{"label": "PER", "start": 59, "end": 69}]
-    _, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
+    _, results_agg, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
     expected_agg = {
         "PER": {
             "strict": {
@@ -207,7 +207,7 @@ def test_compute_metrics_agg_scenario_2():
 def test_compute_metrics_agg_scenario_5():
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
     pred_named_entities = [{"label": "PER", "start": 57, "end": 69}]
-    _, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
+    _, results_agg, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
     expected_agg = {
         "PER": {
             "strict": {
@@ -270,7 +270,7 @@ def test_compute_metrics_agg_scenario_5():
 def test_compute_metrics_agg_scenario_4():
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
     pred_named_entities = [{"label": "LOC", "start": 59, "end": 69}]
-    _, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC"])
+    _, results_agg, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC"])
     expected_agg = {
         "PER": {
             "strict": {
@@ -384,7 +384,7 @@ def test_compute_metrics_agg_scenario_4():
 def test_compute_metrics_agg_scenario_1():
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
     pred_named_entities = [{"label": "PER", "start": 59, "end": 69}]
-    _, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
+    _, results_agg, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER"])
     expected_agg = {
         "PER": {
             "strict": {
@@ -447,7 +447,7 @@ def test_compute_metrics_agg_scenario_1():
 def test_compute_metrics_agg_scenario_6():
     true_named_entities = [{"label": "PER", "start": 59, "end": 69}]
     pred_named_entities = [{"label": "LOC", "start": 54, "end": 69}]
-    _, results_agg = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC"])
+    _, results_agg, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC"])
     expected_agg = {
         "PER": {
             "strict": {
@@ -570,7 +570,7 @@ def test_compute_metrics_extra_tags_in_prediction():
         {"label": "ORG", "start": 59, "end": 69},  # Correct
         {"label": "MISC", "start": 71, "end": 72},  # Wrong type
     ]
-    results, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC", "ORG"])
+    results, _, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC", "ORG"])
     expected = {
         "strict": {
             "correct": 1,
@@ -641,7 +641,7 @@ def test_compute_metrics_extra_tags_in_true():
         {"label": "ORG", "start": 71, "end": 72},  # Spurious
     ]
 
-    results, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC", "ORG"])
+    results, _, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "LOC", "ORG"])
 
     expected = {
         "strict": {
@@ -707,7 +707,7 @@ def test_compute_metrics_no_predictions():
         {"label": "MISC", "start": 71, "end": 72},
     ]
     pred_named_entities = []
-    results, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "ORG", "MISC"])
+    results, _, _, _ = compute_metrics(true_named_entities, pred_named_entities, ["PER", "ORG", "MISC"])
     expected = {
         "strict": {
             "correct": 0,
@@ -831,58 +831,58 @@ def test_compute_metrics_one_pred_two_true():
         {"start": 0, "end": 17, "label": "A"},
     ]
 
-    results1, _ = compute_metrics(true_named_entities_1, pred_named_entities, ["A", "B"])
-    results2, _ = compute_metrics(true_named_entities_2, pred_named_entities, ["A", "B"])
+    results1, _, _, _ = compute_metrics(true_named_entities_1, pred_named_entities, ["A", "B"])
+    results2, _, _, _ = compute_metrics(true_named_entities_2, pred_named_entities, ["A", "B"])
 
     expected = {
-        'ent_type': {
-            'correct': 1,
-            'incorrect': 1,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 2,
-            'actual': 2,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
+        "ent_type": {
+            "correct": 1,
+            "incorrect": 1,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 2,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         },
-        'partial': {
-            'correct': 0,
-            'incorrect': 0,
-            'partial': 2,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 2,
-            'actual': 2,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
+        "partial": {
+            "correct": 0,
+            "incorrect": 0,
+            "partial": 2,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 2,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         },
-        'strict': {
-            'correct': 0,
-            'incorrect': 2,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 2,
-            'actual': 2,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
+        "strict": {
+            "correct": 0,
+            "incorrect": 2,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 2,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
         },
-        'exact': {
-            'correct': 0,
-            'incorrect': 2,
-            'partial': 0,
-            'missed': 0,
-            'spurious': 0,
-            'possible': 2,
-            'actual': 2,
-            'precision': 0,
-            'recall': 0,
-            'f1': 0
-        }
+        "exact": {
+            "correct": 0,
+            "incorrect": 2,
+            "partial": 0,
+            "missed": 0,
+            "spurious": 0,
+            "possible": 2,
+            "actual": 2,
+            "precision": 0,
+            "recall": 0,
+            "f1": 0,
+        },
     }
 
     assert results1 == expected

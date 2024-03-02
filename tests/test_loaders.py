@@ -50,9 +50,9 @@ def test_loaders_produce_the_same_results():
 
     evaluator_prod = Evaluator(true_prod, pred_prod, tags=["PER", "ORG", "MISC"])
 
-    _, _ = evaluator_list.evaluate()
-    _, _ = evaluator_prod.evaluate()
-    _, _ = evaluator_conll.evaluate()
+    _, _, _, _ = evaluator_list.evaluate()
+    _, _, _, _ = evaluator_prod.evaluate()
+    _, _, _, _ = evaluator_conll.evaluate()
 
     assert evaluator_prod.pred == evaluator_list.pred == evaluator_conll.pred
     assert evaluator_prod.true == evaluator_list.true == evaluator_conll.true
