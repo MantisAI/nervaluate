@@ -118,7 +118,7 @@ We can use the following five metrics to consider difference categories of error
 |Incorrect (INC)|the output of a system and the golden annotation don’t match|
 |Partial (PAR)|system and the golden annotation are somewhat “similar” but not the same|
 |Missing (MIS)|a golden annotation is not captured by a system|
-|Spurious (SPU)|system produces a response which doesn’t exit in the golden annotation|
+|Spurious (SPU)|system produces a response which doesn’t exist in the golden annotation|
 
 These five metrics can be measured in four different ways:
 
