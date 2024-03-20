@@ -657,7 +657,7 @@ def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, 
 
     for category, indices in error_data.items():
         category_name = category.replace("_", " ").capitalize()
-        report += f"{category_name} indices:\n"
+        report += f"{category_name}:\n"
         if indices:
             for instance_index, entity_index in indices:
                 if preds is not [[]]:
