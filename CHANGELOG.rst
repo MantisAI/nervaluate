@@ -2,6 +2,122 @@ Changelog
 =========
 
 
+0.2.0 (2024-04-10)
+------------------
+
+New
+~~~
+- Add pre-commit. [Matthew Upson]
+- Add CITATION.cff file. [Matthew Upson]
+- Upload artefacts to codecov. [Matthew Upson]
+- Run tests on windows instance. [Matthew Upson]
+
+Changes
+~~~~~~~
+- Add codecov config. [Matthew Upson]
+- Remove .travis.yml. [Matthew Upson]
+- Update tox.ini. [Matthew Upson]
+- Update versions to test. [Matthew Upson]
+- Add tox tests as github action. [Matthew Upson]
+
+Fix
+~~~
+- Grant write permission to CICD workflow. [Matthew Upson]
+- Run on windows and linux matrix. [Matthew Upson]
+
+Other
+~~~~~
+- Updates README to reflect new functionality. [Jack Boylan]
+- Removes extra 'indices' printed. [Jack Boylan]
+- Bump black from 23.3.0 to 24.3.0. [dependabot[bot]]
+
+  Bumps [black](https://github.com/psf/black) from 23.3.0 to 24.3.0.
+  - [Release notes](https://github.com/psf/black/releases)
+  - [Changelog](https://github.com/psf/black/blob/main/CHANGES.md)
+  - [Commits](https://github.com/psf/black/compare/23.3.0...24.3.0)
+
+  ---
+  updated-dependencies:
+  - dependency-name: black
+    dependency-type: direct:development
+  ...
+- Fixed Typo in README. [Giovanni Casari]
+- Reformats quotes in `test_nervaluate.py` [Jack Boylan]
+- Initial import. [David S. Batista]
+- Handles case when `predictions` is empty. [Jack Boylan]
+- Adds unit tests for evaluation indices output. [Jack Boylan]
+- Adds summary print functions for overall indices and per-entity
+  indices results. [Jack Boylan]
+- Adds `within_instance_index` to evaluation indices outputs. [Jack
+  Boylan]
+- Ensures compatibility with existing unit tests. [Jack Boylan]
+- Adheres to code quality checks. [Jack Boylan]
+- Adds more descriptive variable names. [Jack Boylan]
+- Adds correct indices to result indices output. [Jack Boylan]
+- Moves evaluation indices to separate data structures. [Jack Boylan]
+- Adds index lists to output for examples with incorrect, partial,
+  spurious, and missed entities. [Jack Boylan]
+- Docs: fix typo "spurius" > "spurious" [DanShatford]
+- Added test for issue #40. [g.casari]
+- Solved issue #40. [g.casari]
+- Update README.md. [David S. Batista]
+- Cleaning README.MD. [David S. Batista]
+- Attending PR comments. [David S. Batista]
+- Fixing links on README.MD. [David S. Batista]
+- Updating pyproject.toml. [David S. Batista]
+- Updating pyproject.toml. [David S. Batista]
+- Updating README.MD and bumping version to 0.2.0. [David S. Batista]
+- Updating README.MD. [David S. Batista]
+- Reverting to Python 3.8. [David S. Batista]
+- Adding some badges to the README. [David S. Batista]
+- Initial commit. [David S. Batista]
+- Wip: adding poetry. [David S. Batista]
+- Full working example. [David S. Batista]
+- Nit. [David S. Batista]
+- Wip: adding summary report and examples. [David S. Batista]
+- Wip: adding summary report and examples. [David S. Batista]
+- Wip: adding summary report and examples. [David S. Batista]
+- Wip: adding summary report and examples. [David S. Batista]
+- Wip: adding summary report and examples. [David S. Batista]
+- Wip: adding summary report. [David S. Batista]
+- Wip: adding summary report. [David S. Batista]
+- Removed codecov from requirements.txt. [David S. Batista]
+- Removing duplicated code and fixing type hit. [David S. Batista]
+- Updated Makefile: install package in editable mode. [David S. Batista]
+- Updated name. [David S. Batista]
+- Minimum version Python 3.8. [David S. Batista]
+- Fixing Makefile and pre-commit. [David S. Batista]
+- Adding DS_Store and .idea to gitignore. [David S. Batista]
+- Updating Makefile. [David S. Batista]
+- WIP: pre-commit. [David S. Batista]
+- WIP: pre-commit. [David S. Batista]
+- WIP: pre-commit. [David S. Batista]
+- WIP: pre-commit. [David S. Batista]
+- WIP: pre-commit. [David S. Batista]
+- WIP: pre-commit. [David S. Batista]
+- WIP: pre-commit. [David S. Batista]
+- WIP: pre-commit. [David S. Batista]
+- Fixing types. [David S. Batista]
+- Finished adding type hints, some were skipped, code needs refactoring.
+  [David S. Batista]
+- WIP: adding type hints. [David S. Batista]
+- WIP: adding type hints. [David S. Batista]
+- WIP: adding type hints. [David S. Batista]
+- WIP: adding type hints. [David S. Batista]
+- Adding some execptions, code needs refactoring. [David S. Batista]
+- Fixing pyling and flake8 issues. [David S. Batista]
+- Replaced setup.py with pyproject.toml. [David S. Batista]
+- Reverting utils import. [David S. Batista]
+- Fixing types and wrappint at 120 characters. [David S. Batista]
+- Update CITATION.cff. [David S. Batista]
+
+  updating orcid
+- Fix recall formula readme. [fgh95]
+- Update LICENSE. [ivyleavedtoadflax]
+- Update LICENSE. [ivyleavedtoadflax]
+- Delete .python-version. [ivyleavedtoadflax]
+
+
 0.1.8 (2020-10-16)
 ------------------
 
@@ -12,6 +128,8 @@ New
 
 Changes
 ~~~~~~~
+- Bump version in setup.py. [Matthew Upson]
+- Update CHANGELOG (#36) [ivyleavedtoadflax]
 - Fix tests to match #32. [Matthew Upson]
 
 Fix
@@ -198,7 +316,7 @@ Other
 - Use find_overlap to find all overlap cases. [Matthew Upson]
 
   Adds the find_overlap function which captures the three possible overlap
-  scenarios (Total, Start, and End). This is explained in graph below.
+  scenarios (Total, Start, and End). This is examplained in graph below.
 
   Character Offset:   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
   True:               |   |   |   |LOC|LOC|LOC|LOC|LOC|   |   |
