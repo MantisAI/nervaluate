@@ -1,6 +1,8 @@
 import logging
 from copy import deepcopy
 from typing import List, Dict, Union, Tuple, Optional
+import pandas as pd
+from collections import defaultdict
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
@@ -119,6 +121,26 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
         return self.results, self.evaluation_agg_entities_type, self.evaluation_indices, self.evaluation_agg_indices
 
+    def results_to_dataframe(self) -> pd.DataFrame:
+        if not self.results:
+            raise ValueError("self.results should be defined.")
+        
+        if not isinstance(self.results, dict) or not all(isinstance(v, dict) for v in self.results.values()):
+            raise ValueError("self.results must be a dictionary of dictionaries.")
+
+        # Create empty dictionary
+        transposed_results = defaultdict(dict)
+        
+        # Transpose the results
+        for outer_key, inner_dict in self.results.items():
+            for inner_key, value in inner_dict.items():
+                transposed_results[inner_key][outer_key] = value
+
+        # Return the transposed results as a pandas DataFrame
+        try:
+            return pd.DataFrame(transposed_results)
+        except Exception as e:
+            raise RuntimeError("Error converting transposed results to DataFrame") from e
 
 # flake8: noqa: C901
 def compute_metrics(  # type: ignore
