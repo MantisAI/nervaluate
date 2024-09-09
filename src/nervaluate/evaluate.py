@@ -120,27 +120,52 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
                 )
 
         return self.results, self.evaluation_agg_entities_type, self.evaluation_indices, self.evaluation_agg_indices
+    
+    # Helper method to flatten a nested dictionary
+    def _flatten_dict(self, d, parent_key='', sep='.'):
+        """
+        Flattens a nested dictionary.
 
+        Args:
+            d (dict): The dictionary to flatten.
+            parent_key (str): The base key string to prepend to each dictionary key.
+            sep (str): The separator to use when combining keys.
+
+        Returns:
+            dict: A flattened dictionary.
+        """
+        items = []
+        for k, v in d.items():
+            new_key = f"{parent_key}{sep}{k}" if parent_key else k
+            if isinstance(v, dict):
+                items.extend(self._flatten_dict(v, new_key, sep=sep).items())
+            else:
+                items.append((new_key, v))
+        return dict(items)
+
+    # Modified results_to_dataframe method using the helper method
     def results_to_dataframe(self) -> pd.DataFrame:
         if not self.results:
             raise ValueError("self.results should be defined.")
-        
+
         if not isinstance(self.results, dict) or not all(isinstance(v, dict) for v in self.results.values()):
             raise ValueError("self.results must be a dictionary of dictionaries.")
 
-        # Create empty dictionary
-        transposed_results = defaultdict(dict)
-        
-        # Transpose the results
+        # Flatten the nested results dictionary, including the 'entities' sub-dictionaries
+        flattened_results = {}
         for outer_key, inner_dict in self.results.items():
-            for inner_key, value in inner_dict.items():
-                transposed_results[inner_key][outer_key] = value
+            flattened_inner_dict = self._flatten_dict(inner_dict)
+            for inner_key, value in flattened_inner_dict.items():
+                if inner_key not in flattened_results:
+                    flattened_results[inner_key] = {}
+                flattened_results[inner_key][outer_key] = value
 
-        # Return the transposed results as a pandas DataFrame
+        # Convert the flattened results to a pandas DataFrame
         try:
-            return pd.DataFrame(transposed_results)
+            return pd.DataFrame(flattened_results)
         except Exception as e:
-            raise RuntimeError("Error converting transposed results to DataFrame") from e
+            raise RuntimeError("Error converting flattened results to DataFrame") from e
+
 
 # flake8: noqa: C901
 def compute_metrics(  # type: ignore
