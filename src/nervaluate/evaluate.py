@@ -152,7 +152,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
             raise ValueError("self.results must be a dictionary of dictionaries.")
 
         # Flatten the nested results dictionary, including the 'entities' sub-dictionaries
-        flattened_results = Dict[str, Dict[str, Any]] = {}
+        flattened_results: Dict[str, Dict[str, Any]] = {}
         for outer_key, inner_dict in self.results.items():
             flattened_inner_dict = self._flatten_dict(inner_dict)
             for inner_key, value in flattened_inner_dict.items():
