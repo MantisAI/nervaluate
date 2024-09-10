@@ -1,4 +1,4 @@
-# pylint: disable=C0302
+# pylint: disable=too-many-lines
 from nervaluate import Evaluator
 import pandas as pd
 
