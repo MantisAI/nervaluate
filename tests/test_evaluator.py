@@ -1,6 +1,6 @@
 # pylint: disable=too-many-lines
-from nervaluate import Evaluator
 import pandas as pd
+from nervaluate import Evaluator
 
 def test_results_to_dataframe():
     """
