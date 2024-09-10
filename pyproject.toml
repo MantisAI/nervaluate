@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 [project.dependencies]
-pandas = "==2.2.1"
+pandas = "==2.0.1"
 
 [project.urls]
 "Homepage" = "https://github.com/MantisAI/nervaluate"
