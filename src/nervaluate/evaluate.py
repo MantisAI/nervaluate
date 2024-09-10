@@ -121,8 +121,8 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
         return self.results, self.evaluation_agg_entities_type, self.evaluation_indices, self.evaluation_agg_indices
     
-    # Helper method to flatten a nested dictionary
-    def _flatten_dict(self, d, parent_key='', sep='.') -> dict:
+    #  Helper method to flatten a nested dictionary
+    def _flatten_dict(self, d: Dict[str, Any], parent_key: str = '', sep: str = '.') -> Dict[str, Any]:
         """
         Flattens a nested dictionary.
 
@@ -134,7 +134,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         Returns:
             dict: A flattened dictionary.
         """
-        items = []
+        items: List[Tuple[str, Any]] = []
         for k, v in d.items():
             new_key = f"{parent_key}{sep}{k}" if parent_key else k
             if isinstance(v, dict):
@@ -144,7 +144,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         return dict(items)
 
     # Modified results_to_dataframe method using the helper method
-    def results_to_dataframe(self) -> pd.DataFrame:
+    def results_to_dataframe(self) -> Any:
         if not self.results:
             raise ValueError("self.results should be defined.")
 
