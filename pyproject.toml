@@ -2,7 +2,6 @@
 requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
-
 [project]
 name = "nervaluate"
 version = "0.2.0"
@@ -15,10 +14,13 @@ readme = "README.md"
 requires-python = ">=3.8"
 keywords = ["named-entity-recognition", "ner", "evaluation-metrics", "partial-match-scoring", "nlp"]
 license = {text = "MIT License"}
-classifiers=[
+classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent"
 ]
+
+[project.dependencies]
+pandas = "==2.0.1"
 
 [project.urls]
 "Homepage" = "https://github.com/MantisAI/nervaluate"

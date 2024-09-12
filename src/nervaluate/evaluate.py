@@ -1,6 +1,8 @@
 import logging
 from copy import deepcopy
-from typing import List, Dict, Union, Tuple, Optional
+import pandas as pd
+from typing import List, Dict, Union, Tuple, Optional, Any
+from collections import defaultdict
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
@@ -118,6 +120,51 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
                 )
 
         return self.results, self.evaluation_agg_entities_type, self.evaluation_indices, self.evaluation_agg_indices
+    
+    #  Helper method to flatten a nested dictionary
+    def _flatten_dict(self, d: Dict[str, Any], parent_key: str = '', sep: str = '.') -> Dict[str, Any]:
+        """
+        Flattens a nested dictionary.
+
+        Args:
+            d (dict): The dictionary to flatten.
+            parent_key (str): The base key string to prepend to each dictionary key.
+            sep (str): The separator to use when combining keys.
+
+        Returns:
+            dict: A flattened dictionary.
+        """
+        items: List[Tuple[str, Any]] = []
+        for k, v in d.items():
+            new_key = f"{parent_key}{sep}{k}" if parent_key else k
+            if isinstance(v, dict):
+                items.extend(self._flatten_dict(v, new_key, sep=sep).items())
+            else:
+                items.append((new_key, v))
+        return dict(items)
+
+    # Modified results_to_dataframe method using the helper method
+    def results_to_dataframe(self) -> Any:
+        if not self.results:
+            raise ValueError("self.results should be defined.")
+
+        if not isinstance(self.results, dict) or not all(isinstance(v, dict) for v in self.results.values()):
+            raise ValueError("self.results must be a dictionary of dictionaries.")
+
+        # Flatten the nested results dictionary, including the 'entities' sub-dictionaries
+        flattened_results: Dict[str, Dict[str, Any]] = {}
+        for outer_key, inner_dict in self.results.items():
+            flattened_inner_dict = self._flatten_dict(inner_dict)
+            for inner_key, value in flattened_inner_dict.items():
+                if inner_key not in flattened_results:
+                    flattened_results[inner_key] = {}
+                flattened_results[inner_key][outer_key] = value
+
+        # Convert the flattened results to a pandas DataFrame
+        try:
+            return pd.DataFrame(flattened_results)
+        except Exception as e:
+            raise RuntimeError("Error converting flattened results to DataFrame") from e
 
 
 # flake8: noqa: C901
