@@ -29,7 +29,7 @@ post by [David Batista](https://github.com/davidsbatista), and extends the code 
 The code draws heavily on:
 
 * Segura-bedmar, I., & Mart, P. (2013). 2013 SemEval-2013 Task 9 Extraction of Drug-Drug Interactions from. Semeval, 2(DDIExtraction), 341–350. [link](https://www.aclweb.org/anthology/S13-2056)
-* https://www.cs.york.ac.uk/semeval-2013/task9/data/uploads/semeval_2013-task-9_1-evaluation-metrics.pdf
+* https://aclanthology.org/S13-2056.pdf
 
 ## The problem
 
