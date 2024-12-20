@@ -16,10 +16,14 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         pred: Union[List[List[str]], List[str], List[Dict], str, List[List[Dict[str, Union[int, str]]]]],
         tags: List[str],
         loader: str = "default",
+        gt_overlap_perc: float = 1.0,
     ) -> None:
         self.true = true
         self.pred = pred
         self.tags = tags
+        if gt_overlap_perc <= 0.0:
+            raise ValueError("gt_overlap_perc must be greater than 0.0")
+        self.gt_overlap_perc = gt_overlap_perc
         # self.list = []
 
         # Setup dict into which metrics will be stored.
@@ -84,7 +88,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         for index, (true_ents, pred_ents) in enumerate(zip(self.true, self.pred)):
             # Compute results for one message
             tmp_results, tmp_agg_results, tmp_results_indices, tmp_agg_results_indices = compute_metrics(
-                true_ents, pred_ents, self.tags, index
+                true_ents, pred_ents, self.tags, index, self.gt_overlap_perc
             )
 
             # Cycle through each result and accumulate
@@ -169,7 +173,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
 # flake8: noqa: C901
 def compute_metrics(  # type: ignore
-    true_named_entities, pred_named_entities, tags: List[str], instance_index: int = 0
+    true_named_entities, pred_named_entities, tags: List[str], instance_index: int = 0, gt_overlap_perc: float = 1.0
 ):  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     """
     Compute metrics on the collected true and predicted named entities
@@ -327,7 +331,7 @@ def compute_metrics(  # type: ignore
 
                 # check for an overlap i.e. not exact boundary match, with true entities
                 # overlaps with true entities must only count once
-                if find_overlap(true_range, pred_range) and true not in true_which_overlapped_with_pred:
+                if find_overlap(true_range, pred_range, gt_overlap_perc) and true not in true_which_overlapped_with_pred:
                     true_which_overlapped_with_pred.append(true)
 
                     # Scenario V: There is an overlap (but offsets do not match

@@ -82,7 +82,7 @@ def collect_named_entities(tokens: List[str]) -> List[Dict]:
     return named_entities
 
 
-def find_overlap(true_range: range, pred_range: range) -> set:
+def find_overlap(true_range: range, pred_range: range, gt_overlap_percent:float=1.0) -> set:
     """Find the overlap between two ranges
 
     Find the overlap between two ranges. Return the overlapping values if
@@ -95,10 +95,17 @@ def find_overlap(true_range: range, pred_range: range) -> set:
     >>> find_overlap((1, 2), (3, 4))
     set()
     """
+    if gt_overlap_percent <= 0.0:
+        raise ValueError("gt_overlap_percent must be greater than 0.0")
 
     true_set = set(true_range)
     pred_set = set(pred_range)
 
     overlaps = true_set.intersection(pred_set)
+    
+    overlap_percent = len(overlaps) / len(true_set)*100
+    # If the overlap is less than the threshold percentage, return an empty set
+    if overlap_percent < gt_overlap_percent:
+        overlaps = set()
 
     return overlaps
