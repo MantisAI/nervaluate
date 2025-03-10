@@ -249,6 +249,7 @@ def compute_metrics(  # type: ignore
     # go through each predicted named-entity
     for within_instance_index, pred in enumerate(pred_named_entities):
         found_overlap = False
+        counted_as_incorrect = False
 
         # Check each of the potential scenarios in turn. See
         # http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/
