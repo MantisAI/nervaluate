@@ -8,11 +8,11 @@ def summary_report_ent(results_agg_entities_type: Dict, scenario: str = "strict"
     :param results_agg_entities_type: Dictionary containing the evaluation results.
     :param scenario: The scenario to report on.
     :param digits: The number of digits to round the results to.
-    
-    :returns: 
+
+    :returns:
         A string containing the summary report.
-    
-    :raises Exception: 
+
+    :raises Exception:
         If the scenario is invalid.
     """
     if scenario not in {"strict", "ent_type", "partial", "exact"}:

@@ -90,8 +90,8 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
         if self.loader != "default":
             loader = self.loaders[self.loader]
-            self.pred = loader(self.pred)
-            self.true = loader(self.true)
+            self.pred = loader(self.pred)  # type: ignore
+            self.true = loader(self.true)  # type: ignore
 
         if len(self.true) != len(self.pred):
             raise ValueError("Number of predicted documents does not equal true")
