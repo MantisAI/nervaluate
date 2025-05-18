@@ -2,7 +2,7 @@ import logging
 from copy import deepcopy
 import pandas as pd
 from typing import List, Dict, Union, Tuple, Optional, Any
-from collections import defaultdict
+
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
@@ -667,10 +667,12 @@ def summary_report_overall(results: Dict, digits: int = 2) -> str:
     return report
 
 
-def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds: Optional[List] = [[]]) -> str:
+def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds: Optional[List] =  None) -> str:
     """
     Usage: print(summary_report_ents_indices(evaluation_agg_indices, 'partial', preds))
     """
+    if preds is None:
+        preds = [[]]
     report = ""
     for entity_type, entity_results in evaluation_agg_indices.items():
         report += f"\nEntity Type: {entity_type}\n"
@@ -682,7 +684,7 @@ def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str,
             if indices:
                 for instance_index, entity_index in indices:
                     if preds is not [[]]:
-                        pred = preds[instance_index][entity_index]  # type: ignore
+                        pred = preds[instance_index][entity_index]
                         prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"
                         report += f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
                     else:
@@ -692,7 +694,7 @@ def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str,
     return report
 
 
-def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds: Optional[List] = [[]]) -> str:
+def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds: Optional[List] =  None) -> str:
     """
     Usage: print(summary_report_overall_indices(evaluation_indices, 'partial', preds))
     """
