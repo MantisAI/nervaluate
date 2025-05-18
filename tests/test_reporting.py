@@ -1,4 +1,5 @@
 import pytest
+
 from nervaluate.reporting import summary_report_ent, summary_report_overall
 
 

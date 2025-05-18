@@ -1,7 +1,4 @@
-from typing import List, Dict, Optional
-
-
-def split_list(token: List[str], split_chars: Optional[List[str]] = None) -> List[List[str]]:
+def split_list(token: list[str], split_chars: list[str] | None = None) -> list[list[str]]:
     """
     Split a list into sublists based on a list of split characters.
 
@@ -28,7 +25,7 @@ def split_list(token: List[str], split_chars: Optional[List[str]] = None) -> Lis
     return out
 
 
-def conll_to_spans(doc: str) -> List[List[Dict]]:
+def conll_to_spans(doc: str) -> list[list[dict]]:
     """
     Convert a CoNLL-formatted string to a list of spans.
 
@@ -53,7 +50,7 @@ def conll_to_spans(doc: str) -> List[List[Dict]]:
     return spans
 
 
-def list_to_spans(doc: List[List[str]]) -> List[List[Dict]]:
+def list_to_spans(doc: list[list[str]]) -> list[list[dict]]:
     """
     Convert a list of tags to a list of spans.
 
@@ -66,7 +63,7 @@ def list_to_spans(doc: List[List[str]]) -> List[List[Dict]]:
     return spans
 
 
-def collect_named_entities(tokens: List[str]) -> List[Dict]:
+def collect_named_entities(tokens: list[str]) -> list[dict]:
     """
     Creates a list of Entity named-tuples, storing the entity type and the start and end offsets of the entity.
 
