@@ -28,4 +28,4 @@ jobs:
     
     - name: Run tests with Hatch
       run: |
-        hatch -e dev run test 
+        hatch -e dev run all

@@ -1,5 +1,11 @@
 name: CI Code Checks
-on: [pull_request]
+# This workflow is currently disabled and will only run manually
+# To run: Go to Actions tab -> Select this workflow -> Run workflow
+on:
+  workflow_dispatch:
+  # Disabled automatic triggers
+  # pull_request:
+
 permissions:
   contents: write
 jobs:
