@@ -1,9 +1,20 @@
 from typing import Dict, Optional, List
 
 
-def summary_report_ent(  # pylint: disable=too-many-locals
-    results_agg_entities_type: Dict, scenario: str = "strict", digits: int = 2
-) -> str:
+def summary_report_ent(results_agg_entities_type: Dict, scenario: str = "strict", digits: int = 2) -> str:
+    """
+    Generate a summary report of the evaluation results for a given scenario.
+
+    :param results_agg_entities_type: Dictionary containing the evaluation results.
+    :param scenario: The scenario to report on.
+    :param digits: The number of digits to round the results to.
+    
+    :returns: 
+        A string containing the summary report.
+    
+    :raises Exception: 
+        If the scenario is invalid.
+    """
     if scenario not in {"strict", "ent_type", "partial", "exact"}:
         raise Exception("Invalid scenario: must be one of 'strict', 'ent_type', 'partial', 'exact'")
 
@@ -41,6 +52,15 @@ def summary_report_ent(  # pylint: disable=too-many-locals
 
 
 def summary_report_overall(results: Dict, digits: int = 2) -> str:
+    """
+    Generate a summary report of the evaluation results for the overall scenario.
+
+    :param results: Dictionary containing the evaluation results.
+    :param digits: The number of digits to round the results to.
+
+    :returns:
+        A string containing the summary report.
+    """
     headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
     rows = [headers]
 
@@ -75,7 +95,14 @@ def summary_report_overall(results: Dict, digits: int = 2) -> str:
 
 def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds: Optional[List] = None) -> str:
     """
-    Usage: print(summary_report_ents_indices(evaluation_agg_indices, 'partial', preds))
+    Generate a summary report of the evaluation results for the overall scenario.
+
+    :param evaluation_agg_indices: Dictionary containing the evaluation results.
+    :param error_schema: The error schema to report on.
+    :param preds: List of predicted named entities.
+
+    :returns:
+        A string containing the summary report.
     """
     if preds is None:
         preds = [[]]
@@ -102,7 +129,14 @@ def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str,
 
 def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds: Optional[List] = None) -> str:
     """
-    Usage: print(summary_report_overall_indices(evaluation_indices, 'partial', preds))
+    Generate a summary report of the evaluation results for the overall scenario.
+
+    :param evaluation_indices: Dictionary containing the evaluation results.
+    :param error_schema: The error schema to report on.
+    :param preds: List of predicted named entities.
+
+    :returns:
+        A string containing the summary report.
     """
     report = ""
     assert error_schema in evaluation_indices, f"Error schema '{error_schema}' not found in the results."
