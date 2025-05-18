@@ -21,9 +21,7 @@ classifiers = [
 
 
 [project.dependencies]
-dependencies = [
-    "pandas==2.2.3"
-]
+"pandas==2.2.3"
 
 
 [project.optional-dependencies]
