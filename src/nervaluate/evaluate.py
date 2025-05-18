@@ -1,8 +1,7 @@
 import logging
 from copy import deepcopy
 import pandas as pd
-from typing import List, Dict, Union, Tuple, Optional, Any
-from collections import defaultdict
+from typing import List, Dict, Union, Tuple, Any
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
@@ -667,10 +666,12 @@ def summary_report_overall(results: Dict, digits: int = 2) -> str:
     return report
 
 
-def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds: Optional[List] = [[]]) -> str:
+def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds=None) -> str:
     """
     Usage: print(summary_report_ents_indices(evaluation_agg_indices, 'partial', preds))
     """
+    if preds is None:
+        preds = [[]]
     report = ""
     for entity_type, entity_results in evaluation_agg_indices.items():
         report += f"\nEntity Type: {entity_type}\n"
@@ -692,10 +693,12 @@ def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str,
     return report
 
 
-def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds: Optional[List] = [[]]) -> str:
+def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds=None) -> str:
     """
     Usage: print(summary_report_overall_indices(evaluation_indices, 'partial', preds))
     """
+    if preds is None:
+        preds = [[]]
     report = ""
     assert error_schema in evaluation_indices, f"Error schema '{error_schema}' not found in the results."
 
