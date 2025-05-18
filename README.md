@@ -1,8 +1,4 @@
-[![python](https://img.shields.io/badge/Python-3.9-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
-&nbsp;
-![example event parameter](https://github.com/davidsbatista/BREDS/actions/workflows/code_checks.yml/badge.svg?event=pull_request)
-&nbsp;
-![code coverage](https://raw.githubusercontent.com/MantisAI/nervaluate/coverage-badge/coverage.svg?raw=true)
+[![python](https://img.shields.io/badge/Python-3.11-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 &nbsp;
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 &nbsp;
@@ -16,7 +12,7 @@
 
 # nervaluate
 
-nervaluate is a python module for evaluating Named Entity Recognition (NER) models as defined in the SemEval 2013 - 9.1 task.
+`nervaluate` is a python module for evaluating Named Entity Recognition (NER) models as defined in the SemEval 2013 - 9.1 task.
 
 The evaluation metrics output by nervaluate go beyond a simple token/tag based schema, and consider different scenarios 
 based on whether all the tokens that belong to a named entity were classified or not, and also whether the correct 
