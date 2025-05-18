@@ -20,7 +20,7 @@ def summary_report_ent(results_agg_entities_type: dict, scenario: str = "strict"
     rows = [headers]
 
     for ent_type, results in sorted(results_agg_entities_type.items()):
-        for _, v in results.items():
+        for metric, v in results.items():
             rows.append(
                 [
                     ent_type,
