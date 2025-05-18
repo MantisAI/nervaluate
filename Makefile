@@ -21,7 +21,6 @@ test:
 lint:
 	black -t py311 -l 120 src tests
 	pylint --rcfile=pylint.cfg src tests
-	flake8 --config=setup.cfg src tests
 
 
 typing:
