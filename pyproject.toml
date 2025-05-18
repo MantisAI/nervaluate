@@ -19,25 +19,119 @@ classifiers = [
     "Operating System :: OS Independent"
 ]
 
-
 dependencies = [
     "pandas==2.2.3"
 ]
-
 
 [project.optional-dependencies]
 dev = [
     "black==24.3.0",
     "coverage==7.2.5",
-    "flake8==6.0.0",
     "gitchangelog",
     "mypy==1.3.0",
     "pre-commit==3.3.1",
     "pylint==2.17.4",
     "pytest==7.3.1",
+    "pytest-cov==4.1.0",
 ]
-
 
 [project.urls]
 "Homepage" = "https://github.com/MantisAI/nervaluate"
 "Bug Tracker" = "https://github.com/MantisAI/nervaluate/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "--cov=nervaluate --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["nervaluate"]
+omit = ["*__init__*"]
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
+sort = "Miss"
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+
+[tool.pylint.messages_control]
+disable = [
+    "C0111",  # missing-docstring
+    "C0103",  # invalid-name
+    "W0511",  # fixme
+    "W0603",  # global-statement
+    "W1202",  # logging-format-interpolation
+    "W1203",  # logging-fstring-interpolation
+    "E1126",  # invalid-sequence-index
+    "E1137",  # invalid-slice-index
+    "I0011",  # bad-option-value
+    "I0020",  # bad-option-value
+    "R0801",  # duplicate-code
+    "W9020",  # bad-option-value
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.basic]
+accept-no-param-doc = true
+accept-no-raise-doc = true
+accept-no-return-doc = true
+accept-no-yields-doc = true
+default-docstring-type = "numpy"
+
+[tool.pylint.master]
+load-plugins = ["pylint.extensions.docparams"]
+ignore-paths = ["./examples/.*"]
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = ["E203"]
+exclude = [".git", "__pycache__", "build", "dist", "./examples/*"]
+max-complexity = 10
+per-file-ignores = ["*/__init__.py: F401"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+disallow_any_unimported = true
+disallow_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unused_configs = true
+
+
+[[tool.mypy.overrides]]
+module = "examples.*"
+follow_imports = "skip"
+
+[tool.hatch.envs.dev]
+dependencies = [
+    "black==24.3.0",
+    "coverage==7.2.5",
+    "gitchangelog",
+    "mypy==1.3.0",
+    "pre-commit==3.3.1",
+    "pylint==2.17.4",
+    "pytest==7.3.1",
+    "pytest-cov==4.1.0",
+]
+
+[tool.hatch.envs.dev.scripts]
+lint = [
+    "black -t py311 -l 120 src tests",
+    "pylint src tests"
+]
+typing = "mypy src"
+test = "pytest"
+clean = "rm -rf dist src/nervaluate.egg-info .coverage .mypy_cache .pytest_cache"
+changelog = "gitchangelog > CHANGELOG.rst"
+all = [
+    "clean",
+    "lint",
+    "typing",
+    "test"
+]

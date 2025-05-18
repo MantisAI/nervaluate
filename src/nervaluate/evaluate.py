@@ -1,8 +1,8 @@
 import logging
 from copy import deepcopy
-import pandas as pd
-from typing import List, Dict, Union, Tuple, Optional, Any
+from typing import Any
 
+import pandas as pd
 
 from .utils import conll_to_spans, find_overlap, list_to_spans
 
@@ -16,9 +16,9 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
     def __init__(
         self,
-        true: Union[List[List[str]], List[str], List[Dict], str, List[List[Dict[str, Union[int, str]]]]],
-        pred: Union[List[List[str]], List[str], List[Dict], str, List[List[Dict[str, Union[int, str]]]]],
-        tags: List[str],
+        true: list[list[str]] | list[str] | list[dict] | str | list[list[dict[str, int | str]]],
+        pred: list[list[str]] | list[str] | list[dict] | str | list[list[dict[str, int | str]]],
+        tags: list[str],
         loader: str = "default",
     ) -> None:
         """
@@ -68,7 +68,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
 
         self.loader = loader
 
-        self.eval_indices: Dict[str, List[int]] = {
+        self.eval_indices: dict[str, list[int]] = {
             "correct_indices": [],
             "incorrect_indices": [],
             "partial_indices": [],
@@ -85,7 +85,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         }
         self.evaluation_agg_indices = {e: deepcopy(self.evaluation_indices) for e in tags}
 
-    def evaluate(self) -> Tuple[Dict, Dict, Dict, Dict]:
+    def evaluate(self) -> tuple[dict, dict, dict, dict]:  # noqa: C901
         logging.debug("Imported %s predictions for %s true examples", len(self.pred), len(self.true))
 
         if self.loader != "default":
@@ -96,7 +96,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         if len(self.true) != len(self.pred):
             raise ValueError("Number of predicted documents does not equal true")
 
-        for index, (true_ents, pred_ents) in enumerate(zip(self.true, self.pred)):
+        for index, (true_ents, pred_ents) in enumerate(zip(self.true, self.pred, strict=False)):
             # Compute results for one message
             tmp_results, tmp_agg_results, tmp_results_indices, tmp_agg_results_indices = compute_metrics(
                 true_ents, pred_ents, self.tags, index
@@ -137,7 +137,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         return self.results, self.evaluation_agg_entities_type, self.evaluation_indices, self.evaluation_agg_indices
 
     #  Helper method to flatten a nested dictionary
-    def _flatten_dict(self, d: Dict[str, Any], parent_key: str = "", sep: str = ".") -> Dict[str, Any]:
+    def _flatten_dict(self, d: dict[str, Any], parent_key: str = "", sep: str = ".") -> dict[str, Any]:
         """
         Flattens a nested dictionary.
 
@@ -149,7 +149,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         Returns:
             dict: A flattened dictionary.
         """
-        items: List[Tuple[str, Any]] = []
+        items: list[tuple[str, Any]] = []
         for k, v in d.items():
             new_key = f"{parent_key}{sep}{k}" if parent_key else k
             if isinstance(v, dict):
@@ -167,7 +167,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
             raise ValueError("self.results must be a dictionary of dictionaries.")
 
         # Flatten the nested results dictionary, including the 'entities' sub-dictionaries
-        flattened_results: Dict[str, Dict[str, Any]] = {}
+        flattened_results: dict[str, dict[str, Any]] = {}
         for outer_key, inner_dict in self.results.items():
             flattened_inner_dict = self._flatten_dict(inner_dict)
             for inner_key, value in flattened_inner_dict.items():
@@ -182,24 +182,28 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
             raise RuntimeError("Error converting flattened results to DataFrame") from e
 
 
-# flake8: noqa: C901
-def compute_metrics(  # type: ignore
-    true_named_entities, pred_named_entities, tags: List[str], instance_index: int = 0
-):  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
+def compute_metrics(  # type: ignore # noqa: C901
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements,missing-type-doc
+    true_named_entities,
+    pred_named_entities,
+    tags: list[str],
+    instance_index: int = 0,
+) -> tuple[dict, dict, dict, dict]:
     """
     Compute metrics on the collected true and predicted named entities
 
-    :true_name_entities:
+    :param true_named_entities:
         collected true named entities output by collect_named_entities
 
-    :pred_name_entities:
+    :param pred_named_entities:
         collected predicted named entities output by collect_named_entities
 
-    :tags:
+    :param tags:
         list of tags to be used
 
-    :instance_index:
-        index of the example being evaluated. Used to record indices of correct/missing/spurious/exact/partial predictions.
+    :param instance_index:
+        index of the example being evaluated. Used to record indices of correct/missing/spurious/exact/partial
+        predictions.
     """
 
     eval_metrics = {
@@ -224,7 +228,7 @@ def compute_metrics(  # type: ignore
     # results by entity type
     evaluation_agg_entities_type = {e: deepcopy(evaluation) for e in tags}
 
-    eval_ent_indices: Dict[str, List[Tuple[int, int]]] = {
+    eval_ent_indices: dict[str, list[tuple[int, int]]] = {
         "correct_indices": [],
         "incorrect_indices": [],
         "partial_indices": [],
@@ -523,7 +527,7 @@ def compute_metrics(  # type: ignore
     return evaluation, evaluation_agg_entities_type, evaluation_ent_indices, evaluation_agg_ent_indices
 
 
-def compute_actual_possible(results: Dict) -> Dict:
+def compute_actual_possible(results: dict) -> dict:
     """
     Takes a result dict that has been output by compute metrics.
     Returns the results' dict with actual, possible populated.
@@ -552,7 +556,7 @@ def compute_actual_possible(results: Dict) -> Dict:
     return results
 
 
-def compute_precision_recall(results: Dict, partial_or_type: bool = False) -> Dict:
+def compute_precision_recall(results: dict, partial_or_type: bool = False) -> dict:
     """
     Takes a result dict that has been output by compute metrics.
     Returns the results' dict with precision and recall populated.
@@ -582,7 +586,7 @@ def compute_precision_recall(results: Dict, partial_or_type: bool = False) -> Di
     return results
 
 
-def compute_precision_recall_wrapper(results: Dict) -> Dict:
+def compute_precision_recall_wrapper(results: dict) -> dict:
     """
     Wraps the compute_precision_recall function and runs on a dict of results
     """
@@ -597,7 +601,7 @@ def compute_precision_recall_wrapper(results: Dict) -> Dict:
     return results
 
 
-def clean_entities(ent: Dict) -> Dict:
+def clean_entities(ent: dict) -> dict:
     """
     Returns just the useful keys if additional keys are present in the entity
     dict.

@@ -1,6 +1,7 @@
 import pytest
-from nervaluate import Evaluator
+
 from nervaluate import (
+    Evaluator,
     compute_actual_possible,
     compute_metrics,
     compute_precision_recall,

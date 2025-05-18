@@ -1,7 +1,4 @@
-from typing import Dict, Optional, List
-
-
-def summary_report_ent(results_agg_entities_type: Dict, scenario: str = "strict", digits: int = 2) -> str:
+def summary_report_ent(results_agg_entities_type: dict, scenario: str = "strict", digits: int = 2) -> str:
     """
     Generate a summary report of the evaluation results for a given scenario.
 
@@ -16,14 +13,14 @@ def summary_report_ent(results_agg_entities_type: Dict, scenario: str = "strict"
         If the scenario is invalid.
     """
     if scenario not in {"strict", "ent_type", "partial", "exact"}:
-        raise Exception("Invalid scenario: must be one of 'strict', 'ent_type', 'partial', 'exact'")
+        raise ValueError("Invalid scenario: must be one of 'strict', 'ent_type', 'partial', 'exact'")
 
     target_names = sorted(results_agg_entities_type.keys())
     headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
     rows = [headers]
 
     for ent_type, results in sorted(results_agg_entities_type.items()):
-        for k, v in results.items():
+        for v in results.values():
             rows.append(
                 [
                     ent_type,
@@ -51,7 +48,7 @@ def summary_report_ent(results_agg_entities_type: Dict, scenario: str = "strict"
     return report
 
 
-def summary_report_overall(results: Dict, digits: int = 2) -> str:
+def summary_report_overall(results: dict, digits: int = 2) -> str:
     """
     Generate a summary report of the evaluation results for the overall scenario.
 
@@ -93,7 +90,7 @@ def summary_report_overall(results: Dict, digits: int = 2) -> str:
     return report
 
 
-def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds: Optional[List] = None) -> str:
+def summary_report_ents_indices(evaluation_agg_indices: dict, error_schema: str, preds: list | None = None) -> str:
     """
     Generate a summary report of the evaluation results for the overall scenario.
 
@@ -116,7 +113,7 @@ def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str,
             report += f"    ({entity_type}) {category_name}:\n"
             if indices:
                 for instance_index, entity_index in indices:
-                    if preds is not [[]]:
+                    if preds is not None and preds != [[]]:
                         pred = preds[instance_index][entity_index]
                         prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"
                         report += f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
@@ -127,7 +124,7 @@ def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str,
     return report
 
 
-def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds: Optional[List] = None) -> str:
+def summary_report_overall_indices(evaluation_indices: dict, error_schema: str, preds: list | None = None) -> str:
     """
     Generate a summary report of the evaluation results for the overall scenario.
 
@@ -149,7 +146,7 @@ def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, 
         report += f"{category_name}:\n"
         if indices:
             for instance_index, entity_index in indices:
-                if preds is not [[]]:
+                if preds != [[]]:
                     # Retrieve the corresponding prediction
                     pred = preds[instance_index][entity_index]  # type: ignore
                     prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"

@@ -1,9 +1,8 @@
 import nltk
 import sklearn_crfsuite
-
 from sklearn.metrics import classification_report
-from nervaluate import collect_named_entities, summary_report_ent, summary_report_overall
-from nervaluate import Evaluator
+
+from nervaluate import Evaluator, collect_named_entities, summary_report_ent, summary_report_overall
 
 
 def word2features(sent, i):
