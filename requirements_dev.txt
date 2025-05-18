@@ -1,9 +1,0 @@
-black==24.3.0
-coverage==7.2.5
-flake8==6.0.0
-gitchangelog
-mypy==1.3.0
-pre-commit==3.3.1
-pylint==2.17.4
-pytest==7.3.1
-pandas==2.0.1
