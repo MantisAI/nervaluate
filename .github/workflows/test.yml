@@ -26,6 +26,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install hatch
     
-    - name: Run tests with Hatch
+    - name: Running linters
       run: |
-        hatch -e dev run all
+        hatch -e dev run lint
+
+    - name: Type checking with mypy
+      run: |
+        hatch -e dev run typing
+
+    - name: Running tests
+      run: |
+        hatch -e dev run test
