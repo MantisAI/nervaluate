@@ -2,106 +2,107 @@
 import pandas as pd
 from nervaluate import Evaluator
 
+
 def test_results_to_dataframe():
     """
     Test the results_to_dataframe method.
     """
     # Setup
     evaluator = Evaluator(
-        true=[['B-LOC', 'I-LOC', 'O'], ['B-PER', 'O', 'O']],
-        pred=[['B-LOC', 'I-LOC', 'O'], ['B-PER', 'I-PER', 'O']],
-        tags=['LOC', 'PER']
+        true=[["B-LOC", "I-LOC", "O"], ["B-PER", "O", "O"]],
+        pred=[["B-LOC", "I-LOC", "O"], ["B-PER", "I-PER", "O"]],
+        tags=["LOC", "PER"],
     )
-    
+
     # Mock results data for the purpose of this test
     evaluator.results = {
-        'strict': {
-            'correct': 10,
-            'incorrect': 5,
-            'partial': 3,
-            'missed': 2,
-            'spurious': 4,
-            'precision': 0.625,
-            'recall': 0.6667,
-            'f1': 0.6452,
-            'entities': {
-                'LOC': {'correct': 4, 'incorrect': 1, 'partial': 0, 'missed': 1, 'spurious': 2},
-                'PER': {'correct': 3, 'incorrect': 2, 'partial': 1, 'missed': 0, 'spurious': 1},
-                'ORG': {'correct': 3, 'incorrect': 2, 'partial': 2, 'missed': 1, 'spurious': 1}
-            }
+        "strict": {
+            "correct": 10,
+            "incorrect": 5,
+            "partial": 3,
+            "missed": 2,
+            "spurious": 4,
+            "precision": 0.625,
+            "recall": 0.6667,
+            "f1": 0.6452,
+            "entities": {
+                "LOC": {"correct": 4, "incorrect": 1, "partial": 0, "missed": 1, "spurious": 2},
+                "PER": {"correct": 3, "incorrect": 2, "partial": 1, "missed": 0, "spurious": 1},
+                "ORG": {"correct": 3, "incorrect": 2, "partial": 2, "missed": 1, "spurious": 1},
+            },
         },
-        'ent_type': {
-            'correct': 8,
-            'incorrect': 4,
-            'partial': 1,
-            'missed': 3,
-            'spurious': 3,
-            'precision': 0.5714,
-            'recall': 0.6154,
-            'f1': 0.5926,
-            'entities': {
-                'LOC': {'correct': 3, 'incorrect': 2, 'partial': 1, 'missed': 1, 'spurious': 1},
-                'PER': {'correct': 2, 'incorrect': 1, 'partial': 0, 'missed': 2, 'spurious': 0},
-                'ORG': {'correct': 3, 'incorrect': 1, 'partial': 0, 'missed': 0, 'spurious': 2}
-            }
+        "ent_type": {
+            "correct": 8,
+            "incorrect": 4,
+            "partial": 1,
+            "missed": 3,
+            "spurious": 3,
+            "precision": 0.5714,
+            "recall": 0.6154,
+            "f1": 0.5926,
+            "entities": {
+                "LOC": {"correct": 3, "incorrect": 2, "partial": 1, "missed": 1, "spurious": 1},
+                "PER": {"correct": 2, "incorrect": 1, "partial": 0, "missed": 2, "spurious": 0},
+                "ORG": {"correct": 3, "incorrect": 1, "partial": 0, "missed": 0, "spurious": 2},
+            },
         },
-        'partial': {
-            'correct': 7,
-            'incorrect': 3,
-            'partial': 4,
-            'missed': 1,
-            'spurious': 5,
-            'precision': 0.5385,
-            'recall': 0.6364,
-            'f1': 0.5833,
-            'entities': {
-                'LOC': {'correct': 2, 'incorrect': 1, 'partial': 1, 'missed': 1, 'spurious': 2},
-                'PER': {'correct': 3, 'incorrect': 1, 'partial': 1, 'missed': 0, 'spurious': 1},
-                'ORG': {'correct': 2, 'incorrect': 1, 'partial': 2, 'missed': 0, 'spurious': 2}
-            }
+        "partial": {
+            "correct": 7,
+            "incorrect": 3,
+            "partial": 4,
+            "missed": 1,
+            "spurious": 5,
+            "precision": 0.5385,
+            "recall": 0.6364,
+            "f1": 0.5833,
+            "entities": {
+                "LOC": {"correct": 2, "incorrect": 1, "partial": 1, "missed": 1, "spurious": 2},
+                "PER": {"correct": 3, "incorrect": 1, "partial": 1, "missed": 0, "spurious": 1},
+                "ORG": {"correct": 2, "incorrect": 1, "partial": 2, "missed": 0, "spurious": 2},
+            },
         },
-        'exact': {
-            'correct': 9,
-            'incorrect': 6,
-            'partial': 2,
-            'missed': 2,
-            'spurious': 2,
-            'precision': 0.6,
-            'recall': 0.6429,
-            'f1': 0.6207,
-            'entities': {
-                'LOC': {'correct': 4, 'incorrect': 1, 'partial': 0, 'missed': 1, 'spurious': 1},
-                'PER': {'correct': 3, 'incorrect': 3, 'partial': 0, 'missed': 0, 'spurious': 0},
-                'ORG': {'correct': 2, 'incorrect': 2, 'partial': 2, 'missed': 1, 'spurious': 1}
-            }
-        }
+        "exact": {
+            "correct": 9,
+            "incorrect": 6,
+            "partial": 2,
+            "missed": 2,
+            "spurious": 2,
+            "precision": 0.6,
+            "recall": 0.6429,
+            "f1": 0.6207,
+            "entities": {
+                "LOC": {"correct": 4, "incorrect": 1, "partial": 0, "missed": 1, "spurious": 1},
+                "PER": {"correct": 3, "incorrect": 3, "partial": 0, "missed": 0, "spurious": 0},
+                "ORG": {"correct": 2, "incorrect": 2, "partial": 2, "missed": 1, "spurious": 1},
+            },
+        },
     }
 
     # Expected DataFrame
     expected_data = {
-    'correct': {'strict': 10, 'ent_type': 8, 'partial': 7, 'exact': 9},
-    'incorrect': {'strict': 5, 'ent_type': 4, 'partial': 3, 'exact': 6},
-    'partial': {'strict': 3, 'ent_type': 1, 'partial': 4, 'exact': 2},
-    'missed': {'strict': 2, 'ent_type': 3, 'partial': 1, 'exact': 2},
-    'spurious': {'strict': 4, 'ent_type': 3, 'partial': 5, 'exact': 2},
-    'precision': {'strict': 0.625, 'ent_type': 0.5714, 'partial': 0.5385, 'exact': 0.6},
-    'recall': {'strict': 0.6667, 'ent_type': 0.6154, 'partial': 0.6364, 'exact': 0.6429},
-    'f1': {'strict': 0.6452, 'ent_type': 0.5926, 'partial': 0.5833, 'exact': 0.6207},
-    'entities.LOC.correct': {'strict': 4, 'ent_type': 3, 'partial': 2, 'exact': 4},
-    'entities.LOC.incorrect': {'strict': 1, 'ent_type': 2, 'partial': 1, 'exact': 1},
-    'entities.LOC.partial': {'strict': 0, 'ent_type': 1, 'partial': 1, 'exact': 0},
-    'entities.LOC.missed': {'strict': 1, 'ent_type': 1, 'partial': 1, 'exact': 1},
-    'entities.LOC.spurious': {'strict': 2, 'ent_type': 1, 'partial': 2, 'exact': 1},
-    'entities.PER.correct': {'strict': 3, 'ent_type': 2, 'partial': 3, 'exact': 3},
-    'entities.PER.incorrect': {'strict': 2, 'ent_type': 1, 'partial': 1, 'exact': 3},
-    'entities.PER.partial': {'strict': 1, 'ent_type': 0, 'partial': 1, 'exact': 0},
-    'entities.PER.missed': {'strict': 0, 'ent_type': 2, 'partial': 0, 'exact': 0},
-    'entities.PER.spurious': {'strict': 1, 'ent_type': 0, 'partial': 1, 'exact': 0},
-    'entities.ORG.correct': {'strict': 3, 'ent_type': 3, 'partial': 2, 'exact': 2},
-    'entities.ORG.incorrect': {'strict': 2, 'ent_type': 1, 'partial': 1, 'exact': 2},
-    'entities.ORG.partial': {'strict': 2, 'ent_type': 0, 'partial': 2, 'exact': 2},
-    'entities.ORG.missed': {'strict': 1, 'ent_type': 0, 'partial': 0, 'exact': 1},
-    'entities.ORG.spurious': {'strict': 1, 'ent_type': 2, 'partial': 2, 'exact': 1}
+        "correct": {"strict": 10, "ent_type": 8, "partial": 7, "exact": 9},
+        "incorrect": {"strict": 5, "ent_type": 4, "partial": 3, "exact": 6},
+        "partial": {"strict": 3, "ent_type": 1, "partial": 4, "exact": 2},
+        "missed": {"strict": 2, "ent_type": 3, "partial": 1, "exact": 2},
+        "spurious": {"strict": 4, "ent_type": 3, "partial": 5, "exact": 2},
+        "precision": {"strict": 0.625, "ent_type": 0.5714, "partial": 0.5385, "exact": 0.6},
+        "recall": {"strict": 0.6667, "ent_type": 0.6154, "partial": 0.6364, "exact": 0.6429},
+        "f1": {"strict": 0.6452, "ent_type": 0.5926, "partial": 0.5833, "exact": 0.6207},
+        "entities.LOC.correct": {"strict": 4, "ent_type": 3, "partial": 2, "exact": 4},
+        "entities.LOC.incorrect": {"strict": 1, "ent_type": 2, "partial": 1, "exact": 1},
+        "entities.LOC.partial": {"strict": 0, "ent_type": 1, "partial": 1, "exact": 0},
+        "entities.LOC.missed": {"strict": 1, "ent_type": 1, "partial": 1, "exact": 1},
+        "entities.LOC.spurious": {"strict": 2, "ent_type": 1, "partial": 2, "exact": 1},
+        "entities.PER.correct": {"strict": 3, "ent_type": 2, "partial": 3, "exact": 3},
+        "entities.PER.incorrect": {"strict": 2, "ent_type": 1, "partial": 1, "exact": 3},
+        "entities.PER.partial": {"strict": 1, "ent_type": 0, "partial": 1, "exact": 0},
+        "entities.PER.missed": {"strict": 0, "ent_type": 2, "partial": 0, "exact": 0},
+        "entities.PER.spurious": {"strict": 1, "ent_type": 0, "partial": 1, "exact": 0},
+        "entities.ORG.correct": {"strict": 3, "ent_type": 3, "partial": 2, "exact": 2},
+        "entities.ORG.incorrect": {"strict": 2, "ent_type": 1, "partial": 1, "exact": 2},
+        "entities.ORG.partial": {"strict": 2, "ent_type": 0, "partial": 2, "exact": 2},
+        "entities.ORG.missed": {"strict": 1, "ent_type": 0, "partial": 0, "exact": 1},
+        "entities.ORG.spurious": {"strict": 1, "ent_type": 2, "partial": 2, "exact": 1},
     }
 
     expected_df = pd.DataFrame(expected_data)
@@ -111,6 +112,7 @@ def test_results_to_dataframe():
 
     # Assert
     pd.testing.assert_frame_equal(result_df, expected_df)
+
 
 def test_evaluator_simple_case():
     true = [

@@ -13,6 +13,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
     """
     Evaluator class for evaluating named entity recognition (NER) models.
     """
+
     def __init__(
         self,
         true: Union[List[List[str]], List[str], List[Dict], str, List[List[Dict[str, Union[int, str]]]]],
@@ -28,7 +29,7 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
             pred: List of predicted named entities.
             tags: List of tags to be used.
             loader: Loader to be used.
-        
+
         Raises:
             ValueError: If the number of predicted documents does not equal the number of true documents.
         """
@@ -134,9 +135,9 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
                 )
 
         return self.results, self.evaluation_agg_entities_type, self.evaluation_indices, self.evaluation_agg_indices
-    
+
     #  Helper method to flatten a nested dictionary
-    def _flatten_dict(self, d: Dict[str, Any], parent_key: str = '', sep: str = '.') -> Dict[str, Any]:
+    def _flatten_dict(self, d: Dict[str, Any], parent_key: str = "", sep: str = ".") -> Dict[str, Any]:
         """
         Flattens a nested dictionary.
 
@@ -605,133 +606,3 @@ def clean_entities(ent: Dict) -> Dict:
     typically may include 'token_start' and 'token_end'.
     """
     return {"start": ent["start"], "end": ent["end"], "label": ent["label"]}
-
-
-def summary_report_ent(  # pylint: disable=too-many-locals
-    results_agg_entities_type: Dict, scenario: str = "strict", digits: int = 2
-) -> str:
-    if scenario not in {"strict", "ent_type", "partial", "exact"}:
-        raise Exception("Invalid scenario: must be one of 'strict', 'ent_type', 'partial', 'exact'")
-
-    target_names = sorted(results_agg_entities_type.keys())
-    headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
-    rows = [headers]
-
-    for ent_type, results in sorted(results_agg_entities_type.items()):
-        for k, v in results.items():
-            if k != scenario:
-                continue
-            rows.append(
-                [
-                    ent_type,
-                    v["correct"],
-                    v["incorrect"],
-                    v["partial"],
-                    v["missed"],
-                    v["spurious"],
-                    v["precision"],
-                    v["recall"],
-                    v["f1"],
-                ]
-            )
-
-    name_width = max(len(cn) for cn in target_names)
-    width = max(name_width, digits)
-    head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
-    report = head_fmt.format("", *headers, width=width)
-    report += "\n\n"
-    row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
-
-    for row in rows[1:]:
-        report += row_fmt.format(*row, width=width, digits=digits)
-
-    return report
-
-
-def summary_report_overall(results: Dict, digits: int = 2) -> str:
-    headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
-    rows = [headers]
-
-    for k, v in results.items():
-        rows.append(
-            [
-                k,
-                v["correct"],
-                v["incorrect"],
-                v["partial"],
-                v["missed"],
-                v["spurious"],
-                v["precision"],
-                v["recall"],
-                v["f1"],
-            ]
-        )
-
-    target_names = sorted(results.keys())
-    name_width = max(len(cn) for cn in target_names)
-    width = max(name_width, digits)
-    head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
-    report = head_fmt.format("", *headers, width=width)
-    report += "\n\n"
-    row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
-
-    for row in rows[1:]:
-        report += row_fmt.format(*row, width=width, digits=digits)
-
-    return report
-
-
-def summary_report_ents_indices(evaluation_agg_indices: Dict, error_schema: str, preds: Optional[List] =  None) -> str:
-    """
-    Usage: print(summary_report_ents_indices(evaluation_agg_indices, 'partial', preds))
-    """
-    if preds is None:
-        preds = [[]]
-    report = ""
-    for entity_type, entity_results in evaluation_agg_indices.items():
-        report += f"\nEntity Type: {entity_type}\n"
-        error_data = entity_results[error_schema]
-        report += f"  Error Schema: '{error_schema}'\n"
-        for category, indices in error_data.items():
-            category_name = category.replace("_", " ").capitalize()
-            report += f"    ({entity_type}) {category_name}:\n"
-            if indices:
-                for instance_index, entity_index in indices:
-                    if preds is not [[]]:
-                        pred = preds[instance_index][entity_index]
-                        prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"
-                        report += f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
-                    else:
-                        report += f"      - Instance {instance_index}, Entity {entity_index}\n"
-            else:
-                report += "      - None\n"
-    return report
-
-
-def summary_report_overall_indices(evaluation_indices: Dict, error_schema: str, preds: Optional[List] =  None) -> str:
-    """
-    Usage: print(summary_report_overall_indices(evaluation_indices, 'partial', preds))
-    """
-    report = ""
-    assert error_schema in evaluation_indices, f"Error schema '{error_schema}' not found in the results."
-
-    error_data = evaluation_indices[error_schema]
-    report += f"Indices for error schema '{error_schema}':\n\n"
-
-    for category, indices in error_data.items():
-        category_name = category.replace("_", " ").capitalize()
-        report += f"{category_name}:\n"
-        if indices:
-            for instance_index, entity_index in indices:
-                if preds is not [[]]:
-                    # Retrieve the corresponding prediction
-                    pred = preds[instance_index][entity_index]  # type: ignore
-                    prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"
-                    report += f"  - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
-                else:
-                    report += f"  - Instance {instance_index}, Entity {entity_index}\n"
-        else:
-            report += "  - None\n"
-        report += "\n"
-
-    return report
