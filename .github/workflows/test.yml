@@ -1,4 +1,4 @@
-name: Test
+name: Linting, Type Checking, and Testing
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest windows-latest macos-latest
     strategy:
       matrix:
         python-version: ["3.11"]
