@@ -182,9 +182,8 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
             raise RuntimeError("Error converting flattened results to DataFrame") from e
 
 
-def compute_metrics(  # type: ignore
-    # noqa: C901
-    # pylint: disable=W9016, too-many-locals, too-many-branches, too-many-statements
+def compute_metrics(  # type: ignore # noqa: C901
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements,missing-type-doc
     true_named_entities,
     pred_named_entities,
     tags: list[str],
