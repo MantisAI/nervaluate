@@ -44,7 +44,7 @@ test:
 
 
 lint:
-	black -t py38 -l 120 src tests
+	black -t py311 -l 120 src tests
 	pylint --rcfile=pylint.cfg src tests
 	flake8 --config=setup.cfg src tests
 
