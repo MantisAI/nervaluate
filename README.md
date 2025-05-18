@@ -23,17 +23,13 @@ based on whether all the tokens that belong to a named entity were classified or
 entity type was assigned.
 
 This full problem is described in detail in the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) 
-post by [David Batista](https://github.com/davidsbatista), and extends the code in the 
-[original repository](https://github.com/davidsbatista/NER-Evaluation) which accompanied the blog post.
+post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) which accompanied the blog post.
 
 The code draws heavily on:
 
-* Segura-bedmar, I., & Mart, P. (2013). 2013 SemEval-2013 Task 9 Extraction of Drug-Drug Interactions from. Semeval, 2(DDIExtraction), 341–350. [link](https://www.aclweb.org/anthology/S13-2056)
-* [PDF link](https://aclanthology.org/S13-2056.pdf)
+* [SemEval-2013 Task 9 : Extraction of Drug-Drug Interactions from Biomedical Texts (DDIExtraction 2013)](https://www.aclweb.org/anthology/S13-2056)
 
-## The problem
-
-### Token level evaluation for NER is too simplistic
+## Token level evaluation for NER is too simplistic
 
 When running machine learning models for NER, it is common to report metrics at the individual token level. This may 
 not be the best approach, as a named entity can be made up of multiple tokens, so a full-entity accuracy would be 
@@ -452,63 +448,7 @@ A list of formats we intend to include is included in https://github.com/ivyleav
 ## Contributing to the nervaluate package
 
 Improvements, adding new features and bug fixes are welcome. If you wish to participate in the development of nervaluate 
-please read the following guidelines.
-
-## The contribution process at a glance
-
-1. Preparing the development environment
-2. Code away!
-3. Continuous Integration
-4. Submit your changes by opening a pull request
-
-Small fixes and additions can be submitted directly as pull requests, but larger changes should be discussed in 
-an issue first. You can expect a reply within a few days, but please be patient if it takes a bit longer. 
-
-
-## Preparing the development environment
-
-Make sure you have Python3.8 installed on your system
-
-macOs
-```sh
-brew install python@3.8
-python3.8 -m pip install --user --upgrade pip
-python3.8 -m pip install virtualenv
-```
-
-Clone the repository and prepare the development environment:
-
-```sh
-git clone git@github.com:MantisAI/nervaluate.git
-cd nervaluate
-python3.8 -m virtualenv venv
-source venv/bin/activate
-pip install -r requirements_dev.txt
-pip install -e .
-```
-
-
-## Continuous Integration
-
-nervaluate runs a continuous integration (CI) on all pull requests. This means that if you open a pull request (PR), 
-a full  test suite is run on your PR: 
-
-- The code is formatted using `black`
-- Linting is done using `pyling` and `flake8`
-- Type checking is done using `mypy`
-- Tests are run using `pytest`
-
-Nevertheless, if you prefer to run the tests & formatting locally, it's possible too. 
-
-```sh
-make all
-```
-
-## Opening a Pull Request
-
-Every PR should be accompanied by short description of the changes, including:
-- Impact and  motivation for the changes
-- Any open issues that are closed by this PR
+please read the guidelines in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ---
 
