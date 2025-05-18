@@ -113,7 +113,7 @@ def summary_report_ents_indices(evaluation_agg_indices: dict, error_schema: str,
             report += f"    ({entity_type}) {category_name}:\n"
             if indices:
                 for instance_index, entity_index in indices:
-                    if preds != [[]]:
+                    if preds is not None and preds != [[]]:
                         pred = preds[instance_index][entity_index]
                         prediction_info = f"Label={pred['label']}, Start={pred['start']}, End={pred['end']}"
                         report += f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
