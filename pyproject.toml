@@ -25,7 +25,6 @@ dependencies = [
 ]
 
 
-
 [project.optional-dependencies]
 dev = [
     "black==24.3.0",
