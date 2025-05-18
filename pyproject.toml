@@ -19,8 +19,12 @@ classifiers = [
     "Operating System :: OS Independent"
 ]
 
+
 [project.dependencies]
-pandas = "==2.2.3"
+dependencies = [
+    "pandas==2.2.3"
+]
+
 
 [project.optional-dependencies]
 dev = [
@@ -33,6 +37,7 @@ dev = [
     "pylint==2.17.4",
     "pytest==7.3.1",
 ]
+
 
 [project.urls]
 "Homepage" = "https://github.com/MantisAI/nervaluate"
