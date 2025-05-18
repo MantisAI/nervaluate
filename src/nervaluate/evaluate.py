@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public-methods
+    """
+    Evaluator class for evaluating named entity recognition (NER) models.
+    """
     def __init__(
         self,
         true: Union[List[List[str]], List[str], List[Dict], str, List[List[Dict[str, Union[int, str]]]]],
@@ -17,10 +20,21 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         tags: List[str],
         loader: str = "default",
     ) -> None:
+        """
+        Initialize the Evaluator class.
+
+        Args:
+            true: List of true named entities.
+            pred: List of predicted named entities.
+            tags: List of tags to be used.
+            loader: Loader to be used.
+        
+        Raises:
+            ValueError: If the number of predicted documents does not equal the number of true documents.
+        """
         self.true = true
         self.pred = pred
         self.tags = tags
-        # self.list = []
 
         # Setup dict into which metrics will be stored.
         self.metrics_results = {
