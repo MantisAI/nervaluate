@@ -3,37 +3,43 @@ def summary_report_ent(results_agg_entities_type: dict, scenario: str = "strict"
     Generate a summary report of the evaluation results for a given scenario.
 
     :param results_agg_entities_type: Dictionary containing the evaluation results.
-    :param scenario: The scenario to report on.
+    :param scenario: The scenario to report on. Must be one of: 'strict', 'ent_type', 'partial', 'exact'.
+                    Defaults to 'strict'.
     :param digits: The number of digits to round the results to.
 
     :returns:
         A string containing the summary report.
 
-    :raises Exception:
+    :raises ValueError:
         If the scenario is invalid.
     """
-    if scenario not in {"strict", "ent_type", "partial", "exact"}:
-        raise ValueError("Invalid scenario: must be one of 'strict', 'ent_type', 'partial', 'exact'")
+    valid_scenarios = {"strict", "ent_type", "partial", "exact"}
+    if scenario not in valid_scenarios:
+        raise ValueError(f"Invalid scenario: must be one of {valid_scenarios}")
 
     target_names = sorted(results_agg_entities_type.keys())
     headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
     rows = [headers]
 
-    for ent_type, results in sorted(results_agg_entities_type.items()):
-        for v in results.values():
-            rows.append(
-                [
-                    ent_type,
-                    v["correct"],
-                    v["incorrect"],
-                    v["partial"],
-                    v["missed"],
-                    v["spurious"],
-                    v["precision"],
-                    v["recall"],
-                    v["f1"],
-                ]
-            )
+    # Aggregate results by entity type for the specified scenario
+    for ent_type in target_names:
+        if scenario not in results_agg_entities_type[ent_type]:
+            raise ValueError(f"Scenario '{scenario}' not found in results for entity type '{ent_type}'")
+
+        results = results_agg_entities_type[ent_type][scenario]
+        rows.append(
+            [
+                ent_type,
+                results["correct"],
+                results["incorrect"],
+                results["partial"],
+                results["missed"],
+                results["spurious"],
+                results["precision"],
+                results["recall"],
+                results["f1"],
+            ]
+        )
 
     name_width = max(len(cn) for cn in target_names)
     width = max(name_width, digits)
