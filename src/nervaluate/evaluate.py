@@ -4,7 +4,7 @@ from typing import Any
 
 import pandas as pd
 
-from .utils import conll_to_spans, find_overlap, list_to_spans
+from .utils import conll_to_spans, find_overlap, list_to_spans, clean_entities
 
 logger = logging.getLogger(__name__)
 
@@ -599,14 +599,3 @@ def compute_precision_recall_wrapper(results: dict) -> dict:
     results = {**results_a, **results_b}
 
     return results
-
-
-def clean_entities(ent: dict) -> dict:
-    """
-    Returns just the useful keys if additional keys are present in the entity
-    dict.
-
-    This may happen if passing a list of spans directly from prodigy, which
-    typically may include 'token_start' and 'token_end'.
-    """
-    return {"start": ent["start"], "end": ent["end"], "label": ent["label"]}

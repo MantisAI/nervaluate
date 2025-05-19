@@ -129,3 +129,14 @@ def find_overlap(true_range: range, pred_range: range) -> set:
     overlaps = true_set.intersection(pred_set)
 
     return overlaps
+
+
+def clean_entities(ent: dict) -> dict:
+    """
+    Returns just the useful keys if additional keys are present in the entity
+    dict.
+
+    This may happen if passing a list of spans directly from prodigy, which
+    typically may include 'token_start' and 'token_end'.
+    """
+    return {"start": ent["start"], "end": ent["end"], "label": ent["label"]}
