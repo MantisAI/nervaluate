@@ -12,14 +12,15 @@
 
 # nervaluate
 
-`nervaluate` is a python module for evaluating Named Entity Recognition (NER) models as defined in the SemEval 2013 - 9.1 task.
+`nervaluate` is a module for evaluating Named Entity Recognition (NER) models as defined in the SemEval 2013 - 9.1 task.
 
 The evaluation metrics output by nervaluate go beyond a simple token/tag based schema, and consider different scenarios 
 based on whether all the tokens that belong to a named entity were classified or not, and also whether the correct 
 entity type was assigned.
 
 This full problem is described in detail in the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) 
-post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) which accompanied the blog post.
+post by [David Batista](https://github.com/davidsbatista), and extends the code in the[original repository](https://github.com/davidsbatista/NER-Evaluation) 
+which accompanied the blog post.
 
 The code draws heavily on:
 
@@ -35,30 +36,30 @@ When comparing the golden standard annotations with the output of a NER system d
 
 __I. Surface string and entity type match__
 
-|Token|Gold|Prediction|
-|---|---|---|
-|in|O|O|
-|New|B-LOC|B-LOC|
-|York|I-LOC|I-LOC|
-|.|O|O|
+| Token | Gold  | Prediction |
+|-------|-------|------------|
+| in    | O     | O          |
+| New   | B-LOC | B-LOC      |
+| York  | I-LOC | I-LOC      |
+| .     | O     | O          |
 
 __II. System hypothesized an incorrect entity__
 
-|Token|Gold|Prediction|
-|---|---|---|
-|an|O|O|
-|Awful|O|B-ORG|
-|Headache|O|I-ORG|
-|in|O|O|
+| Token    | Gold | Prediction |
+|----------|------|------------|
+| an       | O    | O          |
+| Awful    | O    | B-ORG      |
+| Headache | O    | I-ORG      |
+| in       | O    | O          |
 
 __III. System misses an entity__
 
-|Token|Gold|Prediction|
-|---|---|---|
-|in|O|O|
-|Palo|B-LOC|O|
-|Alto|I-LOC|O|
-|,|O|O|
+| Token | Gold  | Prediction |
+|-------|-------|------------|
+| in    | O     | O          |
+| Palo  | B-LOC | O          |
+| Alto  | I-LOC | O          |
+| ,     | O     | O          |
 
 Based on these three scenarios we have a simple classification evaluation that can be measured in terms of false 
 positives, true positives, false negatives and false positives, and subsequently compute precision, recall and 
@@ -72,65 +73,65 @@ For example:
 
 __IV. System assigns the wrong entity type__
 
-|Token|Gold|Prediction|
-|---|---|---|
-|I|O|O|
-|live|O|O|
-|in|O|O|
-|Palo|B-LOC|B-ORG|
-|Alto|I-LOC|I-ORG|
-|,|O|O|
+| Token | Gold  | Prediction |
+|-------|-------|------------|
+| I     | O     | O          |
+| live  | O     | O          |
+| in    | O     | O          |
+| Palo  | B-LOC | B-ORG      |
+| Alto  | I-LOC | I-ORG      |
+| ,     | O     | O          |
 
 __V. System gets the boundaries of the surface string wrong__
 
-|Token|Gold|Prediction|
-|---|---|---|
-|Unless|O|B-PER|
-|Karl|B-PER|I-PER|
-|Smith|I-PER|I-PER|
-|resigns|O|O|
+| Token   | Gold  | Prediction |
+|---------|-------|------------|
+| Unless  | O     | B-PER      |
+| Karl    | B-PER | I-PER      |
+| Smith   | I-PER | I-PER      |
+| resigns | O     | O          |
 
 __VI. System gets the boundaries and entity type wrong__
 
-|Token|Gold|Prediction|
-|---|---|---|
-|Unless|O|B-ORG|
-|Karl|B-PER|I-ORG|
-|Smith|I-PER|I-ORG|
-|resigns|O|O|
+| Token   | Gold  | Prediction |
+|---------|-------|------------|
+| Unless  | O     | B-ORG      |
+| Karl    | B-PER | I-ORG      |
+| Smith   | I-PER | I-ORG      |
+| resigns | O     | O          |
 
 How can we incorporate these described scenarios into evaluation metrics? See the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) 
 for a great explanation, a summary is included here:
 
 We can use the following five metrics to consider difference categories of errors:
 
-|Error type|Explanation|
-|---|---|
-|Correct (COR)|both are the same|
-|Incorrect (INC)|the output of a system and the golden annotation don’t match|
-|Partial (PAR)|system and the golden annotation are somewhat “similar” but not the same|
-|Missing (MIS)|a golden annotation is not captured by a system|
-|Spurious (SPU)|system produces a response which doesn’t exist in the golden annotation|
+| Error type      | Explanation                                                              |
+|-----------------|--------------------------------------------------------------------------|
+| Correct (COR)   | both are the same                                                        |
+| Incorrect (INC) | the output of a system and the golden annotation don’t match             |
+| Partial (PAR)   | system and the golden annotation are somewhat “similar” but not the same |
+| Missing (MIS)   | a golden annotation is not captured by a system                          |
+| Spurious (SPU)  | system produces a response which doesn’t exist in the golden annotation  |
 
 These five metrics can be measured in four different ways:
 
-|Evaluation schema|Explanation|
-|---|---|
-|Strict|exact boundary surface string match and entity type|
-|Exact|exact boundary match over the surface string, regardless of the type|
-|Partial|partial boundary match over the surface string, regardless of the type|
-|Type|some overlap between the system tagged entity and the gold annotation is required|
+| Evaluation schema | Explanation                                                                       |
+|-------------------|-----------------------------------------------------------------------------------|
+| Strict            | exact boundary surface string match and entity type                               |
+| Exact             | exact boundary match over the surface string, regardless of the type              |
+| Partial           | partial boundary match over the surface string, regardless of the type            |
+| Type              | some overlap between the system tagged entity and the gold annotation is required |
 
 These five errors and four evaluation schema interact in the following ways:
 
-|Scenario|Gold entity|Gold string|Pred entity|Pred string|Type|Partial|Exact|Strict|
-|---|---|---|---|---|---|---|---|---|
-|III|BRAND|tikosyn| | |MIS|MIS|MIS|MIS|
-|II| | |BRAND|healthy|SPU|SPU|SPU|SPU|
-|V|DRUG|warfarin|DRUG|of warfarin|COR|PAR|INC|INC|
-|IV|DRUG|propranolol|BRAND|propranolol|INC|COR|COR|INC|
-|I|DRUG|phenytoin|DRUG|phenytoin|COR|COR|COR|COR|
-|VI|GROUP|contraceptives|DRUG|oral contraceptives|INC|PAR|INC|INC|
+| Scenario | Gold entity | Gold string    | Pred entity | Pred string         | Type | Partial | Exact | Strict |
+|----------|-------------|----------------|-------------|---------------------|------|---------|-------|--------|
+| III      | BRAND       | tikosyn        |             |                     | MIS  | MIS     | MIS   | MIS    |
+| II       |             |                | BRAND       | healthy             | SPU  | SPU     | SPU   | SPU    |
+| V        | DRUG        | warfarin       | DRUG        | of warfarin         | COR  | PAR     | INC   | INC    |
+| IV       | DRUG        | propranolol    | BRAND       | propranolol         | INC  | COR     | COR   | INC    |
+| I        | DRUG        | phenytoin      | DRUG        | phenytoin           | COR  | COR     | COR   | COR    |
+| VI       | GROUP       | contraceptives | DRUG        | oral contraceptives | INC  | PAR     | INC   | INC    |
 
 Then precision/recall/f1-score are calculated for each different evaluation schema. In order to achieve data, two more 
 quantities need to be calculated:
@@ -188,11 +189,13 @@ pip install nervaluate
 
 ## Example:
 
-The main `Evaluator` class will accept a number of formats:
+The main `Evaluator` class will accept the following formats:
 
 * [prodi.gy](https://prodi.gy) style lists of spans.
 * Nested lists containing NER labels.
 * CoNLL style tab delimited strings.
+
+<!--
 
 ### Prodigy spans
 
@@ -396,25 +399,34 @@ Missed indices:
 Spurious indices:
   - None
 ```
+-->
 
 ### Nested lists
 
 ```
+
+from nervaluate import Evaluator
+
 true = [
-    ['O', 'O', 'B-PER', 'I-PER', 'O'],
-    ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC', 'O'],
+    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
+    ['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE'],
 ]
 
 pred = [
-    ['O', 'O', 'B-PER', 'I-PER', 'O'],
-    ['O', 'B-LOC', 'I-LOC', 'B-LOC', 'I-LOC', 'O'],
+    ['O', 'O', 'B-PER', 'I-PER', 'O', 'O', 'B-ORG', 'I-ORG', 'O'],
+    ['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'I-PER', 'O', 'B-DATE', 'I-DATE', 'O'],
 ]
 
-evaluator = Evaluator(true, pred, tags=['LOC', 'PER'], loader="list")
+# Example text for reference:
+# "The John Smith who works at Google Inc"
+# "In Paris Marie Curie lived in 1895"
+
+evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
 
 results, results_by_tag, result_indices, result_indices_by_tag = evaluator.evaluate()
 ```
 
+<!--
 ### CoNLL style tab delimited
 
 ```
@@ -426,24 +438,25 @@ pred = "word\tO\nword\tO\B-PER\nword\tI-PER\n"
 evaluator = Evaluator(true, pred, tags=['PER'], loader="conll")
 
 results, results_by_tag, result_indices, result_indices_by_tag = evaluator.evaluate()
-
 ```
+-->
 
-## Extending the package to accept more formats
+## Contributing to the `nervaluate` package
 
-Additional formats can easily be added to the module by creating a conversion function in `nervaluate/utils.py`, 
-for example `conll_to_spans()`. This function must return the spans in the prodigy style dicts shown in the prodigy 
-example above.
+### Extending the package to accept more formats
 
-The new function can then be added to the list of loaders in `nervaluate/nervaluate.py`, and can then be selection 
-with the `loader` argument when instantiating the `Evaluator` class.
+Additional formats can easily be added to the module by creating a new loader class in `nervaluate/loaders.py`. The 
+loader class should inherit from the `DataLoader` base class and implement the `load` method. The `load` method should
+ return a list of entity lists, where each entity is represented as a dictionary with `label`, `start`, and `end` keys.
 
-A list of formats we intend to include is included in https://github.com/ivyleavedtoadflax/nervaluate/issues/3.
+The new loader can then be added to the `_setup_loaders` method in the `Evaluator` class, and can be selected with the
+ `loader` argument when instantiating the `Evaluator` class.
 
+Here is list of formats we intend to [include](https://github.com/MantisAI/nervaluate/issues/3).
 
-## Contributing to the nervaluate package
+### General Contributing
 
-Improvements, adding new features and bug fixes are welcome. If you wish to participate in the development of nervaluate 
+Improvements, adding new features and bug fixes are welcome. If you wish to participate in the development of `nervaluate` 
 please read the guidelines in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ---
