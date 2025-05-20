@@ -229,11 +229,20 @@ def test_dict_loader():
 
 def test_loader_with_empty_input():
     """Test loaders with empty input."""
-    loaders = [ConllLoader(), ListLoader(), DictLoader()]
+    # Test ConllLoader with empty string
+    conll_loader = ConllLoader()
+    entities = conll_loader.load("")
+    assert len(entities) == 0
 
-    for loader in loaders:
-        entities = loader.load([])
-        assert len(entities) == 0
+    # Test ListLoader with empty list
+    list_loader = ListLoader()
+    entities = list_loader.load([])
+    assert len(entities) == 0
+
+    # Test DictLoader with empty list
+    dict_loader = DictLoader()
+    entities = dict_loader.load([])
+    assert len(entities) == 0
 
 
 def test_loader_with_invalid_data():
