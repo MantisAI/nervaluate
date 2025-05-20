@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 
 
 @dataclass
@@ -55,13 +55,13 @@ class EvaluationResult:
 class EvaluationIndices:
     """Represents the indices of entities in different evaluation categories."""
 
-    correct_indices: List[tuple[int, int]] = None
-    incorrect_indices: List[tuple[int, int]] = None
-    partial_indices: List[tuple[int, int]] = None
-    missed_indices: List[tuple[int, int]] = None
-    spurious_indices: List[tuple[int, int]] = None
+    correct_indices: List[Tuple[int, int]] = None  # type: ignore
+    incorrect_indices: List[Tuple[int, int]] = None  # type: ignore
+    partial_indices: List[Tuple[int, int]] = None  # type: ignore
+    missed_indices: List[Tuple[int, int]] = None  # type: ignore
+    spurious_indices: List[Tuple[int, int]] = None  # type: ignore
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.correct_indices is None:
             self.correct_indices = []
         if self.incorrect_indices is None:

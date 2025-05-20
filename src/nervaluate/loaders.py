@@ -23,7 +23,7 @@ class ConllLoader(DataLoader):
         if not data:
             return []
 
-        result = []
+        result: List[List[Entity]] = []
         # Strip trailing whitespace and newlines to avoid empty documents
         documents = data.rstrip().split("\n\n")
 

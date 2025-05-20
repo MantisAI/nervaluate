@@ -67,7 +67,7 @@ class Evaluator:
             Dictionary containing evaluation results for each strategy and entity type
         """
         results = {}
-        entity_results = {tag: {} for tag in self.tags}
+        entity_results: Dict[str, Dict[str, EvaluationResult]] = {tag: {} for tag in self.tags}
 
         # Evaluate each document
         for doc_idx, (true_doc, pred_doc) in enumerate(zip(self.true, self.pred)):
@@ -105,7 +105,7 @@ class Evaluator:
         target.spurious += source.spurious
         target.compute_metrics()
 
-    def results_to_dataframe(self) -> pd.DataFrame:
+    def results_to_dataframe(self) -> Any:
         """Convert results to a pandas DataFrame."""
         results = self.evaluate()
 
