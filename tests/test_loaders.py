@@ -1,6 +1,6 @@
-from nervaluate import Evaluator
 import pytest
-from nervaluate.entities import Entity
+
+from nervaluate import Evaluator
 from nervaluate.loaders import ConllLoader, ListLoader, DictLoader
 
 
