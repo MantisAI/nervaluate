@@ -1,10 +1,10 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
 import pandas as pd
 
 from .entities import EvaluationResult, EvaluationIndices
 from .evaluation_strategies import EvaluationStrategy, StrictEvaluation, PartialEvaluation, EntityTypeEvaluation
 from .loaders import DataLoader, ConllLoader, ListLoader, DictLoader
-
+from .entities import Entity
 
 class Evaluator:
     """Main evaluator class for NER evaluation."""
@@ -140,3 +140,167 @@ class Evaluator:
                     flat_results[key] = value
 
         return pd.DataFrame([flat_results])
+
+    def summary_report(self, mode: str = "overall", scenario: str = "strict", digits: int = 2) -> str:
+        """
+        Generate a summary report of the evaluation results.
+
+        Args:
+            mode: Either 'overall' for overall metrics or 'entities' for per-entity metrics.
+            scenario: The scenario to report on. Must be one of: 'strict', 'ent_type', 'partial', 'exact'.
+                     Only used when mode is 'entities'. Defaults to 'strict'.
+            digits: The number of digits to round the results to.
+
+        Returns:
+            A string containing the summary report.
+
+        Raises:
+            ValueError: If the scenario or mode is invalid.
+        """
+        valid_scenarios = {"strict", "ent_type", "partial", "exact"}
+        valid_modes = {"overall", "entities"}
+
+        if mode not in valid_modes:
+            raise ValueError(f"Invalid mode: must be one of {valid_modes}")
+
+        if mode == "entities" and scenario not in valid_scenarios:
+            raise ValueError(f"Invalid scenario: must be one of {valid_scenarios}")
+
+        headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
+        rows = [headers]
+
+        results = self.evaluate()
+        if mode == "overall":
+            # Process overall results
+            results_data = results["overall"]
+            for eval_schema in sorted(valid_scenarios):  # Sort to ensure consistent order
+                if eval_schema not in results_data:
+                    continue
+                results_schema = results_data[eval_schema]
+                rows.append(
+                    [
+                        eval_schema,
+                        results_schema.correct,
+                        results_schema.incorrect,
+                        results_schema.partial,
+                        results_schema.missed,
+                        results_schema.spurious,
+                        results_schema.precision,
+                        results_schema.recall,
+                        results_schema.f1,
+                    ]
+                )
+        else:
+            # Process entity-specific results
+            results_data = results["entities"]
+            target_names = sorted(results_data.keys())
+            for ent_type in target_names:
+                if scenario not in results_data[ent_type]:
+                    raise ValueError(f"Scenario '{scenario}' not found in results for entity type '{ent_type}'")
+
+                results_ent = results_data[ent_type][scenario]
+                rows.append(
+                    [
+                        ent_type,
+                        results_ent.correct,
+                        results_ent.incorrect,
+                        results_ent.partial,
+                        results_ent.missed,
+                        results_ent.spurious,
+                        results_ent.precision,
+                        results_ent.recall,
+                        results_ent.f1,
+                    ]
+                )
+
+        # Format the report
+        name_width = max(len(str(row[0])) for row in rows)
+        width = max(name_width, digits)
+        head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
+        report = head_fmt.format("", *headers, width=width)
+        report += "\n\n"
+        row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
+
+        for row in rows[1:]:
+            report += row_fmt.format(*row, width=width, digits=digits)
+
+        return report
+
+    def summary_report_indices(self, mode: str = "overall", scenario: str = "strict") -> str:
+        """
+        Generate a summary report of the evaluation indices.
+
+        Args:
+            mode: Either 'overall' for overall metrics or 'entities' for per-entity metrics.
+            scenario: The scenario to report on. Must be one of: 'strict', 'ent_type', 'partial', 'exact'.
+                     Only used when mode is 'entities'. Defaults to 'strict'.
+
+        Returns:
+            A string containing the summary report of indices.
+
+        Raises:
+            ValueError: If the scenario or mode is invalid.
+        """
+        valid_scenarios = {"strict", "ent_type", "partial", "exact"}
+        valid_modes = {"overall", "entities"}
+
+        if mode not in valid_modes:
+            raise ValueError(f"Invalid mode: must be one of {valid_modes}")
+
+        if mode == "entities" and scenario not in valid_scenarios:
+            raise ValueError(f"Invalid scenario: must be one of {valid_scenarios}")
+
+        def get_prediction_info(pred: Union[Entity, str]) -> str:
+            """Helper function to get prediction info based on pred type."""
+            if isinstance(pred, Entity):
+                return f"Label={pred.label}, Start={pred.start}, End={pred.end}"  # type: ignore
+            # String (BIO tag)
+            return f"Tag={pred}"
+
+        results = self.evaluate()
+        report = ""
+        if mode == "overall":
+            # Get the indices from the overall results
+            indices_data = results["overall_indices"][scenario]
+            report += f"Indices for error schema '{scenario}':\n\n"
+
+            for category, indices in indices_data.__dict__.items():
+                if not category.endswith("_indices"):
+                    continue
+                category_name = category.replace("_indices", "").replace("_", " ").capitalize()
+                report += f"{category_name}:\n"
+                if indices:
+                    for instance_index, entity_index in indices:
+                        if self.pred != [[]]:
+                            pred = self.pred[instance_index][entity_index]
+                            prediction_info = get_prediction_info(pred)
+                            report += f"  - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
+                        else:
+                            report += f"  - Instance {instance_index}, Entity {entity_index}\n"
+                else:
+                    report += "  - None\n"
+                report += "\n"
+        else:
+            # Get the indices from the entity-specific results
+            for entity_type, entity_results in results["entity_indices"].items():
+                report += f"\nEntity Type: {entity_type}\n"
+                error_data = entity_results[scenario]
+                report += f"  Error Schema: '{scenario}'\n"
+
+                for category, indices in error_data.__dict__.items():
+                    if not category.endswith("_indices"):
+                        continue
+                    category_name = category.replace("_indices", "").replace("_", " ").capitalize()
+                    report += f"    ({entity_type}) {category_name}:\n"
+                    if indices:
+                        for instance_index, entity_index in indices:
+                            if self.pred != [[]]:
+                                pred = self.pred[instance_index][entity_index]
+                                prediction_info = get_prediction_info(pred)
+                                report += f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
+                            else:
+                                report += f"      - Instance {instance_index}, Entity {entity_index}\n"
+                    else:
+                        report += "      - None\n"
+
+        return report

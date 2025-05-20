@@ -1,6 +1,5 @@
 import pytest
 from nervaluate.evaluator import Evaluator
-from nervaluate.reporting import summary_report_v2, summary_report_indices_v2
 
 
 @pytest.fixture
@@ -180,18 +179,17 @@ def test_evaluator_full():
 
     evaluator = Evaluator(true, pred, tags=["PER", "ORG", "LOC", "DATE"], loader="list")
     results = evaluator.evaluate()
-    print("\n\n")
 
     # For metrics report
-    report_overall = summary_report_v2(results, mode="overall")
-    print(report_overall)
+    report_overall = evaluator.summary_report(mode="overall")
+    assert report_overall is not None   # ToDo: Add actual assertions
 
-    report_entities = summary_report_v2(results, mode="entities", scenario="strict")
-    print(report_entities)
+    report_entities = evaluator.summary_report(mode="entities", scenario="strict")
+    assert report_entities is not None   # ToDo: Add actual assertions
 
     # For indices report
-    report_indices_overall = summary_report_indices_v2(results, mode="overall", preds=pred)
-    print(report_indices_overall)
+    report_indices_overall = evaluator.summary_report_indices(mode="overall")
+    assert report_indices_overall is not None   # ToDo: Add actual assertions
 
-    report_indices_entities = summary_report_indices_v2(results, mode="entities", scenario="strict", preds=pred)
-    print(report_indices_entities)
+    report_indices_entities = evaluator.summary_report_indices(mode="entities", scenario="strict")
+    assert report_indices_entities is not None   # ToDo: Add actual assertions
