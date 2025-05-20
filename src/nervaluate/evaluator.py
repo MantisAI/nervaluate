@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 import pandas as pd
 
-from .entities import EvaluationResult
+from .entities import EvaluationResult, EvaluationIndices
 from .evaluation_strategies import EvaluationStrategy, StrictEvaluation, PartialEvaluation, EntityTypeEvaluation
 from .loaders import DataLoader, ConllLoader, ListLoader, DictLoader
 
@@ -68,6 +68,8 @@ class Evaluator:
         """
         results = {}
         entity_results: Dict[str, Dict[str, EvaluationResult]] = {tag: {} for tag in self.tags}
+        indices = {}
+        entity_indices: Dict[str, Dict[str, EvaluationIndices]] = {tag: {} for tag in self.tags}
 
         # Evaluate each document
         for doc_idx, (true_doc, pred_doc) in enumerate(zip(self.true, self.pred)):
@@ -77,26 +79,37 @@ class Evaluator:
 
             # Evaluate with each strategy
             for strategy_name, strategy in self.strategies.items():
-                result, _ = strategy.evaluate(true_doc, pred_doc, self.tags, doc_idx)
+                result, doc_indices = strategy.evaluate(true_doc, pred_doc, self.tags, doc_idx)
 
                 # Update overall results
                 if strategy_name not in results:
                     results[strategy_name] = result
+                    indices[strategy_name] = doc_indices
                 else:
                     self._merge_results(results[strategy_name], result)
+                    self._merge_indices(indices[strategy_name], doc_indices)
 
                 # Update entity-specific results
                 for tag in self.tags:
                     if tag not in entity_results:
                         entity_results[tag] = {}
+                        entity_indices[tag] = {}
                     if strategy_name not in entity_results[tag]:
                         entity_results[tag][strategy_name] = result
+                        entity_indices[tag][strategy_name] = doc_indices
                     else:
                         self._merge_results(entity_results[tag][strategy_name], result)
+                        self._merge_indices(entity_indices[tag][strategy_name], doc_indices)
 
-        return {"overall": results, "entities": entity_results}
+        return {
+            "overall": results,
+            "entities": entity_results,
+            "overall_indices": indices,
+            "entity_indices": entity_indices,
+        }
 
-    def _merge_results(self, target: EvaluationResult, source: EvaluationResult) -> None:
+    @staticmethod
+    def _merge_results(target: EvaluationResult, source: EvaluationResult) -> None:
         """Merge two evaluation results."""
         target.correct += source.correct
         target.incorrect += source.incorrect
@@ -104,6 +117,15 @@ class Evaluator:
         target.missed += source.missed
         target.spurious += source.spurious
         target.compute_metrics()
+
+    @staticmethod
+    def _merge_indices(target: EvaluationIndices, source: EvaluationIndices) -> None:
+        """Merge two evaluation indices."""
+        target.correct_indices.extend(source.correct_indices)
+        target.incorrect_indices.extend(source.incorrect_indices)
+        target.partial_indices.extend(source.partial_indices)
+        target.missed_indices.extend(source.missed_indices)
+        target.spurious_indices.extend(source.spurious_indices)
 
     def results_to_dataframe(self) -> Any:
         """Convert results to a pandas DataFrame."""

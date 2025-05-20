@@ -1,5 +1,6 @@
 import pytest
 from nervaluate.evaluator import Evaluator
+from nervaluate.reporting import summary_report_v2, summary_report_indices_v2
 
 
 @pytest.fixture
@@ -164,3 +165,33 @@ def test_evaluator_with_invalid_tags(sample_data):
         assert results["overall"][strategy].partial == 0
         assert results["overall"][strategy].missed == 0
         assert results["overall"][strategy].spurious == 0
+
+
+def test_evaluator_full():
+    true = [
+        ["O", "B-PER", "I-PER", "O", "O", "O", "B-ORG", "I-ORG"],
+        ["O", "B-LOC", "B-PER", "I-PER", "O", "O", "B-DATE"],
+    ]
+
+    pred = [
+        ["O", "O", "B-PER", "I-PER", "O", "O", "B-ORG", "I-ORG", "O"],
+        ["O", "B-LOC", "I-LOC", "O", "B-PER", "I-PER", "O", "B-DATE", "I-DATE", "O"],
+    ]
+
+    evaluator = Evaluator(true, pred, tags=["PER", "ORG", "LOC", "DATE"], loader="list")
+    results = evaluator.evaluate()
+    print("\n\n")
+
+    # For metrics report
+    report_overall = summary_report_v2(results, mode="overall")
+    print(report_overall)
+
+    report_entities = summary_report_v2(results, mode="entities", scenario="strict")
+    print(report_entities)
+
+    # For indices report
+    report_indices_overall = summary_report_indices_v2(results, mode="overall", preds=pred)
+    print(report_indices_overall)
+
+    report_indices_entities = summary_report_indices_v2(results, mode="entities", scenario="strict", preds=pred)
+    print(report_indices_entities)
