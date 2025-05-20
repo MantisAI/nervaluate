@@ -61,18 +61,6 @@ def test_loaders_produce_the_same_results():
     assert evaluator_prod.true == evaluator_list.true == evaluator_conll.true
 
 
-@pytest.fixture
-def dict_data():
-    return [
-        [
-            {"label": "PER", "start": 0, "end": 0},
-            {"label": "ORG", "start": 2, "end": 3},
-            {"label": "LOC", "start": 5, "end": 5},
-        ],
-        [{"label": "PER", "start": 0, "end": 0}, {"label": "ORG", "start": 2, "end": 2}],
-    ]
-
-
 def test_conll_loader():
     """Test CoNLL format loader."""
     true_conll = (
@@ -183,19 +171,60 @@ def test_list_loader():
     assert len(empty_entities[0]) == 0  # Empty list for document with only O tags
 
 
-def test_dict_loader(dict_data):
+def test_dict_loader():
     """Test dictionary format loader."""
+    true_prod = [
+        [],
+        [{"label": "ORG", "start": 2, "end": 3}],
+        [{"label": "MISC", "start": 2, "end": 3}],
+        [{"label": "MISC", "start": 0, "end": 5}],
+    ]
+
+    pred_prod = [
+        [{"label": "PER", "start": 2, "end": 3}],
+        [{"label": "ORG", "start": 2, "end": 3}],
+        [{"label": "MISC", "start": 2, "end": 3}],
+        [{"label": "MISC", "start": 0, "end": 5}],
+    ]
+
     loader = DictLoader()
-    entities = loader.load(dict_data)
+    true_entities = loader.load(true_prod)
+    pred_entities = loader.load(pred_prod)
 
-    assert len(entities) == 2  # Two documents
-    assert len(entities[0]) == 3  # First document has 3 entities
-    assert len(entities[1]) == 2  # Second document has 2 entities
+    # Test true entities
+    assert len(true_entities) == 4  # Four documents
+    assert len(true_entities[0]) == 0  # First document has no entities
+    assert len(true_entities[1]) == 1  # Second document has 1 entity (ORG)
+    assert len(true_entities[2]) == 1  # Third document has 1 entity (MISC)
+    assert len(true_entities[3]) == 1  # Fourth document has 1 entity (MISC)
 
-    # Check first entity
-    assert entities[0][0].label == "PER"
-    assert entities[0][0].start == 0
-    assert entities[0][0].end == 0
+    # Check first entity in second document
+    assert true_entities[1][0].label == "ORG"
+    assert true_entities[1][0].start == 2
+    assert true_entities[1][0].end == 3
+
+    # Check only entity in the last document
+    assert true_entities[3][0].label == "MISC"
+    assert true_entities[3][0].start == 0
+    assert true_entities[3][0].end == 5
+
+    # Test pred entities
+    assert len(pred_entities) == 4  # Four documents
+    assert len(pred_entities[0]) == 1  # First document has 1 entity (PER)
+    assert len(pred_entities[1]) == 1  # Second document has 1 entity (ORG)
+    assert len(pred_entities[2]) == 1  # Third document has 1 entity (MISC)
+    assert len(pred_entities[3]) == 1  # Fourth document has 1 entity (MISC)
+
+    # Check first entity in first document
+    assert pred_entities[0][0].label == "PER"
+    assert pred_entities[0][0].start == 2
+    assert pred_entities[0][0].end == 3
+
+    # Test empty document handling
+    empty_doc = [[]]
+    empty_entities = loader.load(empty_doc)
+    assert len(empty_entities) == 1  # One document
+    assert len(empty_entities[0]) == 0  # Empty list for empty document
 
 
 def test_loader_with_empty_input():
