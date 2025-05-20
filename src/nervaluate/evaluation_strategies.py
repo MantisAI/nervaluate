@@ -28,12 +28,6 @@ class StrictEvaluation(EvaluationStrategy):
         indices = EvaluationIndices()
 
         for pred_idx, pred in enumerate(pred_entities):
-
-            print(pred)
-            print(pred.start, pred.end)
-            print(pred.label)
-            print(true_entities)
-
             if pred in true_entities:
                 result.correct += 1
                 indices.correct_indices.append((instance_index, pred_idx))
@@ -116,8 +110,6 @@ class EntityTypeEvaluation(EvaluationStrategy):
             found_match = False
             found_overlap = False
             for true_idx, true in enumerate(true_entities):
-
-                print(f"Checking {pred} against {true}")
 
                 # check for a minimum overlap between the system tagged entity and the gold annotation
                 if pred.start <= true.end and pred.end >= true.start:

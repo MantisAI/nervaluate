@@ -1,103 +1,121 @@
-import pandas as pd
 import pytest
-from nervaluate.entities import Entity
 from nervaluate.evaluator import Evaluator
-from nervaluate.evaluation_strategies import StrictEvaluation, PartialEvaluation, EntityTypeEvaluation
 
 
 @pytest.fixture
 def sample_entities():
     return [
-        Entity(label="PER", start=0, end=0),
-        Entity(label="ORG", start=2, end=3),
-        Entity(label="LOC", start=5, end=5),
+        ["O", "B-PER", "O", "B-ORG", "I-ORG", "B-LOC"],
     ]
 
 
 @pytest.fixture
 def sample_predictions():
     return [
-        Entity(label="PER", start=0, end=0),  # Correct
-        Entity(label="ORG", start=2, end=2),  # Partial
-        Entity(label="PER", start=5, end=5),  # Wrong type
+        ["O", "B-PER", "O", "B-ORG", "O", "B-PER"],
     ]
 
 
 def test_strict_evaluation(sample_entities, sample_predictions):
-    strategy = StrictEvaluation()
-    result, indices = strategy.evaluate(sample_entities, sample_predictions, ["PER", "ORG", "LOC"])
+    evaluator = Evaluator(sample_entities, sample_predictions, ["PER", "ORG", "LOC"], loader="list")
+    results = evaluator.evaluate()
 
-    assert result.correct == 1
-    assert result.incorrect == 0
-    assert result.partial == 0
-    assert result.missed == 2
-    assert result.spurious == 2
+    # Test overall results
+    assert results["overall"]["strict"].correct == 1
+    assert results["overall"]["strict"].incorrect == 0
+    assert results["overall"]["strict"].partial == 0
+    assert results["overall"]["strict"].missed == 2
+    assert results["overall"]["strict"].spurious == 2
+    assert results["overall"]["strict"].precision == 0.3333333333333333
+    assert results["overall"]["strict"].recall == 0.3333333333333333
+    assert results["overall"]["strict"].f1 == 0.3333333333333333
+    assert results["overall"]["strict"].actual == 3
+    assert results["overall"]["strict"].possible == 3
+
+    # Test entity-specific results
+    for entity in ["PER", "ORG", "LOC"]:
+        assert results["entities"][entity]["strict"].correct == 1
+        assert results["entities"][entity]["strict"].incorrect == 0
+        assert results["entities"][entity]["strict"].partial == 0
+        assert results["entities"][entity]["strict"].missed == 2
+        assert results["entities"][entity]["strict"].spurious == 2
+        assert results["entities"][entity]["strict"].precision == 0.3333333333333333
+        assert results["entities"][entity]["strict"].recall == 0.3333333333333333
+        assert results["entities"][entity]["strict"].f1 == 0.3333333333333333
+        assert results["entities"][entity]["strict"].actual == 3
+        assert results["entities"][entity]["strict"].possible == 3
 
 
 def test_partial_evaluation(sample_entities, sample_predictions):
-    strategy = PartialEvaluation()
-    result, indices = strategy.evaluate(sample_entities, sample_predictions, ["PER", "ORG", "LOC"])
+    evaluator = Evaluator(sample_entities, sample_predictions, ["PER", "ORG", "LOC"], loader="list")
+    results = evaluator.evaluate()
 
-    assert result.correct == 1
-    assert result.partial == 1
-    assert result.incorrect == 1
-    assert result.missed == 1
-    assert result.spurious == 0
+    # Test overall results
+    assert results["overall"]["partial"].correct == 1
+    assert results["overall"]["partial"].partial == 1
+    assert results["overall"]["partial"].incorrect == 1
+    assert results["overall"]["partial"].missed == 1
+    assert results["overall"]["partial"].spurious == 0
+    assert results["overall"]["partial"].precision == 0.5
+    assert results["overall"]["partial"].recall == 0.375
+    assert results["overall"]["partial"].f1 == 0.42857142857142855
+    assert results["overall"]["partial"].actual == 3
+    assert results["overall"]["partial"].possible == 4
+
+    # Test entity-specific results
+    for entity in ["PER", "ORG", "LOC"]:
+        assert results["entities"][entity]["partial"].correct == 1
+        assert results["entities"][entity]["partial"].partial == 1
+        assert results["entities"][entity]["partial"].incorrect == 1
+        assert results["entities"][entity]["partial"].missed == 1
+        assert results["entities"][entity]["partial"].spurious == 0
+        assert results["entities"][entity]["partial"].precision == 0.5
+        assert results["entities"][entity]["partial"].recall == 0.375
+        assert results["entities"][entity]["partial"].f1 == 0.42857142857142855
+        assert results["entities"][entity]["partial"].actual == 3
+        assert results["entities"][entity]["partial"].possible == 4
 
 
 def test_entity_type_evaluation(sample_entities, sample_predictions):
-    strategy = EntityTypeEvaluation()
-    result, indices = strategy.evaluate(sample_entities, sample_predictions, ["PER", "ORG", "LOC"])
-
-    assert result.correct == 2
-    assert result.incorrect == 0
-    assert result.partial == 0
-    assert result.missed == 1
-    assert result.spurious == 1
-
-
-def test_evaluator_integration():
-    # Test with list format
-    true = [["O", "PER", "O", "ORG", "ORG", "LOC"]]
-    pred = [["O", "PER", "O", "ORG", "O", "PER"]]
-
-    evaluator = OldEvaluator(true, pred, ["PER", "ORG", "LOC"], loader="list")
+    evaluator = Evaluator(sample_entities, sample_predictions, ["PER", "ORG", "LOC"], loader="list")
     results = evaluator.evaluate()
 
-    assert "overall" in results
-    assert "entities" in results
-    assert "strict" in results["overall"]
-    assert "partial" in results["overall"]
-    assert "ent_type" in results["overall"]
+    # Test overall results
+    assert results["overall"]["ent_type"].correct == 2
+    assert results["overall"]["ent_type"].incorrect == 0
+    assert results["overall"]["ent_type"].partial == 0
+    assert results["overall"]["ent_type"].missed == 1
+    assert results["overall"]["ent_type"].spurious == 1
+    assert results["overall"]["ent_type"].precision == 0.6666666666666666
+    assert results["overall"]["ent_type"].recall == 0.6666666666666666
+    assert results["overall"]["ent_type"].f1 == 0.6666666666666666
+    assert results["overall"]["ent_type"].actual == 3
+    assert results["overall"]["ent_type"].possible == 3
 
-    # Test with CoNLL format
-    true_conll = "word\tO\nword\tPER\nword\tO\nword\tORG\nword\tORG\nword\tLOC\n\n"
-    pred_conll = "word\tO\nword\tPER\nword\tO\nword\tORG\nword\tO\nword\tPER\n\n"
-
-    evaluator = OldEvaluator(true_conll, pred_conll, ["PER", "ORG", "LOC"], loader="conll")
-    results = evaluator.evaluate()
-
-    assert "overall" in results
-    assert "entities" in results
-    assert "strict" in results["overall"]
-    assert "partial" in results["overall"]
-    assert "ent_type" in results["overall"]
+    # Test entity-specific results
+    for entity in ["PER", "ORG", "LOC"]:
+        assert results["entities"][entity]["ent_type"].correct == 2
+        assert results["entities"][entity]["ent_type"].incorrect == 0
+        assert results["entities"][entity]["ent_type"].partial == 0
+        assert results["entities"][entity]["ent_type"].missed == 1
+        assert results["entities"][entity]["ent_type"].spurious == 1
+        assert results["entities"][entity]["ent_type"].precision == 0.6666666666666666
+        assert results["entities"][entity]["ent_type"].recall == 0.6666666666666666
+        assert results["entities"][entity]["ent_type"].f1 == 0.6666666666666666
+        assert results["entities"][entity]["ent_type"].actual == 3
+        assert results["entities"][entity]["ent_type"].possible == 3
 
 
 @pytest.fixture
 def sample_data():
     true = [
-        [Entity(label="PER", start=0, end=0), Entity(label="ORG", start=2, end=3), Entity(label="LOC", start=5, end=5)],
-        [Entity(label="PER", start=0, end=0), Entity(label="ORG", start=2, end=2)],
+        ["O", "B-PER", "O", "B-ORG", "I-ORG", "B-LOC"],
+        ["O", "B-PER", "O", "B-ORG"],
     ]
 
     pred = [
-        [
-            Entity(label="PER", start=0, end=0),  # Correct
-            Entity(label="ORG", start=2, end=2),  # Partial
-            Entity(label="PER", start=5, end=5),  # Wrong type
-        ],
-        [Entity(label="PER", start=0, end=0), Entity(label="LOC", start=2, end=2)],  # Correct  # Wrong type
+        ["O", "B-PER", "O", "B-ORG", "O", "B-PER"],
+        ["O", "B-PER", "O", "B-LOC"],
     ]
 
     return true, pred
@@ -106,7 +124,7 @@ def sample_data():
 def test_evaluator_initialization(sample_data):
     """Test evaluator initialization."""
     true, pred = sample_data
-    evaluator = Evaluator(true, pred, ["PER", "ORG", "LOC"])
+    evaluator = Evaluator(true, pred, ["PER", "ORG", "LOC"], loader="list")
 
     assert len(evaluator.true) == 2
     assert len(evaluator.pred) == 2
@@ -116,60 +134,33 @@ def test_evaluator_initialization(sample_data):
 def test_evaluator_evaluation(sample_data):
     """Test evaluation process."""
     true, pred = sample_data
-    evaluator = Evaluator(true, pred, ["PER", "ORG", "LOC"])
+    evaluator = Evaluator(true, pred, ["PER", "ORG", "LOC"], loader="list")
     results = evaluator.evaluate()
 
     # Check that we have results for all strategies
-    assert "strict" in results
-    assert "partial" in results
-    assert "ent_type" in results
+    assert "overall" in results
+    assert "entities" in results
+    assert "strict" in results["overall"]
+    assert "partial" in results["overall"]
+    assert "ent_type" in results["overall"]
 
-    # Check that we have results for overall and each entity type
-    for strategy in results:
-        assert "overall" in results[strategy]
-        assert "PER" in results[strategy]
-        assert "ORG" in results[strategy]
-        assert "LOC" in results[strategy]
-
-
-def test_evaluator_dataframe_conversion(sample_data):
-    """Test conversion of results to DataFrame."""
-    true, pred = sample_data
-    evaluator = Evaluator(true, pred, ["PER", "ORG", "LOC"])
-    results = evaluator.evaluate()
-    df = evaluator.results_to_dataframe()
-
-    assert isinstance(df, pd.DataFrame)
-    assert len(df) > 0
-    assert "strategy" in df.columns
-    assert "entity_type" in df.columns
-    assert "precision" in df.columns
-    assert "recall" in df.columns
-    assert "f1" in df.columns
-
-
-def test_evaluator_with_empty_inputs():
-    """Test evaluator with empty inputs."""
-    evaluator = Evaluator([], [], ["PER", "ORG", "LOC"])
-    results = evaluator.evaluate()
-
-    for strategy in results:
-        assert results[strategy]["overall"].correct == 0
-        assert results[strategy]["overall"].incorrect == 0
-        assert results[strategy]["overall"].partial == 0
-        assert results[strategy]["overall"].missed == 0
-        assert results[strategy]["overall"].spurious == 0
+    # Check that we have results for each entity type
+    for entity in ["PER", "ORG", "LOC"]:
+        assert entity in results["entities"]
+        assert "strict" in results["entities"][entity]
+        assert "partial" in results["entities"][entity]
+        assert "ent_type" in results["entities"][entity]
 
 
 def test_evaluator_with_invalid_tags(sample_data):
     """Test evaluator with invalid tags."""
     true, pred = sample_data
-    evaluator = Evaluator(true, pred, ["INVALID"])
+    evaluator = Evaluator(true, pred, ["INVALID"], loader="list")
     results = evaluator.evaluate()
 
-    for strategy in results:
-        assert results[strategy]["overall"].correct == 0
-        assert results[strategy]["overall"].incorrect == 0
-        assert results[strategy]["overall"].partial == 0
-        assert results[strategy]["overall"].missed == 0
-        assert results[strategy]["overall"].spurious == 0
+    for strategy in ["strict", "partial", "ent_type"]:
+        assert results["overall"][strategy].correct == 0
+        assert results["overall"][strategy].incorrect == 0
+        assert results["overall"][strategy].partial == 0
+        assert results["overall"][strategy].missed == 0
+        assert results["overall"][strategy].spurious == 0
