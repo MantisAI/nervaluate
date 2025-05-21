@@ -19,10 +19,10 @@ based on whether all the tokens that belong to a named entity were classified or
 entity type was assigned.
 
 This full problem is described in detail in the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) 
-post by [David Batista](https://github.com/davidsbatista), and extends the code in the[original repository](https://github.com/davidsbatista/NER-Evaluation) 
+post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) 
 which accompanied the blog post.
 
-The code draws heavily on:
+The code draws heavily on the paper:
 
 * [SemEval-2013 Task 9 : Extraction of Drug-Drug Interactions from Biomedical Texts (DDIExtraction 2013)](https://www.aclweb.org/anthology/S13-2056)
 
@@ -159,16 +159,16 @@ Recall = (COR + 0.5 × PAR)/POS = COR / ACT = TP / (TP + FN)
 
 __Putting all together:__
 
-|Measure|Type|Partial|Exact|Strict|
-|---|---|---|---|---|
-|Correct|3|3|3|2|
-|Incorrect|2|0|2|3|
-|Partial|0|2|0|0|
-|Missed|1|1|1|1|
-|Spurious|1|1|1|1|
-|Precision|0.5|0.66|0.5|0.33|
-|Recall|0.5|0.66|0.5|0.33|
-|F1|0.5|0.66|0.5|0.33|
+| Measure   | Type | Partial | Exact | Strict |
+|-----------|------|---------|-------|--------|
+| Correct   | 3    | 3       | 3     | 2      |
+| Incorrect | 2    | 0       | 2     | 3      |
+| Partial   | 0    | 2       | 0     | 0      |
+| Missed    | 1    | 1       | 1     | 1      |
+| Spurious  | 1    | 1       | 1     | 1      |
+| Precision | 0.5  | 0.66    | 0.5   | 0.33   |
+| Recall    | 0.5  | 0.66    | 0.5   | 0.33   |
+| F1        | 0.5  | 0.66    | 0.5   | 0.33   |
 
 
 ## Notes:

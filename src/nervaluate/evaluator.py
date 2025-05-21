@@ -148,8 +148,12 @@ class Evaluator:
 
         Args:
             mode: Either 'overall' for overall metrics or 'entities' for per-entity metrics.
-            scenario: The scenario to report on. Must be one of: 'strict', 'ent_type', 'partial', 'exact'.
-                     Only used when mode is 'entities'. Defaults to 'strict'.
+            scenario: The scenario to report on. Defaults to 'strict'.
+                      Must be one of:
+                        - 'strict' exact boundary surface string match and entity type;
+                        - 'exact': exact boundary match over the surface string and entity type;
+                        - 'partial': partial boundary match over the surface string, regardless of the type;
+                        - 'ent_type': exact boundary match over the surface string, regardless of the type;
             digits: The number of digits to round the results to.
 
         Returns:
@@ -218,7 +222,7 @@ class Evaluator:
         name_width = max(len(str(row[0])) for row in rows)
         width = max(name_width, digits)
         head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
-        report = head_fmt.format("", *headers, width=width)
+        report = f"Scenario: {scenario}\n\n" + head_fmt.format("", *headers, width=width)
         report += "\n\n"
         row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
 
