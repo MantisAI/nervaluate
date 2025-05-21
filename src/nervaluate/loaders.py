@@ -15,7 +15,7 @@ class DataLoader(ABC):
 class ConllLoader(DataLoader):
     """Loader for CoNLL format data."""
 
-    def load(self, data: str) -> List[List[Entity]]:
+    def load(self, data: str) -> List[List[Entity]]:  # pylint: disable=too-many-branches
         """Load CoNLL format data into a list of Entity lists."""
         if not isinstance(data, str):
             raise ValueError("ConllLoader expects string input")
@@ -51,7 +51,8 @@ class ConllLoader(DataLoader):
                 if token_tag == "O":
                     if ent_type is not None and start_offset is not None:
                         end_offset = offset - 1
-                        current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))
+                        if isinstance(start_offset, int) and isinstance(end_offset, int):
+                            current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))
                         start_offset = None
                         end_offset = None
                         ent_type = None
@@ -65,7 +66,8 @@ class ConllLoader(DataLoader):
 
                 elif ent_type != token_tag[2:] or (ent_type == token_tag[2:] and token_tag[:1] == "B"):
                     end_offset = offset - 1
-                    current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))  # type: ignore
+                    if isinstance(start_offset, int) and isinstance(end_offset, int):
+                        current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))
 
                     # start of a new entity
                     if not (token_tag.startswith("B-") or token_tag.startswith("I-")):
@@ -77,7 +79,8 @@ class ConllLoader(DataLoader):
 
             # Catches an entity that goes up until the last token
             if ent_type is not None and start_offset is not None and end_offset is None:
-                current_doc.append(Entity(label=ent_type, start=start_offset, end=len(doc.split("\n")) - 1))
+                if isinstance(start_offset, int):
+                    current_doc.append(Entity(label=ent_type, start=start_offset, end=len(doc.split("\n")) - 1))
                 has_entities = True
 
             result.append(current_doc if has_entities else [])
@@ -88,7 +91,7 @@ class ConllLoader(DataLoader):
 class ListLoader(DataLoader):
     """Loader for list format data."""
 
-    def load(self, data: List[List[str]]) -> List[List[Entity]]:
+    def load(self, data: List[List[str]]) -> List[List[Entity]]:  # pylint: disable=too-many-branches
         """Load list format data into a list of entity lists."""
         if not isinstance(data, list):
             raise ValueError("ListLoader expects list input")
@@ -114,7 +117,8 @@ class ListLoader(DataLoader):
                 if token_tag == "O":
                     if ent_type is not None and start_offset is not None:
                         end_offset = offset - 1
-                        current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))
+                        if isinstance(start_offset, int) and isinstance(end_offset, int):
+                            current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))
                         start_offset = None
                         end_offset = None
                         ent_type = None
@@ -127,7 +131,8 @@ class ListLoader(DataLoader):
 
                 elif ent_type != token_tag[2:] or (ent_type == token_tag[2:] and token_tag[:1] == "B"):
                     end_offset = offset - 1
-                    current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))  # type: ignore
+                    if isinstance(start_offset, int) and isinstance(end_offset, int):
+                        current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))
 
                     # start of a new entity
                     if not (token_tag.startswith("B-") or token_tag.startswith("I-")):
@@ -138,7 +143,8 @@ class ListLoader(DataLoader):
 
             # Catches an entity that goes up until the last token
             if ent_type is not None and start_offset is not None and end_offset is None:
-                current_doc.append(Entity(label=ent_type, start=start_offset, end=len(doc) - 1))
+                if isinstance(start_offset, int):
+                    current_doc.append(Entity(label=ent_type, start=start_offset, end=len(doc) - 1))
 
             result.append(current_doc)
 
