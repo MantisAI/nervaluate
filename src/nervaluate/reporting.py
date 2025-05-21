@@ -1,7 +1,3 @@
-from typing import Union
-from xml.dom.minidom import Entity
-
-
 def summary_report(results: dict, mode: str = "overall", scenario: str = "strict", digits: int = 2) -> str:
     """
     Generate a summary report of the evaluation results.

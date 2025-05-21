@@ -6,6 +6,7 @@ from .evaluation_strategies import EvaluationStrategy, StrictEvaluation, Partial
 from .loaders import DataLoader, ConllLoader, ListLoader, DictLoader
 from .entities import Entity
 
+
 class Evaluator:
     """Main evaluator class for NER evaluation."""
 
@@ -226,7 +227,9 @@ class Evaluator:
 
         return report
 
-    def summary_report_indices(self, mode: str = "overall", scenario: str = "strict") -> str:
+    def summary_report_indices(  # pylint: disable=too-many-branches
+        self, mode: str = "overall", scenario: str = "strict"
+    ) -> str:
         """
         Generate a summary report of the evaluation indices.
 
@@ -253,7 +256,7 @@ class Evaluator:
         def get_prediction_info(pred: Union[Entity, str]) -> str:
             """Helper function to get prediction info based on pred type."""
             if isinstance(pred, Entity):
-                return f"Label={pred.label}, Start={pred.start}, End={pred.end}"  # type: ignore
+                return f"Label={pred.label}, Start={pred.start}, End={pred.end}"
             # String (BIO tag)
             return f"Tag={pred}"
 
@@ -297,7 +300,9 @@ class Evaluator:
                             if self.pred != [[]]:
                                 pred = self.pred[instance_index][entity_index]
                                 prediction_info = get_prediction_info(pred)
-                                report += f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
+                                report += (
+                                    f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
+                                )
                             else:
                                 report += f"      - Instance {instance_index}, Entity {entity_index}\n"
                     else:

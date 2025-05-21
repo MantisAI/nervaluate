@@ -65,7 +65,7 @@ class ConllLoader(DataLoader):
 
                 elif ent_type != token_tag[2:] or (ent_type == token_tag[2:] and token_tag[:1] == "B"):
                     end_offset = offset - 1
-                    current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))
+                    current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))  # type: ignore
 
                     # start of a new entity
                     if not (token_tag.startswith("B-") or token_tag.startswith("I-")):
@@ -127,7 +127,7 @@ class ListLoader(DataLoader):
 
                 elif ent_type != token_tag[2:] or (ent_type == token_tag[2:] and token_tag[:1] == "B"):
                     end_offset = offset - 1
-                    current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))
+                    current_doc.append(Entity(label=ent_type, start=start_offset, end=end_offset))  # type: ignore
 
                     # start of a new entity
                     if not (token_tag.startswith("B-") or token_tag.startswith("I-")):

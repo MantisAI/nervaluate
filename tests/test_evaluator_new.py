@@ -178,18 +178,17 @@ def test_evaluator_full():
     ]
 
     evaluator = Evaluator(true, pred, tags=["PER", "ORG", "LOC", "DATE"], loader="list")
-    results = evaluator.evaluate()
 
     # For metrics report
     report_overall = evaluator.summary_report(mode="overall")
-    assert report_overall is not None   # ToDo: Add actual assertions
+    assert report_overall is not None  # ToDo: Add actual assertions
 
     report_entities = evaluator.summary_report(mode="entities", scenario="strict")
-    assert report_entities is not None   # ToDo: Add actual assertions
+    assert report_entities is not None  # ToDo: Add actual assertions
 
     # For indices report
     report_indices_overall = evaluator.summary_report_indices(mode="overall")
-    assert report_indices_overall is not None   # ToDo: Add actual assertions
+    assert report_indices_overall is not None  # ToDo: Add actual assertions
 
     report_indices_entities = evaluator.summary_report_indices(mode="entities", scenario="strict")
-    assert report_indices_entities is not None   # ToDo: Add actual assertions
+    assert report_indices_entities is not None  # ToDo: Add actual assertions
