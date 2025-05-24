@@ -18,8 +18,6 @@ class StrictEvaluation(EvaluationStrategy):
     """
     Strict evaluation strategy - entities must match exactly.
 
-    In in strategy, we check for overlap between the predicted entity and the true entity.
-
     If there's a predicted entity that perfectly matches a true entity and they have the same label
     we mark it as correct.
     If there's a predicted entity that doesn't perfectly match any true entity, we mark it as spurious.
@@ -77,8 +75,6 @@ class PartialEvaluation(EvaluationStrategy):
     """
     Partial evaluation strategy - allows for partial matches.
 
-    In in strategy, we check for overlap between the predicted entity and the true entity.
-
     If there's a predicted entity that perfectly matches a true entity, we mark it as correct.
     If there's a predicted entity that has some minimum overlap with a true entity we mark it as partial.
     If there's a predicted entity that doesn't match any true entity, we mark it as spurious.
@@ -129,8 +125,14 @@ class PartialEvaluation(EvaluationStrategy):
 class EntityTypeEvaluation(EvaluationStrategy):
     """
     Entity type evaluation strategy - only checks entity types.
+    
+    In in strategy, we check for overlap between the predicted entity and the true entity.
 
-    Some overlap between the system tagged entity and the gold annotation is required.
+    If there's a predicted entity that perfectly matches or only some minimum overlap with a true entity, and the same label, we mark it as correct.
+    If there's a predicted entity that has some minimum overlap or perfectly matches but has the wrong label we mark it as inccorrect.
+    If there's a predicted entity that doesn't match any true entity, we mark it as spurious.
+    If there's a true entity that doesn't match any predicted entity, we mark it as missed.
+    
     # ToDo: define a minimum overlap threshold - see: https://github.com/MantisAI/nervaluate/pull/83
     """
 
@@ -139,29 +141,36 @@ class EntityTypeEvaluation(EvaluationStrategy):
     ) -> Tuple[EvaluationResult, EvaluationIndices]:
         result = EvaluationResult()
         indices = EvaluationIndices()
+        matched_true = set()
 
         for pred_idx, pred in enumerate(pred_entities):
             found_match = False
-            found_overlap = False
+            found_incorrect = False
+
             for true_idx, true in enumerate(true_entities):
+                if true_idx in matched_true:
+                    continue
 
-                # check for a minimum overlap between the system tagged entity and the gold annotation
+                # Check for any overlap (perfect or minimum)
                 if pred.start <= true.end and pred.end >= true.start:
-                    found_overlap = True
-
-                # check if the labels match
-                if found_overlap and pred.label == true.label:
-                    result.correct += 1
-                    indices.correct_indices.append((instance_index, pred_idx))
-                    found_match = True
+                    if pred.label == true.label:
+                        result.correct += 1
+                        indices.correct_indices.append((instance_index, pred_idx))
+                        matched_true.add(true_idx)
+                        found_match = True
+                    else:
+                        result.incorrect += 1
+                        indices.incorrect_indices.append((instance_index, pred_idx))
+                        matched_true.add(true_idx)
+                        found_incorrect = True
                     break
 
-            if not found_match:
+            if not found_match and not found_incorrect:
                 result.spurious += 1
                 indices.spurious_indices.append((instance_index, pred_idx))
 
         for true_idx, true in enumerate(true_entities):
-            if not any(pred.label == true.label for pred in pred_entities):
+            if true_idx not in matched_true:
                 result.missed += 1
                 indices.missed_indices.append((instance_index, true_idx))
 
@@ -170,7 +179,14 @@ class EntityTypeEvaluation(EvaluationStrategy):
 
 
 class ExactEvaluation(EvaluationStrategy):
-    """Exact evaluation strategy - exact boundary match over the surface string, regardless of the type."""
+    """
+    Exact evaluation strategy - exact boundary match over the surface string, regardless of the type.
+    
+    If there's a predicted entity that perfectly matches a true entity, regardless of the label, we mark it as correct.
+    If there's a predicted entity that has only some minimum overlap with a true entity, we mark it as incorrect.
+    If there's a predicted entity that doesn't match any true entity, we mark it as spurious.
+    If there's a true entity that doesn't match any predicted entity, we mark it as missed.
+    """
 
     def evaluate(
         self, true_entities: List[Entity], pred_entities: List[Entity], tags: List[str], instance_index: int = 0
@@ -185,20 +201,28 @@ class ExactEvaluation(EvaluationStrategy):
 
         for pred_idx, pred in enumerate(pred_entities):
             found_match = False
+            found_incorrect = False
 
             for true_idx, true in enumerate(true_entities):
                 if true_idx in matched_true:
                     continue
 
-                # Check for exact boundary match
+                # Check for exact boundary match (regardless of label)
                 if pred.start == true.start and pred.end == true.end:
                     result.correct += 1
                     indices.correct_indices.append((instance_index, pred_idx))
                     matched_true.add(true_idx)
                     found_match = True
                     break
+                # Check for any overlap
+                elif pred.start <= true.end and pred.end >= true.start:
+                    result.incorrect += 1
+                    indices.incorrect_indices.append((instance_index, pred_idx))
+                    matched_true.add(true_idx)
+                    found_incorrect = True
+                    break
 
-            if not found_match:
+            if not found_match and not found_incorrect:
                 result.spurious += 1
                 indices.spurious_indices.append((instance_index, pred_idx))
 

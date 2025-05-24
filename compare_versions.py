@@ -25,19 +25,18 @@ pred = [
     #
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # ent_type - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # ent_type - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0   -> Needs fixing! (new code)
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0   -> Needs fixing! (old code and new code)
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0   -> Needs fixing! (new code)
-    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1   -> Needs fixing! (new code)
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0   -> Needs fixing! (old code)
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
+    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1
     
-
     # Exact: exact boundary match over the surface string, regardless of the type
     #
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # exact - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # exact - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # exact - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing! (new code)
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing (new code)
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # exact - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 1
 
 
