@@ -3,9 +3,7 @@ from nervaluate.evaluator import Evaluator
 true = [
     # "The John Smith who works at Google Inc"
     ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-    # ['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE'],
+
 ]
 
 pred = [
@@ -51,42 +49,35 @@ pred = [
 ]
 
 
-
-"""  
-['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE']
-['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'O', 'B-DATE']
-
-              correct   incorrect     partial      missed    spurious   precision      recall    f1-score
-
-  strict         1          1           0            1           1
-   exact         2          1           0            1           1
- partial         3          0           0            1           1
-ent_type         2          1           0            1           1
-"""
-
-# Strict 	exact boundary surface string match and entity type
-# Exact 	exact boundary match over the surface string, regardless of the type
-# Type 	    some overlap between the system tagged entity and the gold annotation is required
-# Partial 	partial boundary match over the surface string, regardless of the type
-
-# NOTES: strict should never generate a partial;
-
-
-# Example text for reference:
-# "The John Smith who works at Google Inc"
 # "In Paris Marie Curie lived in 1895"
+true = [
+    ['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE']
+]
 
+pred = [
+    ['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'O', 'B-DATE']
+]
+
+
+# The new evaluator should be able to handle the following cases:
 new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
 
+# overall
 print(new_evaluator.summary_report())
 
-# The old evaluator for comparison
+# entities - strict, exact, partial, ent_type
+print(new_evaluator.summary_report(mode="entities", scenario="strict"))
+print(new_evaluator.summary_report(mode="entities", scenario="exact"))
+print(new_evaluator.summary_report(mode="entities", scenario="partial"))
+print(new_evaluator.summary_report(mode="entities", scenario="ent_type"))
 
-"""
+# indices
+# print(new_evaluator.summary_report_indices())   # TODO: make this output better
+
+# The old evaluator for comparison
 from nervaluate import Evaluator
 old_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
 
 from nervaluate.reporting import summary_report_overall_indices, summary_report_ents_indices, summary_report_overall
 results = old_evaluator.evaluate()[0]  # Get the first element which contains the overall results
 print(summary_report_overall(results))
-"""
