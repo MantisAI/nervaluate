@@ -125,14 +125,16 @@ class PartialEvaluation(EvaluationStrategy):
 class EntityTypeEvaluation(EvaluationStrategy):
     """
     Entity type evaluation strategy - only checks entity types.
-    
+
     In in strategy, we check for overlap between the predicted entity and the true entity.
 
-    If there's a predicted entity that perfectly matches or only some minimum overlap with a true entity, and the same label, we mark it as correct.
-    If there's a predicted entity that has some minimum overlap or perfectly matches but has the wrong label we mark it as inccorrect.
+    If there's a predicted entity that perfectly matches or only some minimum overlap with a
+    true entity, and the same label, we mark it as correct.
+    If there's a predicted entity that has some minimum overlap or perfectly matches but has
+    the wrong label we mark it as inccorrect.
     If there's a predicted entity that doesn't match any true entity, we mark it as spurious.
     If there's a true entity that doesn't match any predicted entity, we mark it as missed.
-    
+
     # ToDo: define a minimum overlap threshold - see: https://github.com/MantisAI/nervaluate/pull/83
     """
 
@@ -181,7 +183,7 @@ class EntityTypeEvaluation(EvaluationStrategy):
 class ExactEvaluation(EvaluationStrategy):
     """
     Exact evaluation strategy - exact boundary match over the surface string, regardless of the type.
-    
+
     If there's a predicted entity that perfectly matches a true entity, regardless of the label, we mark it as correct.
     If there's a predicted entity that has only some minimum overlap with a true entity, we mark it as incorrect.
     If there's a predicted entity that doesn't match any true entity, we mark it as spurious.
@@ -215,7 +217,7 @@ class ExactEvaluation(EvaluationStrategy):
                     found_match = True
                     break
                 # Check for any overlap
-                elif pred.start <= true.end and pred.end >= true.start:
+                if pred.start <= true.end and pred.end >= true.start:
                     result.incorrect += 1
                     indices.incorrect_indices.append((instance_index, pred_idx))
                     matched_true.add(true_idx)
