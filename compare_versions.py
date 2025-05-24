@@ -15,10 +15,10 @@ pred = [
     #
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # strict - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # strict - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing new code
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing new code
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing new code
-    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1      -> Needs fixing new code
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0 
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
+    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1
 
 
     # Type:     must have the same tag and some minimum overlap between the system tagged entity and the gold annotation

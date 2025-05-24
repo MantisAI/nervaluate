@@ -15,7 +15,17 @@ class EvaluationStrategy(ABC):
 
 
 class StrictEvaluation(EvaluationStrategy):
-    """Strict evaluation strategy - entities must match exactly."""
+    """
+    Strict evaluation strategy - entities must match exactly.
+
+    In in strategy, we check for overlap between the predicted entity and the true entity.
+
+    If there's a predicted entity that perfectly matches a true entity and they have the same label
+    we mark it as correct.
+    If there's a predicted entity that doesn't perfectly match any true entity, we mark it as spurious.
+    If there's a true entity that doesn't perfecly match any predicted entity, we mark it as missed.
+    All other cases are marked as incorrect.
+    """
 
     def evaluate(
         self, true_entities: List[Entity], pred_entities: List[Entity], tags: List[str], instance_index: int = 0
@@ -23,20 +33,39 @@ class StrictEvaluation(EvaluationStrategy):
         """
         Evaluate the predicted entities against the true entities using strict matching.
         """
-
         result = EvaluationResult()
         indices = EvaluationIndices()
+        matched_true = set()
 
         for pred_idx, pred in enumerate(pred_entities):
-            if pred in true_entities:
-                result.correct += 1
-                indices.correct_indices.append((instance_index, pred_idx))
-            else:
+            found_match = False
+            found_incorrect = False
+
+            for true_idx, true in enumerate(true_entities):
+                if true_idx in matched_true:
+                    continue
+
+                # Check for perfect match (same boundaries and label)
+                if pred.label == true.label and pred.start == true.start and pred.end == true.end:
+                    result.correct += 1
+                    indices.correct_indices.append((instance_index, pred_idx))
+                    matched_true.add(true_idx)
+                    found_match = True
+                    break
+                # Check for any overlap
+                if pred.start <= true.end and pred.end >= true.start:
+                    result.incorrect += 1
+                    indices.incorrect_indices.append((instance_index, pred_idx))
+                    matched_true.add(true_idx)
+                    found_incorrect = True
+                    break
+
+            if not found_match and not found_incorrect:
                 result.spurious += 1
                 indices.spurious_indices.append((instance_index, pred_idx))
 
         for true_idx, true in enumerate(true_entities):
-            if true not in pred_entities:
+            if true_idx not in matched_true:
                 result.missed += 1
                 indices.missed_indices.append((instance_index, true_idx))
 
@@ -47,9 +76,9 @@ class StrictEvaluation(EvaluationStrategy):
 class PartialEvaluation(EvaluationStrategy):
     """
     Partial evaluation strategy - allows for partial matches.
-    
+
     In in strategy, we check for overlap between the predicted entity and the true entity.
-        
+
     If there's a predicted entity that perfectly matches a true entity, we mark it as correct.
     If there's a predicted entity that has some minimum overlap with a true entity we mark it as partial.
     If there's a predicted entity that doesn't match any true entity, we mark it as spurious.
