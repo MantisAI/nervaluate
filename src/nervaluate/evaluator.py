@@ -2,7 +2,13 @@ from typing import List, Dict, Any, Union
 import pandas as pd
 
 from .entities import EvaluationResult, EvaluationIndices
-from .evaluation_strategies import EvaluationStrategy, StrictEvaluation, PartialEvaluation, EntityTypeEvaluation, ExactEvaluation
+from .evaluation_strategies import (
+    EvaluationStrategy,
+    StrictEvaluation,
+    PartialEvaluation,
+    EntityTypeEvaluation,
+    ExactEvaluation,
+)
 from .loaders import DataLoader, ConllLoader, ListLoader, DictLoader
 from .entities import Entity
 
@@ -233,7 +239,9 @@ class Evaluator:
         name_width = max(len(str(row[0])) for row in rows)
         width = max(name_width, digits)
         head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
-        report = f"Scenario: {scenario if mode == 'entities' else 'all'}\n\n" + head_fmt.format("", *headers, width=width)
+        report = f"Scenario: {scenario if mode == 'entities' else 'all'}\n\n" + head_fmt.format(
+            "", *headers, width=width
+        )
         report += "\n\n"
         row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
 

@@ -45,7 +45,18 @@ class StrictEvaluation(EvaluationStrategy):
 
 
 class PartialEvaluation(EvaluationStrategy):
-    """Partial evaluation strategy - allows for partial matches."""
+    """
+    Partial evaluation strategy - allows for partial matches.
+    
+    In in strategy, we check for overlap between the predicted entity and the true entity.
+        
+    If there's a predicted entity that perfectly matches a true entity, we mark it as correct.
+    If there's a predicted entity that has some minimum overlap with a true entity we mark it as partial.
+    If there's a predicted entity that doesn't match any true entity, we mark it as spurious.
+    If there's a true entity that doesn't match any predicted entity, we mark it as missed.
+
+    There's never entity type/label checking in this strategy, and there's never an entity marked as incorrect.
+    """
 
     def evaluate(
         self, true_entities: List[Entity], pred_entities: List[Entity], tags: List[str], instance_index: int = 0
@@ -63,19 +74,13 @@ class PartialEvaluation(EvaluationStrategy):
 
                 # Check for overlap
                 if pred.start <= true.end and pred.end >= true.start:
-                    if pred.label == true.label:
-                        if pred.start == true.start and pred.end == true.end:
-                            result.correct += 1
-                            indices.correct_indices.append((instance_index, pred_idx))
-                        else:
-                            result.partial += 1
-                            indices.partial_indices.append((instance_index, pred_idx))
-                        matched_true.add(true_idx)
-                        found_match = True
-                        break
-
-                    result.incorrect += 1
-                    indices.incorrect_indices.append((instance_index, pred_idx))
+                    if pred.start == true.start and pred.end == true.end:
+                        result.correct += 1
+                        indices.correct_indices.append((instance_index, pred_idx))
+                    else:
+                        result.partial += 1
+                        indices.partial_indices.append((instance_index, pred_idx))
+                    matched_true.add(true_idx)
                     found_match = True
                     break
 

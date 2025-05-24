@@ -12,44 +12,41 @@ pred = [
     # "The John Smith who works at Google Inc"
     
     # Strict:   exact boundary surface string match and entity type
-
-    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # strict - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
+    #
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # strict - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # strict - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing new code
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing new code
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing new code
+    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1      -> Needs fixing new code
 
 
     # Type:     must have the same tag and some minimum overlap between the system tagged entity and the gold annotation
-
+    #
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # ent_type - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # ent_type - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'O'],         # ent_type - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0   -> Needs fixing!
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0   -> Needs fixing! (new code)
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0   -> Needs fixing! (old code and new code)
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0   -> Needs fixing! (new code)
+    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1   -> Needs fixing! (new code)
     
 
     # Exact: exact boundary match over the surface string, regardless of the type
-
+    #
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # exact - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # exact - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # exact - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing! (new code)
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0      -> Needs fixing (new code)
     # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # exact - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 1
 
 
-
     # Partial: partial boundary match over the surface string, regardless of the type
-
+    #
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # partial - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # partial - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
-    
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # partial - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # partial - correct: 1 incorrect: 0 partial: 1 missed: 0 spurious: 0
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # partial - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0        
+    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # partial - correct: 1 incorrect: 0 partial: 1 missed: 0 spurious: 0 
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # partial - correct: 1 incorrect: 0 partial: 1 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # partial - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 1
 ]
