@@ -133,3 +133,45 @@ class EntityTypeEvaluation(EvaluationStrategy):
 
         result.compute_metrics(partial_or_type=True)
         return result, indices
+
+
+class ExactEvaluation(EvaluationStrategy):
+    """Exact evaluation strategy - exact boundary match over the surface string, regardless of the type."""
+
+    def evaluate(
+        self, true_entities: List[Entity], pred_entities: List[Entity], tags: List[str], instance_index: int = 0
+    ) -> Tuple[EvaluationResult, EvaluationIndices]:
+        """
+        Evaluate the predicted entities against the true entities using exact boundary matching.
+        Entity type is not considered in the matching.
+        """
+        result = EvaluationResult()
+        indices = EvaluationIndices()
+        matched_true = set()
+
+        for pred_idx, pred in enumerate(pred_entities):
+            found_match = False
+
+            for true_idx, true in enumerate(true_entities):
+                if true_idx in matched_true:
+                    continue
+
+                # Check for exact boundary match
+                if pred.start == true.start and pred.end == true.end:
+                    result.correct += 1
+                    indices.correct_indices.append((instance_index, pred_idx))
+                    matched_true.add(true_idx)
+                    found_match = True
+                    break
+
+            if not found_match:
+                result.spurious += 1
+                indices.spurious_indices.append((instance_index, pred_idx))
+
+        for true_idx, true in enumerate(true_entities):
+            if true_idx not in matched_true:
+                result.missed += 1
+                indices.missed_indices.append((instance_index, true_idx))
+
+        result.compute_metrics()
+        return result, indices

@@ -2,7 +2,7 @@ from typing import List, Dict, Any, Union
 import pandas as pd
 
 from .entities import EvaluationResult, EvaluationIndices
-from .evaluation_strategies import EvaluationStrategy, StrictEvaluation, PartialEvaluation, EntityTypeEvaluation
+from .evaluation_strategies import EvaluationStrategy, StrictEvaluation, PartialEvaluation, EntityTypeEvaluation, ExactEvaluation
 from .loaders import DataLoader, ConllLoader, ListLoader, DictLoader
 from .entities import Entity
 
@@ -35,6 +35,7 @@ class Evaluator:
             "strict": StrictEvaluation(),
             "partial": PartialEvaluation(),
             "ent_type": EntityTypeEvaluation(),
+            "exact": ExactEvaluation(),
         }
 
     def _load_data(self, true: Any, pred: Any, loader: str) -> None:
@@ -158,7 +159,7 @@ class Evaluator:
 
         Args:
             mode: Either 'overall' for overall metrics or 'entities' for per-entity metrics.
-            scenario: The scenario to report on. Defaults to 'strict'.
+            scenario: The scenario to report on. Only used when mode is 'entities'.
                       Must be one of:
                         - 'strict' exact boundary surface string match and entity type;
                         - 'exact': exact boundary match over the surface string and entity type;
@@ -186,7 +187,7 @@ class Evaluator:
 
         results = self.evaluate()
         if mode == "overall":
-            # Process overall results
+            # Process overall results - show all scenarios
             results_data = results["overall"]
             for eval_schema in sorted(valid_scenarios):  # Sort to ensure consistent order
                 if eval_schema not in results_data:
@@ -206,12 +207,12 @@ class Evaluator:
                     ]
                 )
         else:
-            # Process entity-specific results
+            # Process entity-specific results for the specified scenario only
             results_data = results["entities"]
             target_names = sorted(results_data.keys())
             for ent_type in target_names:
                 if scenario not in results_data[ent_type]:
-                    raise ValueError(f"Scenario '{scenario}' not found in results for entity type '{ent_type}'")
+                    continue  # Skip if scenario not available for this entity type
 
                 results_ent = results_data[ent_type][scenario]
                 rows.append(
@@ -232,7 +233,7 @@ class Evaluator:
         name_width = max(len(str(row[0])) for row in rows)
         width = max(name_width, digits)
         head_fmt = "{:>{width}s} " + " {:>11}" * len(headers)
-        report = f"Scenario: {scenario}\n\n" + head_fmt.format("", *headers, width=width)
+        report = f"Scenario: {scenario if mode == 'entities' else 'all'}\n\n" + head_fmt.format("", *headers, width=width)
         report += "\n\n"
         row_fmt = "{:>{width}s} " + " {:>11}" * 5 + " {:>11.{digits}f}" * 3 + "\n"
 
