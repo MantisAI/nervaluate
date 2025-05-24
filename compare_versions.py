@@ -1,12 +1,14 @@
 from nervaluate.evaluator import Evaluator
 
-true = [
-    # "The John Smith who works at Google Inc"
-    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
+def overall_report():
 
-]
+    true = [
+        # "The John Smith who works at Google Inc"
+        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
 
-pred = [
+    ]
+
+    pred = [
     # "The John Smith who works at Google Inc"
     
     # Strict:   exact boundary surface string match and entity type
@@ -48,38 +50,45 @@ pred = [
     # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # partial - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 1
 ]
 
+    new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    print(new_evaluator.summary_report())
 
-# The new evaluator should be able to handle the following cases:
-new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    from nervaluate import Evaluator
+    old_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
 
-# overall
-print(new_evaluator.summary_report())
+    from nervaluate.reporting import summary_report_overall_indices, summary_report_ents_indices, summary_report_overall
+    results = old_evaluator.evaluate()[0]  # Get the first element which contains the overall results
+    print(summary_report_overall(results))
+
+def entities_report():
+
+    # "In Paris Marie Curie lived in 1895"
+    # true = [['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE']]
+    # pred = [['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'O', 'B-DATE']]
+
+    # "The John Smith who works at Google Inc"
+    true = [['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']]
+    pred = [
+        # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']
+        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # strict - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
+        ]
+    
+
+    new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+
+    # entities - strict, exact, partial, ent_type
+    print(new_evaluator.summary_report(mode="entities", scenario="strict"))
+    print(new_evaluator.summary_report(mode="entities", scenario="exact"))
+    print(new_evaluator.summary_report(mode="entities", scenario="partial"))
+    print(new_evaluator.summary_report(mode="entities", scenario="ent_type"))
 
 
-# "In Paris Marie Curie lived in 1895"
-true = [
-    ['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE']
-]
+def indices_report(results):
+    # indices
+    # print(new_evaluator.summary_report_indices())   # TODO: make this output better
+    pass
 
-pred = [
-    ['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'O', 'B-DATE']
-]
 
-new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-
-# entities - strict, exact, partial, ent_type
-print(new_evaluator.summary_report(mode="entities", scenario="strict"))
-print(new_evaluator.summary_report(mode="entities", scenario="exact"))
-print(new_evaluator.summary_report(mode="entities", scenario="partial"))
-print(new_evaluator.summary_report(mode="entities", scenario="ent_type"))
-
-# indices
-# print(new_evaluator.summary_report_indices())   # TODO: make this output better
-
-# The old evaluator for comparison
-from nervaluate import Evaluator
-old_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-
-from nervaluate.reporting import summary_report_overall_indices, summary_report_ents_indices, summary_report_overall
-results = old_evaluator.evaluate()[0]  # Get the first element which contains the overall results
-print(summary_report_overall(results))
+if __name__ == "__main__":
+    # overall_report()
+    entities_report()

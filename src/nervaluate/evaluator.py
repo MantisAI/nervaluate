@@ -85,9 +85,18 @@ class Evaluator:
             Dictionary containing evaluation results for each strategy and entity type
         """
         results = {}
-        entity_results: Dict[str, Dict[str, EvaluationResult]] = {tag: {} for tag in self.tags}
+        # Get unique tags that appear in either true or predicted data
+        used_tags = set()
+        for doc in self.true:
+            used_tags.update(e.label for e in doc)
+        for doc in self.pred:
+            used_tags.update(e.label for e in doc)
+        # Only keep tags that are both used and in the allowed tags list
+        used_tags = used_tags.intersection(set(self.tags))
+        
+        entity_results: Dict[str, Dict[str, EvaluationResult]] = {tag: {} for tag in used_tags}
         indices = {}
-        entity_indices: Dict[str, Dict[str, EvaluationIndices]] = {tag: {} for tag in self.tags}
+        entity_indices: Dict[str, Dict[str, EvaluationIndices]] = {tag: {} for tag in used_tags}
 
         # Evaluate each document
         for doc_idx, (true_doc, pred_doc) in enumerate(zip(self.true, self.pred)):
@@ -108,7 +117,7 @@ class Evaluator:
                     self._merge_indices(indices[strategy_name], doc_indices)
 
                 # Update entity-specific results
-                for tag in self.tags:
+                for tag in used_tags:
                     if tag not in entity_results:
                         entity_results[tag] = {}
                         entity_indices[tag] = {}
