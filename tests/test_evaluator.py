@@ -1,4 +1,5 @@
 # pylint: disable=too-many-lines
+import pytest
 import pandas as pd
 from nervaluate import Evaluator
 

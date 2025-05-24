@@ -7,7 +7,7 @@ true = [
 
 pred = [
     ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-    ['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'I-PER', 'O', 'B-DATE', 'I-DATE', 'O'],
+    ['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'O', 'B-DATE'],
 ]
 
 # Example text for reference:

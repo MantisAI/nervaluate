@@ -54,6 +54,16 @@ class Evaluator:
         if loader not in self.loaders:
             raise ValueError(f"Unknown loader: {loader}")
 
+        # For list loader, check document lengths before loading
+        if loader == "list":
+            if len(true) != len(pred):
+                raise ValueError("Number of predicted documents does not equal true")
+
+            # Check that each document has the same length
+            for i, (true_doc, pred_doc) in enumerate(zip(true, pred)):
+                if len(true_doc) != len(pred_doc):
+                    raise ValueError(f"Document {i} has different lengths: true={len(true_doc)}, pred={len(pred_doc)}")
+
         self.true = self.loaders[loader].load(true)
         self.pred = self.loaders[loader].load(pred)
 

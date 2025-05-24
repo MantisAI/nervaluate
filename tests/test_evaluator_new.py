@@ -166,29 +166,19 @@ def test_evaluator_with_invalid_tags(sample_data):
         assert results["overall"][strategy].spurious == 0
 
 
-def test_evaluator_full():
+def test_evaluator_different_document_lengths():
+    """Test that Evaluator raises ValueError when documents have different lengths."""
     true = [
-        ["O", "B-PER", "I-PER", "O", "O", "O", "B-ORG", "I-ORG"],
-        ["O", "B-LOC", "B-PER", "I-PER", "O", "O", "B-DATE"],
+        ["O", "B-PER", "I-PER", "O", "O", "O", "B-ORG", "I-ORG"],  # 8 tokens
+        ["O", "B-LOC", "B-PER", "I-PER", "O", "O", "B-DATE"],  # 7 tokens
     ]
-
     pred = [
-        ["O", "O", "B-PER", "I-PER", "O", "O", "B-ORG", "I-ORG", "O"],
-        ["O", "B-LOC", "I-LOC", "O", "B-PER", "I-PER", "O", "B-DATE", "I-DATE", "O"],
+        ["O", "B-PER", "I-PER", "O", "O", "O", "B-ORG", "I-ORG"],  # 8 tokens
+        ["O", "B-LOC", "I-LOC", "O", "B-PER", "I-PER", "O", "B-DATE", "I-DATE", "O"],  # 10 tokens
     ]
+    tags = ["PER", "ORG", "LOC", "DATE"]
 
-    evaluator = Evaluator(true, pred, tags=["PER", "ORG", "LOC", "DATE"], loader="list")
-
-    # For metrics report
-    report_overall = evaluator.summary_report(mode="overall")
-    assert report_overall is not None  # ToDo: Add actual assertions
-
-    report_entities = evaluator.summary_report(mode="entities", scenario="strict")
-    assert report_entities is not None  # ToDo: Add actual assertions
-
-    # For indices report
-    report_indices_overall = evaluator.summary_report_indices(mode="overall")
-    assert report_indices_overall is not None  # ToDo: Add actual assertions
-
-    report_indices_entities = evaluator.summary_report_indices(mode="entities", scenario="strict")
-    assert report_indices_entities is not None  # ToDo: Add actual assertions
+    # Test that ValueError is raised
+    with pytest.raises(ValueError, match="Document 1 has different lengths: true=7, pred=10"):
+        evaluator = Evaluator(true=true, pred=pred, tags=tags, loader="list")
+        evaluator.evaluate()
