@@ -426,6 +426,42 @@ evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="li
 results, results_by_tag, result_indices, result_indices_by_tag = evaluator.evaluate()
 ```
 
+Sentence:
+  - "In Paris Marie Curie lived in 1895"
+
+Tokens:
+  - ['In', 'Paris', 'Marie', 'Curie', 'lived', 'in', '1895']
+
+Gold:
+  - ['O',  'B-LOC', 'B-PER', 'I-PER', 'O',      'O', 'B-DATE']
+
+Predicted:
+  - ['O',  'B-LOC', 'I-LOC', 'O',     'B-PER',  'O', 'B-DATE']
+
+Gold entities:
+
+| Type | String            |
+|------|-------------------|
+| LOC  | Paris             |
+| PER  | Marie Curie       |
+| DATE | 1895              |
+
+Predicted entities:
+
+| Type | String       |
+|------|--------------|
+| LOC  | Paris Marie  |
+| PER  | lived        |
+| DATE | 1895         |
+
+```
+
+
+
+
+
+
+
 <!--
 ### CoNLL style tab delimited
 
