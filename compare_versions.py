@@ -18,5 +18,11 @@ new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader
 
 print(new_evaluator.summary_report())
 
+# The old evaluator for comparison
+
 from nervaluate import Evaluator
 old_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+
+from nervaluate.reporting import summary_report_overall_indices, summary_report_ents_indices, summary_report_overall
+results = old_evaluator.evaluate()[0]  # Get the first element which contains the overall results
+print(summary_report_overall(results))
