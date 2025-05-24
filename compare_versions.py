@@ -69,8 +69,8 @@ def entities_report():
     # "The John Smith who works at Google Inc"
     true = [['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']]
     pred = [
-        # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']
-        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # strict - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
+            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']
+            ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],           
         ]
     
 

@@ -86,14 +86,14 @@ class Evaluator:
         """
         results = {}
         # Get unique tags that appear in either true or predicted data
-        used_tags = set()
+        used_tags = set()  # type: ignore
         for doc in self.true:
             used_tags.update(e.label for e in doc)
         for doc in self.pred:
             used_tags.update(e.label for e in doc)
         # Only keep tags that are both used and in the allowed tags list
         used_tags = used_tags.intersection(set(self.tags))
-        
+
         entity_results: Dict[str, Dict[str, EvaluationResult]] = {tag: {} for tag in used_tags}
         indices = {}
         entity_indices: Dict[str, Dict[str, EvaluationIndices]] = {tag: {} for tag in used_tags}
@@ -118,15 +118,22 @@ class Evaluator:
 
                 # Update entity-specific results
                 for tag in used_tags:
+                    # Filter entities for this specific tag
+                    true_tag_doc = [e for e in true_doc if e.label == tag]
+                    pred_tag_doc = [e for e in pred_doc if e.label == tag]
+
+                    # Evaluate only entities of this tag
+                    tag_result, tag_indices = strategy.evaluate(true_tag_doc, pred_tag_doc, [tag], doc_idx)
+
                     if tag not in entity_results:
                         entity_results[tag] = {}
                         entity_indices[tag] = {}
                     if strategy_name not in entity_results[tag]:
-                        entity_results[tag][strategy_name] = result
-                        entity_indices[tag][strategy_name] = doc_indices
+                        entity_results[tag][strategy_name] = tag_result
+                        entity_indices[tag][strategy_name] = tag_indices
                     else:
-                        self._merge_results(entity_results[tag][strategy_name], result)
-                        self._merge_indices(entity_indices[tag][strategy_name], doc_indices)
+                        self._merge_results(entity_results[tag][strategy_name], tag_result)
+                        self._merge_indices(entity_indices[tag][strategy_name], tag_indices)
 
         return {
             "overall": results,
