@@ -49,6 +49,13 @@ pred = [
 ]
 
 
+# The new evaluator should be able to handle the following cases:
+new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+
+# overall
+print(new_evaluator.summary_report())
+
+
 # "In Paris Marie Curie lived in 1895"
 true = [
     ['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE']
@@ -58,12 +65,7 @@ pred = [
     ['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'O', 'B-DATE']
 ]
 
-
-# The new evaluator should be able to handle the following cases:
 new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-
-# overall
-print(new_evaluator.summary_report())
 
 # entities - strict, exact, partial, ent_type
 print(new_evaluator.summary_report(mode="entities", scenario="strict"))
