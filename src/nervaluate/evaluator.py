@@ -267,7 +267,7 @@ class Evaluator:
         return report
 
     def summary_report_indices(  # pylint: disable=too-many-branches
-        self, mode: str = "overall", scenario: str = "strict"
+        self, mode: str = "overall", scenario: str = "strict", colors: bool = False
     ) -> str:
         """
         Generate a summary report of the evaluation indices.
@@ -276,6 +276,7 @@ class Evaluator:
             mode: Either 'overall' for overall metrics or 'entities' for per-entity metrics.
             scenario: The scenario to report on. Must be one of: 'strict', 'ent_type', 'partial', 'exact'.
                      Only used when mode is 'entities'. Defaults to 'strict'.
+            colors: Whether to use colors in the output. Defaults to False.
 
         Returns:
             A string containing the summary report of indices.
@@ -292,6 +293,25 @@ class Evaluator:
         if mode == "entities" and scenario not in valid_scenarios:
             raise ValueError(f"Invalid scenario: must be one of {valid_scenarios}")
 
+        # ANSI color codes
+        COLORS = {
+            'reset': '\033[0m',
+            'bold': '\033[1m',
+            'red': '\033[91m',
+            'green': '\033[92m',
+            'yellow': '\033[93m',
+            'blue': '\033[94m',
+            'magenta': '\033[95m',
+            'cyan': '\033[96m',
+            'white': '\033[97m',
+        }
+
+        def colorize(text: str, color: str) -> str:
+            """Helper function to colorize text if colors are enabled."""
+            if colors:
+                return f"{COLORS[color]}{text}{COLORS['reset']}"
+            return text
+
         def get_prediction_info(pred: Union[Entity, str]) -> str:
             """Helper function to get prediction info based on pred type."""
             if isinstance(pred, Entity):
@@ -301,50 +321,105 @@ class Evaluator:
 
         results = self.evaluate()
         report = ""
+        
+        # Create headers for the table
+        headers = ["Category", "Instance", "Entity", "Details"]
+        header_fmt = "{:<15} {:<10} {:<10} {:<40}"
+        row_fmt = "{:<15} {:<10} {:<10} {:<40}"
+        
         if mode == "overall":
             # Get the indices from the overall results
             indices_data = results["overall_indices"][scenario]
-            report += f"Indices for error schema '{scenario}':\n\n"
+            report += f"\n{colorize('Indices for error schema', 'bold')} '{colorize(scenario, 'cyan')}':\n\n"
+            report += colorize(header_fmt.format(*headers), 'bold') + "\n"
+            report += colorize("-" * 75, 'white') + "\n"
 
             for category, indices in indices_data.__dict__.items():
                 if not category.endswith("_indices"):
                     continue
                 category_name = category.replace("_indices", "").replace("_", " ").capitalize()
-                report += f"{category_name}:\n"
+                
+                # Color mapping for categories
+                category_colors = {
+                    'Correct': 'green',
+                    'Incorrect': 'red',
+                    'Partial': 'yellow',
+                    'Missed': 'magenta',
+                    'Spurious': 'blue'
+                }
+                
                 if indices:
                     for instance_index, entity_index in indices:
                         if self.pred != [[]]:
                             pred = self.pred[instance_index][entity_index]
                             prediction_info = get_prediction_info(pred)
-                            report += f"  - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
+                            report += row_fmt.format(
+                                colorize(category_name, category_colors.get(category_name, 'white')),
+                                f"{instance_index}",
+                                f"{entity_index}",
+                                prediction_info
+                            ) + "\n"
                         else:
-                            report += f"  - Instance {instance_index}, Entity {entity_index}\n"
+                            report += row_fmt.format(
+                                colorize(category_name, category_colors.get(category_name, 'white')),
+                                f"{instance_index}",
+                                f"{entity_index}",
+                                "No prediction info"
+                            ) + "\n"
                 else:
-                    report += "  - None\n"
-                report += "\n"
+                    report += row_fmt.format(
+                        colorize(category_name, category_colors.get(category_name, 'white')),
+                        "-",
+                        "-",
+                        "None"
+                    ) + "\n"
         else:
             # Get the indices from the entity-specific results
             for entity_type, entity_results in results["entity_indices"].items():
-                report += f"\nEntity Type: {entity_type}\n"
-                error_data = entity_results[scenario]
-                report += f"  Error Schema: '{scenario}'\n"
+                report += f"\n{colorize('Entity Type', 'bold')}: {colorize(entity_type, 'cyan')}\n"
+                report += f"{colorize('Error Schema', 'bold')}: '{colorize(scenario, 'cyan')}'\n\n"
+                report += colorize(header_fmt.format(*headers), 'bold') + "\n"
+                report += colorize("-" * 75, 'white') + "\n"
 
+                error_data = entity_results[scenario]
                 for category, indices in error_data.__dict__.items():
                     if not category.endswith("_indices"):
                         continue
                     category_name = category.replace("_indices", "").replace("_", " ").capitalize()
-                    report += f"    ({entity_type}) {category_name}:\n"
+                    
+                    # Color mapping for categories
+                    category_colors = {
+                        'Correct': 'green',
+                        'Incorrect': 'red',
+                        'Partial': 'yellow',
+                        'Missed': 'magenta',
+                        'Spurious': 'blue'
+                    }
+                    
                     if indices:
                         for instance_index, entity_index in indices:
                             if self.pred != [[]]:
                                 pred = self.pred[instance_index][entity_index]
                                 prediction_info = get_prediction_info(pred)
-                                report += (
-                                    f"      - Instance {instance_index}, Entity {entity_index}: {prediction_info}\n"
-                                )
+                                report += row_fmt.format(
+                                    colorize(category_name, category_colors.get(category_name, 'white')),
+                                    f"{instance_index}",
+                                    f"{entity_index}",
+                                    prediction_info
+                                ) + "\n"
                             else:
-                                report += f"      - Instance {instance_index}, Entity {entity_index}\n"
+                                report += row_fmt.format(
+                                    colorize(category_name, category_colors.get(category_name, 'white')),
+                                    f"{instance_index}",
+                                    f"{entity_index}",
+                                    "No prediction info"
+                                ) + "\n"
                     else:
-                        report += "      - None\n"
+                        report += row_fmt.format(
+                            colorize(category_name, category_colors.get(category_name, 'white')),
+                            "-",
+                            "-",
+                            "None"
+                        ) + "\n"
 
         return report

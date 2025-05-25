@@ -1,4 +1,7 @@
-from nervaluate.evaluator import Evaluator
+from nervaluate.evaluator import Evaluator as NewEvaluator
+from nervaluate import Evaluator as OldEvaluator
+
+from nervaluate.reporting import summary_report_overall_indices, summary_report_ents_indices, summary_report_overall
 
 def overall_report():
 
@@ -13,7 +16,7 @@ def overall_report():
     
     # Strict:   exact boundary surface string match and entity type
     #
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # strict - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
+    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # strict - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # strict - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0 
     # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
@@ -50,13 +53,10 @@ def overall_report():
     # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # partial - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 1
 ]
 
-    new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
     print(new_evaluator.summary_report())
 
-    from nervaluate import Evaluator
-    old_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-
-    from nervaluate.reporting import summary_report_overall_indices, summary_report_ents_indices, summary_report_overall
+    old_evaluator = OldEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
     results = old_evaluator.evaluate()[0]  # Get the first element which contains the overall results
     print(summary_report_overall(results))
 
@@ -70,11 +70,15 @@ def entities_report():
     true = [['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']]
     pred = [
             # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']
-            ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],           
+            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],  
+            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],
+            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],
+            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],
+            ['O', 'B-PER', 'B-LOC', 'O', 'B-PER', 'O', 'B-ORG', 'I-LOC'],
         ]
     
 
-    new_evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
 
     # entities - strict, exact, partial, ent_type
     print(new_evaluator.summary_report(mode="entities", scenario="strict"))
@@ -83,12 +87,31 @@ def entities_report():
     print(new_evaluator.summary_report(mode="entities", scenario="ent_type"))
 
 
-def indices_report(results):
-    # indices
-    # print(new_evaluator.summary_report_indices())   # TODO: make this output better
-    pass
+def indices_report():
 
+    # "The John Smith who works at Google Inc"
+
+    """
+    
+    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],
+    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],
+    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],
+    ['O', 'B-PER', 'B-LOC', 'O', 'B-PER', 'O', 'B-ORG', 'I-LOC']
+    """
+
+    true = [
+        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
+        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']
+        ]
+    pred = [
+        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
+        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O'],
+        ]
+    
+    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    print(new_evaluator.summary_report_indices(colors=True))
 
 if __name__ == "__main__":
-    # overall_report()
-    entities_report()
+    #overall_report()
+    #entities_report()
+    indices_report()
