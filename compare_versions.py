@@ -103,22 +103,29 @@ def entities_report(true, pred):
 
 def indices_report_overall(true, pred):
     
-    """
-    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    true = [
+        [{"label": "PER", "start": 2, "end": 4}],
+        [{"label": "LOC", "start": 1, "end": 2}, {"label": "LOC", "start": 3, "end": 4}]]
+    
+    pred = [
+        [{"label": "PER", "start": 2, "end": 4}],
+        [{"label": "LOC", "start": 1, "end": 2},
+         {"label": "LOC", "start": 3, "end": 4}]
+    ]
+
+    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'LOC', 'DATE'], loader="list")
     print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="strict"))
     print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="exact"))
     print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="partial"))
     print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="ent_type"))
-    """
 
-    old_evaluator = OldEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-    _, _, results_agg_indices, _ = old_evaluator.evaluate()
-    print(results_agg_indices)
-    print(summary_report_overall_indices(results_agg_indices, error_schema="strict"))
-    # print(summary_report(results_agg_indices, mode="indices", scenario="exact"))
-    # print(summary_report(results_agg_indices, mode="indices", scenario="partial"))
-    # print(summary_report(results_agg_indices, mode="indices", scenario="ent_type"))
-
+    old_evaluator = OldEvaluator(true, pred, tags=['LOC', 'PER'])
+    results, results_per_tag, result_indices, result_indices_by_tag = old_evaluator.evaluate()
+    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='strict', preds=pred))
+    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='exact', preds=pred))
+    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='partial', preds=pred))
+    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='ent_type', preds=pred))
+    
 
 if __name__ == "__main__":
     tags = ['PER', 'ORG', 'LOC', 'DATE']
