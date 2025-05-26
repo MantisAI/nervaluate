@@ -1,116 +1,6 @@
 from nervaluate.evaluator import Evaluator as NewEvaluator
 from nervaluate import Evaluator as OldEvaluator
-
-from nervaluate.reporting import summary_report_overall_indices, summary_report_ents_indices, summary_report_overall
-
-def overall_report():
-
-    true = [
-        # "The John Smith who works at Google Inc"
-        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-
-    ]
-
-    pred = [
-    # "The John Smith who works at Google Inc"
-    
-    # Strict:   exact boundary surface string match and entity type
-    #
-    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # strict - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # strict - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0 
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # strict - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1
-
-
-    # Type:     must have the same tag and some minimum overlap between the system tagged entity and the gold annotation
-    #
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # ent_type - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # ent_type - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0   -> Needs fixing! (old code)
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # ent_type - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 1
-    
-    # Exact: exact boundary match over the surface string, regardless of the type
-    #
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # exact - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # exact - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # exact - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # exact - correct: 1 incorrect: 1 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # exact - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 1
-
-
-    # Partial: partial boundary match over the surface string, regardless of the type
-    #
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],     # partial - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],             # partial - correct: 1 incorrect: 0 partial: 0 missed: 1 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],     # partial - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 0        
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],         # partial - correct: 1 incorrect: 0 partial: 1 missed: 0 spurious: 0 
-    # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],         # partial - correct: 1 incorrect: 0 partial: 1 missed: 0 spurious: 0
-    # ['O', 'B-PER', 'I-PER', 'O', 'B-PER', 'O', 'B-LOC', 'I-LOC'], # partial - correct: 2 incorrect: 0 partial: 0 missed: 0 spurious: 1
-]
-
-    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-    print(new_evaluator.summary_report())
-
-    old_evaluator = OldEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-    results = old_evaluator.evaluate()[0]  # Get the first element which contains the overall results
-    print(summary_report_overall(results))
-
-def entities_report():
-
-    # "In Paris Marie Curie lived in 1895"
-    # true = [['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE']]
-    # pred = [['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'O', 'B-DATE']]
-
-    # "The John Smith who works at Google Inc"
-    true = [['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']]
-    pred = [
-            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']
-            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O'],  
-            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],
-            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],
-            # ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],
-            ['O', 'B-PER', 'B-LOC', 'O', 'B-PER', 'O', 'B-ORG', 'I-LOC'],
-        ]
-    
-
-    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-
-    # entities - strict, exact, partial, ent_type
-    print(new_evaluator.summary_report(mode="entities", scenario="strict"))
-    print(new_evaluator.summary_report(mode="entities", scenario="exact"))
-    print(new_evaluator.summary_report(mode="entities", scenario="partial"))
-    print(new_evaluator.summary_report(mode="entities", scenario="ent_type"))
-
-
-def indices_report():
-
-    # "The John Smith who works at Google Inc"
-
-    """    
-    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'I-LOC'],
-    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-LOC', 'O'],
-    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],
-    ['O', 'B-PER', 'B-LOC', 'O', 'B-PER', 'O', 'B-ORG', 'I-LOC']
-    """
-
-    true = [
-        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG']
-        ]
-    pred = [
-        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-        ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'B-LOC'],
-        ['O', 'B-PER', 'B-LOC', 'O', 'B-PER', 'O', 'B-ORG', 'I-LOC']
-        ]
-    
-    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-    print(new_evaluator.summary_report_indices(colors=True))
+from nervaluate.reporting import summary_report_overall_indices, summary_report_ents_indices, summary_report
 
 def generate_synthetic_data(tags, num_samples, min_length=5, max_length=15):
     """
@@ -178,14 +68,63 @@ def generate_synthetic_data(tags, num_samples, min_length=5, max_length=15):
     
     return true_sequences, pred_sequences
 
-if __name__ == "__main__":
-    #overall_report()
-    #entities_report()
-    #indices_report()
+
+def overall_report(true, pred):
+
+    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    print(new_evaluator.summary_report())
+
+    print("-"*100)
+
+    old_evaluator = OldEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    results = old_evaluator.evaluate()[0]  # Get the first element which contains the overall results
+    print(summary_report(results))
+
+
+def entities_report(true, pred):
+
+    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+
+    # entities - strict, exact, partial, ent_type
+    print(new_evaluator.summary_report(mode="entities", scenario="strict"))
+    print(new_evaluator.summary_report(mode="entities", scenario="exact"))
+    print(new_evaluator.summary_report(mode="entities", scenario="partial"))
+    print(new_evaluator.summary_report(mode="entities", scenario="ent_type"))
+
+    print("-"*100)
+
+    old_evaluator = OldEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    _, results_agg_entities_type, _, _ = old_evaluator.evaluate()  # Get the second element which contains the entity-specific results
+    print(summary_report(results_agg_entities_type, mode="entities", scenario="strict"))
+    print(summary_report(results_agg_entities_type, mode="entities", scenario="exact"))
+    print(summary_report(results_agg_entities_type, mode="entities", scenario="partial"))
+    print(summary_report(results_agg_entities_type, mode="entities", scenario="ent_type"))
+
+
+def indices_report_overall(true, pred):
     
-    # Example usage of generate_synthetic_data
+    """
+    new_evaluator = NewEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="strict"))
+    print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="exact"))
+    print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="partial"))
+    print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="ent_type"))
+    """
+
+    old_evaluator = OldEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+    _, _, results_agg_indices, _ = old_evaluator.evaluate()
+    print(summary_report_overall_indices(results_agg_indices))
+    # print(summary_report(results_agg_indices, mode="indices", scenario="exact"))
+    # print(summary_report(results_agg_indices, mode="indices", scenario="partial"))
+    # print(summary_report(results_agg_indices, mode="indices", scenario="ent_type"))
+
+
+if __name__ == "__main__":
     tags = ['PER', 'ORG', 'LOC', 'DATE']
-    true, pred = generate_synthetic_data(tags, num_samples=30)
-    print("Generated synthetic data:")
-    print("Ground truth:", true)
-    print("Predictions:", pred)
+    true, pred = generate_synthetic_data(tags, num_samples=10)
+
+    # overall_report(true, pred)
+    # print("\n\n" + "="*100 + "\n\n")
+    # entities_report(true, pred)
+    # print("\n\n" + "="*100 + "\n\n")
+    indices_report_overall(true, pred)
