@@ -113,7 +113,8 @@ def indices_report_overall(true, pred):
 
     old_evaluator = OldEvaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
     _, _, results_agg_indices, _ = old_evaluator.evaluate()
-    print(summary_report_overall_indices(results_agg_indices))
+    print(results_agg_indices)
+    print(summary_report_overall_indices(results_agg_indices, error_schema="strict"))
     # print(summary_report(results_agg_indices, mode="indices", scenario="exact"))
     # print(summary_report(results_agg_indices, mode="indices", scenario="partial"))
     # print(summary_report(results_agg_indices, mode="indices", scenario="ent_type"))
