@@ -101,31 +101,66 @@ def entities_report(true, pred):
     print(summary_report(results_agg_entities_type, mode="entities", scenario="ent_type"))
 
 
+def list_to_dict_format(data):
+    """
+    Convert list format data to dictionary format.
+    
+    Args:
+        data: List of lists containing BIO tags
+        
+    Returns:
+        List of lists containing dictionaries with label, start, and end keys
+    """
+    result = []
+    for doc in data:
+        doc_entities = []
+        current_entity = None
+        
+        for i, tag in enumerate(doc):
+            if tag.startswith('B-'):
+                # If we were tracking an entity, add it to the list
+                if current_entity is not None:
+                    doc_entities.append(current_entity)
+                # Start tracking a new entity
+                current_entity = {
+                    'label': tag[2:],  # Remove 'B-' prefix
+                    'start': i,
+                    'end': i
+                }
+            elif tag.startswith('I-'):
+                # Continue tracking the current entity
+                if current_entity is not None:
+                    current_entity['end'] = i
+            else:  # 'O' tag
+                # If we were tracking an entity, add it to the list
+                if current_entity is not None:
+                    doc_entities.append(current_entity)
+                    current_entity = None
+        
+        # Don't forget to add the last entity if there was one
+        if current_entity is not None:
+            doc_entities.append(current_entity)
+        
+        result.append(doc_entities)
+    
+    return result
+
 def indices_report_overall(true, pred):
     
-    true = [
-        [{"label": "PER", "start": 2, "end": 4}],
-        [{"label": "LOC", "start": 1, "end": 2}, {"label": "LOC", "start": 3, "end": 4}]]
-    
-    pred = [
-        [{"label": "PER", "start": 2, "end": 4}],
-        [{"label": "LOC", "start": 1, "end": 2},
-         {"label": "LOC", "start": 3, "end": 4}]
-    ]
-
     new_evaluator = NewEvaluator(true, pred, tags=['PER', 'LOC', 'DATE'], loader="list")
     print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="strict"))
     print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="exact"))
     print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="partial"))
     print(new_evaluator.summary_report_indices(colors=True, mode="overall", scenario="ent_type"))
 
-    old_evaluator = OldEvaluator(true, pred, tags=['LOC', 'PER'])
-    results, results_per_tag, result_indices, result_indices_by_tag = old_evaluator.evaluate()
-    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='strict', preds=pred))
-    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='exact', preds=pred))
-    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='partial', preds=pred))
-    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='ent_type', preds=pred))
-    
+    old_evaluator = OldEvaluator(true, pred, tags=['LOC', 'PER'], loader="list")
+    _, _, result_indices, result_indices_by_tag = old_evaluator.evaluate()
+    pred_dict = list_to_dict_format(pred)   # convert predictions to dictionary format for reporting
+    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='strict', preds=pred_dict))
+    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='exact', preds=pred_dict))
+    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='partial', preds=pred_dict))
+    print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='ent_type', preds=pred_dict))
+
 
 if __name__ == "__main__":
     tags = ['PER', 'ORG', 'LOC', 'DATE']
