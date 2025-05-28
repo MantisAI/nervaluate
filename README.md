@@ -22,9 +22,12 @@ This full problem is described in detail in the [original blog](http://www.david
 post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) 
 which accompanied the blog post.
 
-The code draws heavily on the paper:
+The code draws heavily on the papers:
 
 * [SemEval-2013 Task 9 : Extraction of Drug-Drug Interactions from Biomedical Texts (DDIExtraction 2013)](https://www.aclweb.org/anthology/S13-2056)
+
+
+* [SemEval-2013 Task 9.1 - Evaluation Metrics](https://davidsbatista.net/assets/documents/others/semeval_2013-task-9_1-evaluation-metrics.pdf)
 
 ## Token level evaluation for NER is too simplistic
 
@@ -191,291 +194,56 @@ pip install nervaluate
 
 The main `Evaluator` class will accept the following formats:
 
-* [prodi.gy](https://prodi.gy) style lists of spans.
 * Nested lists containing NER labels.
 * CoNLL style tab delimited strings.
-
-<!--
-
-### Prodigy spans
-
-```
-true = [
-    [{"label": "PER", "start": 2, "end": 4}],
-    [{"label": "LOC", "start": 1, "end": 2},
-     {"label": "LOC", "start": 3, "end": 4}]
-]
-
-pred = [
-    [{"label": "PER", "start": 2, "end": 4}],
-    [{"label": "LOC", "start": 1, "end": 2},
-     {"label": "LOC", "start": 3, "end": 4}]
-]
-
-from nervaluate import Evaluator
-
-evaluator = Evaluator(true, pred, tags=['LOC', 'PER'])
-
-# Returns overall metrics and metrics for each tag
-
-results, results_per_tag, result_indices, result_indices_by_tag = evaluator.evaluate()
-
-print(results)
-```
-
-```
-{
-    'ent_type':{
-        'correct':3,
-        'incorrect':0,
-        'partial':0,
-        'missed':0,
-        'spurious':0,
-        'possible':3,
-        'actual':3,
-        'precision':1.0,
-        'recall':1.0
-    },
-    'partial':{
-        'correct':3,
-        'incorrect':0,
-        'partial':0,
-        'missed':0,
-        'spurious':0,
-        'possible':3,
-        'actual':3,
-        'precision':1.0,
-        'recall':1.0
-    },
-    'strict':{
-        'correct':3,
-        'incorrect':0,
-        'partial':0,
-        'missed':0,
-        'spurious':0,
-        'possible':3,
-        'actual':3,
-        'precision':1.0,
-        'recall':1.0
-    },
-    'exact':{
-        'correct':3,
-        'incorrect':0,
-        'partial':0,
-        'missed':0,
-        'spurious':0,
-        'possible':3,
-        'actual':3,
-        'precision':1.0,
-        'recall':1.0
-    }
-}
-```
-
-```
-print(results_by_tag)
-```
-
-```
-{
-    'LOC':{
-        'ent_type':{
-            'correct':2,
-            'incorrect':0,
-            'partial':0,
-            'missed':0,
-            'spurious':0,
-            'possible':2,
-            'actual':2,
-            'precision':1.0,
-            'recall':1.0
-        },
-        'partial':{
-            'correct':2,
-            'incorrect':0,
-            'partial':0,
-            'missed':0,
-            'spurious':0,
-            'possible':2,
-            'actual':2,
-            'precision':1.0,
-            'recall':1.0
-        },
-        'strict':{
-            'correct':2,
-            'incorrect':0,
-            'partial':0,
-            'missed':0,
-            'spurious':0,
-            'possible':2,
-            'actual':2,
-            'precision':1.0,
-            'recall':1.0
-        },
-        'exact':{
-            'correct':2,
-            'incorrect':0,
-            'partial':0,
-            'missed':0,
-            'spurious':0,
-            'possible':2,
-            'actual':2,
-            'precision':1.0,
-            'recall':1.0
-        }
-    },
-    'PER':{
-        'ent_type':{
-            'correct':1,
-            'incorrect':0,
-            'partial':0,
-            'missed':0,
-            'spurious':0,
-            'possible':1,
-            'actual':1,
-            'precision':1.0,
-            'recall':1.0
-        },
-        'partial':{
-            'correct':1,
-            'incorrect':0,
-            'partial':0,
-            'missed':0,
-            'spurious':0,
-            'possible':1,
-            'actual':1,
-            'precision':1.0,
-            'recall':1.0
-        },
-        'strict':{
-            'correct':1,
-            'incorrect':0,
-            'partial':0,
-            'missed':0,
-            'spurious':0,
-            'possible':1,
-            'actual':1,
-            'precision':1.0,
-            'recall':1.0
-        },
-        'exact':{
-            'correct':1,
-            'incorrect':0,
-            'partial':0,
-            'missed':0,
-            'spurious':0,
-            'possible':1,
-            'actual':1,
-            'precision':1.0,
-            'recall':1.0
-        }
-    }
-}
-```
-
-```
-from nervaluate import summary_report_overall_indices
-
-print(summary_report_overall_indices(evaluation_indices=result_indices, error_schema='partial', preds=pred))
-```
-
-```
-Indices for error schema 'partial':
-
-Correct indices:
-  - Instance 0, Entity 0: Label=PER, Start=2, End=4
-  - Instance 1, Entity 0: Label=LOC, Start=1, End=2
-  - Instance 1, Entity 1: Label=LOC, Start=3, End=4
-
-Incorrect indices:
-  - None
-
-Partial indices:
-  - None
-
-Missed indices:
-  - None
-
-Spurious indices:
-  - None
-```
--->
+* [prodi.gy](https://prodi.gy) style lists of spans.
 
 ### Nested lists
 
 ```
+from nervaluate.evaluator import Evaluator
+  
+  true = [
+      ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
+      ['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE'],
+  ]
+  
+  pred = [
+      ['O', 'O', 'B-PER', 'I-PER', 'O', 'O', 'B-ORG', 'I-ORG'],
+      ['O', 'B-LOC', 'I-LOC', 'B-PER', 'O', 'O', 'B-DATE'],
+  ]
+  
+  # Example text for reference:
+  # "The John Smith who works at Google Inc"
+  # "In Paris Marie Curie lived in 1895"
+  
+  evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
 
-from nervaluate import Evaluator
 
-true = [
-    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-    ['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE'],
-]
+Scenario: all
 
-pred = [
-    ['O', 'O', 'B-PER', 'I-PER', 'O', 'O', 'B-ORG', 'I-ORG', 'O'],
-    ['O', 'B-LOC', 'I-LOC', 'O', 'B-PER', 'I-PER', 'O', 'B-DATE', 'I-DATE', 'O'],
-]
+              correct   incorrect     partial      missed    spurious   precision      recall    f1-score
 
-# Example text for reference:
-# "The John Smith who works at Google Inc"
-# "In Paris Marie Curie lived in 1895"
+ent_type            5           0           0           0           0        1.00        1.00        1.00
+   exact            2           3           0           0           0        0.40        0.40        0.40
+ partial            2           0           3           0           0        0.40        0.40        0.40
+  strict            2           3           0           0           0        0.40        0.40        0.40
+```  
 
-evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-
-results, results_by_tag, result_indices, result_indices_by_tag = evaluator.evaluate()
-```
-
-Sentence:
-  - "In Paris Marie Curie lived in 1895"
-
-Tokens:
-  - ['In', 'Paris', 'Marie', 'Curie', 'lived', 'in', '1895']
-
-Gold:
-  - ['O',  'B-LOC', 'B-PER', 'I-PER', 'O',      'O', 'B-DATE']
-
-Predicted:
-  - ['O',  'B-LOC', 'I-LOC', 'O',     'B-PER',  'O', 'B-DATE']
-
-Gold entities:
-
-| Type | String            |
-|------|-------------------|
-| LOC  | Paris             |
-| PER  | Marie Curie       |
-| DATE | 1895              |
-
-Predicted entities:
-
-| Type | String       |
-|------|--------------|
-| LOC  | Paris Marie  |
-| PER  | lived        |
-| DATE | 1895         |
+and, aggregated by entity type:
 
 ```
+print(evaluator.summary_report(mode='entities'))  
+  
+Scenario: strict
 
+             correct   incorrect     partial      missed    spurious   precision      recall    f1-score
 
-
-
-
-
-
-<!--
-### CoNLL style tab delimited
-
+   DATE            1           0           0           0           0        1.00        1.00        1.00
+    LOC            0           1           0           0           0        0.00        0.00        0.00
+    ORG            1           0           0           0           0        1.00        1.00        1.00
+    PER            0           2           0           0           0        0.00        0.00        0.00
 ```
-
-true = "word\tO\nword\tO\B-PER\nword\tI-PER\n"
-
-pred = "word\tO\nword\tO\B-PER\nword\tI-PER\n"
-
-evaluator = Evaluator(true, pred, tags=['PER'], loader="conll")
-
-results, results_by_tag, result_indices, result_indices_by_tag = evaluator.evaluate()
-```
--->
 
 ## Contributing to the `nervaluate` package
 
