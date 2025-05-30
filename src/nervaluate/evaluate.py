@@ -1,4 +1,5 @@
 import logging
+import warnings
 from copy import deepcopy
 from typing import Any
 
@@ -86,6 +87,13 @@ class Evaluator:  # pylint: disable=too-many-instance-attributes, too-few-public
         self.evaluation_agg_indices = {e: deepcopy(self.evaluation_indices) for e in tags}
 
     def evaluate(self) -> tuple[dict, dict, dict, dict]:  # noqa: C901
+        warnings.warn(
+            "The current evaluation method is deprecated and it will the output change in the next release."
+            "The output will change to a dictionary with the following keys: overall, entities, entity_results, "
+            "overall_indices, entity_indices.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         logging.debug("Imported %s predictions for %s true examples", len(self.pred), len(self.true))
 
         if self.loader != "default":
