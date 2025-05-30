@@ -1,3 +1,6 @@
+import warnings
+
+
 def summary_report_ent(results_agg_entities_type: dict, scenario: str = "strict", digits: int = 2) -> str:
     """
     Generate a summary report of the evaluation results for a given scenario.
@@ -13,6 +16,13 @@ def summary_report_ent(results_agg_entities_type: dict, scenario: str = "strict"
     :raises ValueError:
         If the scenario is invalid.
     """
+    warnings.warn(
+        "summary_report_ent() is deprecated and will be removed in a future release. "
+        "In the future the Evaluator will contain a method `summary_report` with the same functionality.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+
     valid_scenarios = {"strict", "ent_type", "partial", "exact"}
     if scenario not in valid_scenarios:
         raise ValueError(f"Invalid scenario: must be one of {valid_scenarios}")
@@ -64,6 +74,14 @@ def summary_report_overall(results: dict, digits: int = 2) -> str:
     :returns:
         A string containing the summary report.
     """
+    warnings.warn(
+        "summary_report_overall() is deprecated and will be removed in a future. "
+        "In the future the Evaluator will contain a method `summary_report` with the same functionality.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+
+
     headers = ["correct", "incorrect", "partial", "missed", "spurious", "precision", "recall", "f1-score"]
     rows = [headers]
 
@@ -107,6 +125,14 @@ def summary_report_ents_indices(evaluation_agg_indices: dict, error_schema: str,
     :returns:
         A string containing the summary report.
     """
+    warnings.warn(
+        "summary_report_ents_indices() is deprecated and will be made part of the Evaluator class in the future. "
+        "In the future the Evaluator will contain a method `summary_report_indices` with the same functionality.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+
+
     if preds is None:
         preds = [[]]
     report = ""
@@ -141,6 +167,12 @@ def summary_report_overall_indices(evaluation_indices: dict, error_schema: str, 
     :returns:
         A string containing the summary report.
     """
+    warnings.warn(
+        "summary_report_ents_indices() is deprecated and will be removed in a future release. "
+        "In the future the Evaluator will contain a method `summary_report_indices` with the same functionality.",
+        DeprecationWarning,
+        stacklevel=2
+    )
     report = ""
     assert error_schema in evaluation_indices, f"Error schema '{error_schema}' not found in the results."
 
