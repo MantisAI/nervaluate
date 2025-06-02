@@ -1,7 +1,6 @@
 from nervaluate import (
     collect_named_entities,
     conll_to_spans,
-    find_overlap,
     list_to_spans,
     split_list,
 )
@@ -134,63 +133,3 @@ def test_collect_named_entities_no_entity():
     result = collect_named_entities(tags)
     expected = []
     assert result == expected
-
-
-def test_find_overlap_no_overlap():
-    pred_entity = {"label": "LOC", "start": 1, "end": 10}
-    true_entity = {"label": "LOC", "start": 11, "end": 20}
-
-    pred_range = range(pred_entity["start"], pred_entity["end"])
-    true_range = range(true_entity["start"], true_entity["end"])
-
-    pred_set = set(pred_range)
-    true_set = set(true_range)
-
-    intersect = find_overlap(pred_set, true_set)
-
-    assert not intersect
-
-
-def test_find_overlap_total_overlap():
-    pred_entity = {"label": "LOC", "start": 10, "end": 22}
-    true_entity = {"label": "LOC", "start": 11, "end": 20}
-
-    pred_range = range(pred_entity["start"], pred_entity["end"])
-    true_range = range(true_entity["start"], true_entity["end"])
-
-    pred_set = set(pred_range)
-    true_set = set(true_range)
-
-    intersect = find_overlap(pred_set, true_set)
-
-    assert intersect
-
-
-def test_find_overlap_start_overlap():
-    pred_entity = {"label": "LOC", "start": 5, "end": 12}
-    true_entity = {"label": "LOC", "start": 11, "end": 20}
-
-    pred_range = range(pred_entity["start"], pred_entity["end"])
-    true_range = range(true_entity["start"], true_entity["end"])
-
-    pred_set = set(pred_range)
-    true_set = set(true_range)
-
-    intersect = find_overlap(pred_set, true_set)
-
-    assert intersect
-
-
-def test_find_overlap_end_overlap():
-    pred_entity = {"label": "LOC", "start": 15, "end": 25}
-    true_entity = {"label": "LOC", "start": 11, "end": 20}
-
-    pred_range = range(pred_entity["start"], pred_entity["end"])
-    true_range = range(true_entity["start"], true_entity["end"])
-
-    pred_set = set(pred_range)
-    true_set = set(true_range)
-
-    intersect = find_overlap(pred_set, true_set)
-
-    assert intersect
