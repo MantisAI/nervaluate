@@ -1,6 +1,5 @@
 import pytest
 
-from nervaluate import Evaluator
 from nervaluate.loaders import ConllLoader, ListLoader, DictLoader
 
 
