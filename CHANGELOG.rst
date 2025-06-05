@@ -4,6 +4,11 @@ Changelog
 
 (unreleased)
 ------------
+- Fixing pandas dependency. [David S. Batista]
+
+
+0.3.0 (2025-06-05)
+------------------
 
 Changes
 ~~~~~~~
@@ -17,6 +22,7 @@ Fix
 
 Other
 ~~~~~
+- 0.3.0 release. [David S. Batista]
 - Adding deprecation warnings. [David S. Batista]
 - Create pull_request_template.md. [David S. Batista]
 - Upgrading dev tools versions. [David S. Batista]
