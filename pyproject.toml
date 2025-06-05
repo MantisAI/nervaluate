@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nervaluate"
-version = "0.3.0"
+version = "0.3.1"
 authors = [
     { name="David S. Batista"},
     { name="Matthew Upson"}
@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "pandas==2.2.3"
+    "pandas>=2.3.0"
 ]
 
 [project.optional-dependencies]
