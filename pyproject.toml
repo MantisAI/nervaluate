@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nervaluate"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
     { name="David S. Batista"},
     { name="Matthew Upson"}

@@ -2,6 +2,83 @@ Changelog
 =========
 
 
+(unreleased)
+------------
+
+Changes
+~~~~~~~
+- Update changelog for 0.2.0 release. [Matthew Upson]
+
+Fix
+~~~
+- Mypy configuration error. [angelo-digian]
+- Typo in type annotation. [angelo-digian]
+- Switched order of imports. [angelo-digian]
+
+Other
+~~~~~
+- Adding deprecation warnings. [David S. Batista]
+- Create pull_request_template.md. [David S. Batista]
+- Upgrading dev tools versions. [David S. Batista]
+- Initial import. [David S. Batista]
+- Adding scenario type for summary report. [David S. Batista]
+- Update README.md. [David S. Batista]
+- Updating README.MD. [David S. Batista]
+- Removing unused variable. [David S. Batista]
+- Update src/nervaluate/reporting.py. [Copilot, David S. Batista]
+- Update src/nervaluate/reporting.py. [Copilot, David S. Batista]
+- Removing Makefile. [David S. Batista]
+- Drafting CONTRIBUTE.md. [David S. Batista]
+- Drafting CONTRIBUTE.md. [David S. Batista]
+- Removing flake8. [David S. Batista]
+- Removing old config files. [David S. Batista]
+- Running on ubuntu, windows and macos. [David S. Batista]
+- Reverting to ubuntu only. [David S. Batista]
+- Adding new file. [David S. Batista]
+- Removing old workflow file. [David S. Batista]
+- Adding windows and macos to CI. [David S. Batista]
+- Streamlining CI checks. [David S. Batista]
+- Disabling old github workflow and triggering new one. [David S.
+  Batista]
+- Changing github workflow. [David S. Batista]
+- Fixing linting and typing issues. [David S. Batista]
+- Adding pytest-cov as dependency. [David S. Batista]
+- Adding hatch as project manager; linting and typing. [David S.
+  Batista]
+- Fixing type hints. [David S. Batista]
+- Wip. [David S. Batista]
+- Adding docstrings. [David S. Batista]
+- Adding more tests. [David S. Batista]
+- Adding more tests. [David S. Batista]
+- Adding docstrings and increasing test coverage. [David S. Batista]
+- Removing requirements_dev.txt. [David S. Batista]
+- Blackening for py311. [David S. Batista]
+- Fixing pyprojec.toml dependencies. [David S. Batista]
+- Fixing pyprojec.toml dependencies. [David S. Batista]
+- Fixing pyprojec.toml dependencies. [David S. Batista]
+- Fixing pyprojec.toml dependencies. [David S. Batista]
+- Fixing pyprojec.toml dependencies. [David S. Batista]
+- Refactor: move dev dependencies to pyproject.toml and update CI
+  workflow. [David S. Batista]
+- Adding wrongly removed pre-commit. [David S. Batista]
+- Fixing type hints. [David S. Batista]
+- Removing unused imports and mutuable default arguments. [David S.
+  Batista]
+- Update README.md. [Tim Miller]
+- Update README.md. [adgianv]
+- Update README.md - change the pdf link. [adgianv]
+- Added type annotations to functions. [angelo-digian]
+- Pandas version downgraded to 2.0.1 because incompatible with python
+  version. [angelo-digian]
+- Fixed pandas version to 2.2.1. [angelo-digian]
+- Add pandas as a dependency in pyproject.toml. [angelo-digian]
+- Adding pandas in the requirements file. [angelo-digian]
+- Update tests/test_evaluator.py. [David S. Batista]
+- Modified results_to_df method and added test. [angelo-digian]
+- Expanded evaluator class: added method to return results of the nested
+  dictionary as a dataframe. [angelo-digian]
+
+
 0.2.0 (2024-04-10)
 ------------------
 
