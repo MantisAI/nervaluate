@@ -11,9 +11,7 @@ Thank you for your interest in contributing to `nervaluate`! This document provi
    cd nervaluate
    ```
 3. Make sure you have hatch installed, then create a virtual environment:
-   ```bash
-   hatch env create
-   ```
+   # ToDo
 
 ## Adding Tests
 
