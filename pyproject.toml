@@ -98,13 +98,6 @@ default-docstring-type = "numpy"
 load-plugins = ["pylint.extensions.docparams"]
 ignore-paths = ["./examples/.*"]
 
-[tool.flake8]
-max-line-length = 120
-extend-ignore = ["E203"]
-exclude = [".git", "__pycache__", "build", "dist", "./examples/*"]
-max-complexity = 10
-per-file-ignores = ["*/__init__.py: F401"]
-
 [tool.mypy]
 python_version = "3.11"
 ignore_missing_imports = true

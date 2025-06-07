@@ -10,11 +10,9 @@ Thank you for your interest in contributing to `nervaluate`! This document provi
    git clone https://github.com/your-username/nervaluate.git
    cd nervaluate
    ```
-3. Create a virtual environment and install dependencies:
+3. Make sure you have hatch installed, then create a virtual environment:
    ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   pip install -e ".[dev]"
+   hatch env create
    ```
 
 ## Adding Tests
@@ -26,6 +24,10 @@ Thank you for your interest in contributing to `nervaluate`! This document provi
 3. Test files should be named `test_*.py`
 4. Test functions should be named `test_*`
 5. Use pytest fixtures when appropriate for test setup and teardown
+6. Run tests locally before submitting a pull request:
+   ```bash
+   hatch -e 
+   ```
 
 
 ## Changelog Management
@@ -72,10 +74,6 @@ Thank you for your interest in contributing to `nervaluate`! This document provi
 
 - Follow PEP 8 guidelines
 - Use type hints
-- Run pre-commit hooks before committing:
-  ```bash
-  pre-commit run --all-files
-  ```
 
 ## Questions?
 

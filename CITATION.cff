@@ -1,5 +1,9 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
+title: "nervaluate"
+date-released: 2025-06-08
+url: "https://github.com/mantisnlp/nervaluate"
+version: 1.0.0
 authors:
 - family-names: "Batista"
   given-names: "David"
@@ -7,7 +11,6 @@ authors:
 - family-names: "Upson"
   given-names: "Matthew Antony"
   orcid: "https://orcid.org/0000-0002-1040-8048"
-title: "nervaluate"
-version: 0.2.0
-date-released: 2020-10-17
-url: "https://github.com/mantisnlp/nervaluate"
+
+
+
