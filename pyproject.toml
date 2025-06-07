@@ -71,7 +71,18 @@ disable = [
     "I0020",  # bad-option-value
     "R0801",  # duplicate-code
     "W9020",  # bad-option-value
+    "W0621",  # redefined-outer-name
 ]
+
+[tool.pylint.'DESIGN']
+max-args = 38           # Default is 5
+max-attributes = 28     # Default is 7
+max-branches = 14       # Default is 12
+max-locals = 45         # Default is 15
+max-module-lines = 2468 # Default is 1000
+max-nested-blocks = 9   # Default is 5
+max-statements = 206    # Default is 50
+min-public-methods = 1  # Allow classes with just one public method
 
 [tool.pylint.format]
 max-line-length = 120
@@ -87,13 +98,6 @@ default-docstring-type = "numpy"
 load-plugins = ["pylint.extensions.docparams"]
 ignore-paths = ["./examples/.*"]
 
-[tool.flake8]
-max-line-length = 120
-extend-ignore = ["E203"]
-exclude = [".git", "__pycache__", "build", "dist", "./examples/*"]
-max-complexity = 10
-per-file-ignores = ["*/__init__.py: F401"]
-
 [tool.mypy]
 python_version = "3.11"
 ignore_missing_imports = true
@@ -102,7 +106,6 @@ disallow_untyped_defs = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 warn_unused_configs = true
-
 
 [[tool.mypy.overrides]]
 module = "examples.*"
