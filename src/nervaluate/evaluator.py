@@ -2,7 +2,7 @@ from typing import List, Dict, Any, Union
 import pandas as pd
 
 from .entities import EvaluationResult, EvaluationIndices
-from .evaluation_strategies import (
+from .strategies import (
     EvaluationStrategy,
     StrictEvaluation,
     PartialEvaluation,

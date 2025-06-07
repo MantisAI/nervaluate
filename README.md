@@ -19,15 +19,72 @@ based on whether all the tokens that belong to a named entity were classified or
 entity type was assigned.
 
 This full problem is described in detail in the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) 
-post by [David Batista](https://github.com/davidsbatista), and extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) 
+post by [David Batista](https://github.com/davidsbatista), and this package extends the code in the [original repository](https://github.com/davidsbatista/NER-Evaluation) 
 which accompanied the blog post.
 
 The code draws heavily on the papers:
 
 * [SemEval-2013 Task 9 : Extraction of Drug-Drug Interactions from Biomedical Texts (DDIExtraction 2013)](https://www.aclweb.org/anthology/S13-2056)
 
-
 * [SemEval-2013 Task 9.1 - Evaluation Metrics](https://davidsbatista.net/assets/documents/others/semeval_2013-task-9_1-evaluation-metrics.pdf)
+
+# Usage example
+
+```
+pip install nervaluate
+```
+
+A possible input format are lists of NER labels, where each list corresponds to a sentence and each label is a token label.
+Initialize the `Evaluator` class with the true labels and predicted labels, and specify the entity types we want to evaluate.
+
+```python
+from nervaluate.evaluator import Evaluator
+
+true = [
+    ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],  # "The John Smith who works at Google Inc"
+    ['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE'],      # "In Paris Marie Curie lived in 1895"
+]
+  
+pred = [
+    ['O', 'O', 'B-PER', 'I-PER', 'O', 'O', 'B-ORG', 'I-ORG'],
+    ['O', 'B-LOC', 'I-LOC', 'B-PER', 'O', 'O', 'B-DATE'],
+]
+   
+evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
+```
+
+Print the summary report for the evaluation, which will show the metrics for each entity type and evaluation scenario:
+
+```python
+
+print(evaluator.summary_report())
+
+Scenario: all
+
+              correct   incorrect     partial      missed    spurious   precision      recall    f1-score
+
+ent_type            5           0           0           0           0        1.00        1.00        1.00
+   exact            2           3           0           0           0        0.40        0.40        0.40
+ partial            2           0           3           0           0        0.40        0.40        0.40
+  strict            2           3           0           0           0        0.40        0.40        0.40
+```  
+
+or aggregated by entity type under a specific evaluation scenario:
+
+```python
+print(evaluator.summary_report(mode='entities'))  
+  
+Scenario: strict
+
+             correct   incorrect     partial      missed    spurious   precision      recall    f1-score
+
+   DATE            1           0           0           0           0        1.00        1.00        1.00
+    LOC            0           1           0           0           0        0.00        0.00        0.00
+    ORG            1           0           0           0           0        1.00        1.00        1.00
+    PER            0           2           0           0           0        0.00        0.00        0.00
+```
+
+# Evaluation Scenarios
 
 ## Token level evaluation for NER is too simplistic
 
@@ -69,12 +126,12 @@ positives, true positives, false negatives and false positives, and subsequently
 F1-score for each named-entity type.
 
 However, this simple schema ignores the possibility of partial matches or other scenarios when the NER system gets
-the named-entity surface string correct but the type wrong, and we might also want to evaluate these scenarios 
+the named-entity surface string correct but the type wrong. We might also want to evaluate these scenarios 
 again at a full-entity level.
 
 For example:
 
-__IV. System assigns the wrong entity type__
+__IV. System identifies the surface string but assigns the wrong entity type__
 
 | Token | Gold  | Prediction |
 |-------|-------|------------|
@@ -103,10 +160,13 @@ __VI. System gets the boundaries and entity type wrong__
 | Smith   | I-PER | I-ORG      |
 | resigns | O     | O          |
 
-How can we incorporate these described scenarios into evaluation metrics? See the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) 
-for a great explanation, a summary is included here:
 
-We can use the following five metrics to consider difference categories of errors:
+## Defining evaluation metrics
+
+How can we incorporate these described scenarios into evaluation metrics? See the [original blog](http://www.davidsbatista.net/blog/2018/05/09/Named_Entity_Evaluation/) 
+for a great explanation, a summary is included here.
+
+We can define the following five metrics to consider different categories of errors:
 
 | Error type      | Explanation                                                              |
 |-----------------|--------------------------------------------------------------------------|
@@ -136,24 +196,27 @@ These five errors and four evaluation schema interact in the following ways:
 | I        | DRUG        | phenytoin      | DRUG        | phenytoin           | COR  | COR     | COR   | COR    |
 | VI       | GROUP       | contraceptives | DRUG        | oral contraceptives | INC  | PAR     | INC   | INC    |
 
-Then precision/recall/f1-score are calculated for each different evaluation schema. In order to achieve data, two more 
-quantities need to be calculated:
+Then precision, recall and f1-score are calculated for each different evaluation schema. In order to achieve data, 
+two more quantities need to be calculated:
 
 ```
 POSSIBLE (POS) = COR + INC + PAR + MIS = TP + FN
 ACTUAL (ACT) = COR + INC + PAR + SPU = TP + FP
 ```
 
-Then we can compute precision/recall/f1-score, where roughly describing precision is the percentage of correct 
-named-entities found by the NER system, and recall is the percentage of the named-entities in the golden annotations 
-that are retrieved by the NER system. This is computed in two different ways depending on whether we want an exact 
-match (i.e., strict and exact ) or a partial match (i.e., partial and type) scenario:
+Then we can compute precision, recall, f1-score, where roughly describing precision is the percentage of correct 
+named-entities found by the NER system. Recall as the percentage of the named-entities in the golden annotations 
+that are retrieved by the NER system. 
+
+This is computed in two different ways depending on whether we want an exact  match (i.e., strict and exact ) or a 
+partial match (i.e., partial and type) scenario:
 
 __Exact Match (i.e., strict and exact )__
 ```
 Precision = (COR / ACT) = TP / (TP + FP)
 Recall = (COR / POS) = TP / (TP+FN)
 ```
+
 __Partial Match (i.e., partial and type)__
 ```
 Precision = (COR + 0.5 × PAR) / ACT = TP / (TP + FP)
@@ -184,74 +247,22 @@ but according to the definition of `spurious`:
 
 In this case there exists an annotation, but with a different entity type, so we assume it's only incorrect.
 
-## Installation
-
-```
-pip install nervaluate
-```
-
-## Example:
-
-The main `Evaluator` class will accept the following formats:
-
-* Nested lists containing NER labels.
-* CoNLL style tab delimited strings.
-* [prodi.gy](https://prodi.gy) style lists of spans.
-
-### Nested lists
-
-```
-from nervaluate.evaluator import Evaluator
-  
-  true = [
-      ['O', 'B-PER', 'I-PER', 'O', 'O', 'O', 'B-ORG', 'I-ORG'],
-      ['O', 'B-LOC', 'B-PER', 'I-PER', 'O', 'O', 'B-DATE'],
-  ]
-  
-  pred = [
-      ['O', 'O', 'B-PER', 'I-PER', 'O', 'O', 'B-ORG', 'I-ORG'],
-      ['O', 'B-LOC', 'I-LOC', 'B-PER', 'O', 'O', 'B-DATE'],
-  ]
-  
-  # Example text for reference:
-  # "The John Smith who works at Google Inc"
-  # "In Paris Marie Curie lived in 1895"
-  
-  evaluator = Evaluator(true, pred, tags=['PER', 'ORG', 'LOC', 'DATE'], loader="list")
-
-
-Scenario: all
-
-              correct   incorrect     partial      missed    spurious   precision      recall    f1-score
-
-ent_type            5           0           0           0           0        1.00        1.00        1.00
-   exact            2           3           0           0           0        0.40        0.40        0.40
- partial            2           0           3           0           0        0.40        0.40        0.40
-  strict            2           3           0           0           0        0.40        0.40        0.40
-```  
-
-and, aggregated by entity type:
-
-```
-print(evaluator.summary_report(mode='entities'))  
-  
-Scenario: strict
-
-             correct   incorrect     partial      missed    spurious   precision      recall    f1-score
-
-   DATE            1           0           0           0           0        1.00        1.00        1.00
-    LOC            0           1           0           0           0        0.00        0.00        0.00
-    ORG            1           0           0           0           0        1.00        1.00        1.00
-    PER            0           2           0           0           0        0.00        0.00        0.00
-```
 
 ## Contributing to the `nervaluate` package
 
 ### Extending the package to accept more formats
 
-Additional formats can easily be added to the module by creating a new loader class in `nervaluate/loaders.py`. The 
-loader class should inherit from the `DataLoader` base class and implement the `load` method. The `load` method should
- return a list of entity lists, where each entity is represented as a dictionary with `label`, `start`, and `end` keys.
+The `Evaluator` accepts the following formats:
+
+* Nested lists containing NER labels
+* CoNLL style tab delimited strings
+* [prodi.gy](https://prodi.gy) style lists of spans
+
+Additional formats can easily be added by creating a new loader class in `nervaluate/loaders.py`. The  loader class 
+should inherit from the `DataLoader` base class and implement the `load` method. 
+
+The `load` method should return a list of entity lists, where each entity is represented as a dictionary 
+with `label`, `start`, and `end` keys.
 
 The new loader can then be added to the `_setup_loaders` method in the `Evaluator` class, and can be selected with the
  `loader` argument when instantiating the `Evaluator` class.

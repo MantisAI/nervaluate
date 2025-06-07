@@ -1,10 +1,10 @@
 import pytest
 from nervaluate.entities import Entity
-from nervaluate.evaluation_strategies import (
-    StrictEvaluation,
-    PartialEvaluation,
+from nervaluate.strategies import (
     EntityTypeEvaluation,
     ExactEvaluation,
+    PartialEvaluation,
+    StrictEvaluation
 )
 
 
