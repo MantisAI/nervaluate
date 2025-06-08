@@ -1,11 +1,6 @@
 import pytest
 from nervaluate.entities import Entity
-from nervaluate.strategies import (
-    EntityTypeEvaluation,
-    ExactEvaluation,
-    PartialEvaluation,
-    StrictEvaluation
-)
+from nervaluate.strategies import EntityTypeEvaluation, ExactEvaluation, PartialEvaluation, StrictEvaluation
 
 
 def create_entities_from_bio(bio_tags):
