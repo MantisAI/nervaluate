@@ -179,13 +179,18 @@ class TestEntityTypeEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "B-LOC", "O"])
 
         evaluator = EntityTypeEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 1
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == [(0, 1)]
+        assert result_indices.spurious_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.partial_indices == []
 
     def test_shifted_boundary(self, base_sequence):
         """Test case: Entity with shifted boundary."""
@@ -193,13 +198,18 @@ class TestEntityTypeEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "O", "B-LOC"])
 
         evaluator = EntityTypeEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 1
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == [(0, 1)]
+        assert result_indices.spurious_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.partial_indices == []
 
     def test_extra_entity(self, base_sequence):
         """Test case: Extra entity in prediction."""
@@ -207,14 +217,18 @@ class TestEntityTypeEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "B-PER", "O", "B-LOC", "I-LOC"])
 
         evaluator = EntityTypeEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 1
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 1
-
+        assert result_indices.correct_indices == [(0,0)]
+        assert result_indices.incorrect_indices == [(0, 2)]
+        assert result_indices.spurious_indices == [(0, 1)]
+        assert result_indices.missed_indices == []
+        assert result_indices.partial_indices == []
 
 class TestExactEvaluation:
     """Test cases for exact evaluation strategy."""
