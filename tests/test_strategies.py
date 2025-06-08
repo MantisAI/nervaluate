@@ -49,13 +49,18 @@ class TestStrictEvaluation:
         pred = create_entities_from_bio(base_sequence)
 
         evaluator = StrictEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
 
         assert result.correct == 2
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_missed_entity(self, base_sequence):
         """Test case: One entity is missed in prediction."""
@@ -63,13 +68,18 @@ class TestStrictEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "O", "O"])
 
         evaluator = StrictEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
 
         assert result.correct == 1
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 1
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == [(0, 1)]
+        assert result_indices.spurious_indices == []
 
     def test_wrong_label(self, base_sequence):
         """Test case: Entity with wrong label."""
@@ -77,13 +87,18 @@ class TestStrictEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "B-LOC", "I-LOC"])
 
         evaluator = StrictEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 1
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == [(0, 1)]
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_wrong_boundary(self, base_sequence):
         """Test case: Entity with wrong boundary."""
@@ -91,13 +106,18 @@ class TestStrictEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "B-LOC", "O"])
 
         evaluator = StrictEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 1
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == [(0, 1)]
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_shifted_boundary(self, base_sequence):
         """Test case: Entity with shifted boundary."""
@@ -105,13 +125,18 @@ class TestStrictEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "O", "B-LOC"])
 
         evaluator = StrictEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 1
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == [(0, 1)]
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_extra_entity(self, base_sequence):
         """Test case: Extra entity in prediction."""
@@ -119,13 +144,18 @@ class TestStrictEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "B-PER", "O", "B-LOC", "I-LOC"])
 
         evaluator = StrictEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 1
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 1
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == [(0, 2)]
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == [(0, 1)]
 
 
 class TestEntityTypeEvaluation:
@@ -137,13 +167,18 @@ class TestEntityTypeEvaluation:
         pred = create_entities_from_bio(base_sequence)
 
         evaluator = EntityTypeEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
 
         assert result.correct == 2
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_missed_entity(self, base_sequence):
         """Test case: One entity is missed in prediction."""
@@ -151,13 +186,18 @@ class TestEntityTypeEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "O", "O"])
 
         evaluator = EntityTypeEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
 
         assert result.correct == 1
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 1
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == [(0, 1)]
+        assert result_indices.spurious_indices == []
 
     def test_wrong_label(self, base_sequence):
         """Test case: Entity with wrong label."""
@@ -188,9 +228,9 @@ class TestEntityTypeEvaluation:
         assert result.spurious == 0
         assert result_indices.correct_indices == [(0, 0)]
         assert result_indices.incorrect_indices == [(0, 1)]
-        assert result_indices.spurious_indices == []
-        assert result_indices.missed_indices == []
         assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_shifted_boundary(self, base_sequence):
         """Test case: Entity with shifted boundary."""
@@ -207,9 +247,9 @@ class TestEntityTypeEvaluation:
         assert result.spurious == 0
         assert result_indices.correct_indices == [(0, 0)]
         assert result_indices.incorrect_indices == [(0, 1)]
-        assert result_indices.spurious_indices == []
-        assert result_indices.missed_indices == []
         assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_extra_entity(self, base_sequence):
         """Test case: Extra entity in prediction."""
@@ -239,13 +279,18 @@ class TestExactEvaluation:
         pred = create_entities_from_bio(base_sequence)
 
         evaluator = ExactEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
 
         assert result.correct == 2
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_missed_entity(self, base_sequence):
         """Test case: One entity is missed in prediction."""
@@ -253,13 +298,18 @@ class TestExactEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "O", "O"])
 
         evaluator = ExactEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
 
         assert result.correct == 1
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 1
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == [(0, 1)]
+        assert result_indices.spurious_indices == []
 
     def test_wrong_label(self, base_sequence):
         """Test case: Entity with wrong label."""
@@ -267,13 +317,18 @@ class TestExactEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "B-LOC", "I-LOC"])
 
         evaluator = ExactEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 2
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_wrong_boundary(self, base_sequence):
         """Test case: Entity with wrong boundary."""
@@ -281,13 +336,18 @@ class TestExactEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "B-LOC", "O"])
 
         evaluator = ExactEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 1
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == [(0, 1)]
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_shifted_boundary(self, base_sequence):
         """Test case: Entity with shifted boundary."""
@@ -295,13 +355,18 @@ class TestExactEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "O", "B-LOC"])
 
         evaluator = ExactEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 1
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == [(0, 1)]
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_extra_entity(self, base_sequence):
         """Test case: Extra entity in prediction."""
@@ -309,13 +374,18 @@ class TestExactEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "B-PER", "O", "B-LOC", "I-LOC"])
 
         evaluator = ExactEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 2
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 1
+        assert result_indices.correct_indices == [(0, 0), (0, 2)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == [(0, 1)]
 
 
 class TestPartialEvaluation:
@@ -327,13 +397,18 @@ class TestPartialEvaluation:
         pred = create_entities_from_bio(base_sequence)
 
         evaluator = PartialEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
 
         assert result.correct == 2
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_missed_entity(self, base_sequence):
         """Test case: One entity is missed in prediction."""
@@ -341,13 +416,18 @@ class TestPartialEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "O", "O"])
 
         evaluator = PartialEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
 
         assert result.correct == 1
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 1
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == [(0, 1)]
+        assert result_indices.spurious_indices == []
 
     def test_wrong_label(self, base_sequence):
         """Test case: Entity with wrong label."""
@@ -355,13 +435,18 @@ class TestPartialEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "B-LOC", "I-LOC"])
 
         evaluator = PartialEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 2
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_wrong_boundary(self, base_sequence):
         """Test case: Entity with wrong boundary."""
@@ -369,13 +454,18 @@ class TestPartialEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "B-LOC", "O"])
 
         evaluator = PartialEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 0
         assert result.partial == 1
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == [(0, 1)]
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_shifted_boundary(self, base_sequence):
         """Test case: Entity with shifted boundary."""
@@ -383,13 +473,18 @@ class TestPartialEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "O", "O", "O", "B-LOC"])
 
         evaluator = PartialEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 1
         assert result.incorrect == 0
         assert result.partial == 1
         assert result.missed == 0
         assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == [(0, 1)]
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == []
 
     def test_extra_entity(self, base_sequence):
         """Test case: Extra entity in prediction."""
@@ -397,10 +492,15 @@ class TestPartialEvaluation:
         pred = create_entities_from_bio(["O", "B-PER", "I-PER", "O", "B-PER", "O", "B-LOC", "I-LOC"])
 
         evaluator = PartialEvaluation()
-        result, _ = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG", "LOC"])
 
         assert result.correct == 2
         assert result.incorrect == 0
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 1
+        assert result_indices.correct_indices == [(0, 0), (0, 2)]
+        assert result_indices.incorrect_indices == []
+        assert result_indices.partial_indices == []
+        assert result_indices.missed_indices == []
+        assert result_indices.spurious_indices == [(0, 1)]
