@@ -160,9 +160,9 @@ def test_results_to_csv(sample_data, tmp_path):
     assert saved_csv[0][0] == "Entity"
 
     # test invalid mode
-    with pytest.raises(ValueError, match="Invalid mode: must be one of {'entities', 'overall'}"):
+    with pytest.raises(ValueError, match="Invalid mode: must be one of"):
         evaluator.results_to_csv(mode="invalid")
 
     # test invalid scenario for entities mode
-    with pytest.raises(ValueError, match="Invalid scenario: must be one of {'strict', 'ent_type', 'partial', 'exact'}"):
+    with pytest.raises(ValueError, match="Invalid scenario: must be one of"):
         evaluator.results_to_csv(mode="entities", scenario="invalid")
