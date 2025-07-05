@@ -19,10 +19,6 @@ classifiers = [
     "Operating System :: OS Independent"
 ]
 
-dependencies = [
-    "pandas>=2.3.0"
-]
-
 [project.optional-dependencies]
 dev = [
     "black>=25.1.0",
