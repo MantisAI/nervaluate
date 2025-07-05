@@ -259,11 +259,12 @@ class TestEntityTypeEvaluation:
         assert result.partial == 0
         assert result.missed == 0
         assert result.spurious == 1
-        assert result_indices.correct_indices == [(0,0)]
+        assert result_indices.correct_indices == [(0, 0)]
         assert result_indices.incorrect_indices == [(0, 2)]
         assert result_indices.spurious_indices == [(0, 1)]
         assert result_indices.missed_indices == []
         assert result_indices.partial_indices == []
+
 
 class TestExactEvaluation:
     """Test cases for exact evaluation strategy."""
