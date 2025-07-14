@@ -1,5 +1,6 @@
-from typing import List, Dict, Any, Union
-import pandas as pd
+from typing import List, Dict, Any, Union, Optional
+import csv
+import io
 
 from .entities import EvaluationResult, EvaluationIndices
 from .strategies import (
@@ -161,19 +162,83 @@ class Evaluator:
         target.missed_indices.extend(source.missed_indices)
         target.spurious_indices.extend(source.spurious_indices)
 
-    def results_to_dataframe(self) -> Any:
-        """Convert results to a pandas DataFrame."""
+    def results_to_csv(
+        self, mode: str = "overall", scenario: str = "strict", file_path: Optional[str] = None
+    ) -> Union[str, None]:
+        """
+        Convert results to CSV format.
+
+        Args:
+            mode: Either 'overall' for overall metrics or 'entities' for per-entity metrics
+            scenario: The scenario to report on (only used when mode is 'entities')
+            file_path: Optional path to save CSV file. If None, returns CSV as string
+
+        Returns:
+            CSV content as string if file_path is None, otherwise None (saves to file)
+        """
+        valid_modes = {"overall", "entities"}
+        valid_scenarios = {"strict", "ent_type", "partial", "exact"}
+
+        if mode not in valid_modes:
+            raise ValueError(f"Invalid mode: must be one of {valid_modes}")
+
+        if mode == "entities" and scenario not in valid_scenarios:
+            raise ValueError(f"Invalid scenario: must be one of {valid_scenarios}")
+
         results = self.evaluate()
 
-        # Flatten the results structure
-        flat_results = {}
-        for category, category_results in results.items():
-            for strategy, strategy_results in category_results.items():
-                for metric, value in strategy_results.__dict__.items():
-                    key = f"{category}.{strategy}.{metric}"
-                    flat_results[key] = value
+        if mode == "overall":
+            # For overall mode, include all scenarios
+            csv_data = [
+                ["Strategy", "Correct", "Incorrect", "Partial", "Missed", "Spurious", "Precision", "Recall", "F1-Score"]
+            ]
+            results_data = results["overall"]
+            for strategy_name, strategy_result in results_data.items():
+                csv_data.append(
+                    [
+                        strategy_name,
+                        strategy_result.correct,
+                        strategy_result.incorrect,
+                        strategy_result.partial,
+                        strategy_result.missed,
+                        strategy_result.spurious,
+                        strategy_result.precision,
+                        strategy_result.recall,
+                        strategy_result.f1,
+                    ]
+                )
+        else:
+            csv_data = [
+                ["Entity", "Correct", "Incorrect", "Partial", "Missed", "Spurious", "Precision", "Recall", "F1-Score"]
+            ]
+            results_data = results["entities"]
+            for entity_type, entity_results in results_data.items():
+                if scenario in entity_results:
+                    strategy_result = entity_results[scenario]
+                    csv_data.append(
+                        [
+                            entity_type,
+                            strategy_result.correct,
+                            strategy_result.incorrect,
+                            strategy_result.partial,
+                            strategy_result.missed,
+                            strategy_result.spurious,
+                            strategy_result.precision,
+                            strategy_result.recall,
+                            strategy_result.f1,
+                        ]
+                    )
 
-        return pd.DataFrame([flat_results])
+        if file_path:
+            with open(file_path, "w", newline="", encoding="utf-8") as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerows(csv_data)
+            return None
+
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerows(csv_data)
+        return output.getvalue()
 
     def summary_report(self, mode: str = "overall", scenario: str = "strict", digits: int = 2) -> str:
         """
