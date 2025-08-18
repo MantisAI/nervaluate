@@ -4,6 +4,59 @@ Changelog
 
 (unreleased)
 ------------
+- Bumping version. [David S. Batista]
+- Removing pandas dependency. [David S. Batista]
+- Relaxing tests invalid mode and scenario. [David S. Batista]
+- Saving to CSV file or return CSV string. [David S. Batista]
+- Adds tests for result indices in all strategies. [Jack Boylan]
+- Adds indices tests for `ent_type` strategy. [Jack Boylan]
+- Linting import statment. [David S. Batista]
+- Wip: using hatch in contributing. [David S. Batista]
+- Updating CITATION and removing flake. [David S. Batista]
+- Renaming evaluation_strategies to strategies and improving README.
+  [David S. Batista]
+- Removing old files. [David S. Batista]
+- Updating README.MD. [David S. Batista]
+- One more use case. [David S. Batista]
+- Comparative indices report overall. [David S. Batista]
+- Wip: fixing report indices. [David S. Batista]
+- Adding function to generate synthetic data. [David S. Batista]
+- Wip: fixing report for entities. [David S. Batista]
+- Only showing entities report for entities that actually apper on
+  either true or pred data. [David S. Batista]
+- Wip: checking summary with aggregated entities and a specific
+  scenario. [David S. Batista]
+- Wip: checking summary with aggregated entities and a specific
+  scenario. [David S. Batista]
+- Updating evaluation strategies tests. [David S. Batista]
+- Correcting and fixing type strategy. [David S. Batista]
+- Correcting and fixing strict strategy. [David S. Batista]
+- Correcting and fixing partial strategy. [David S. Batista]
+- Adding partial to evaluation strategies. [David S. Batista]
+- Fixing docs lenghts tests. [David S. Batista]
+- Fixing docs lenghts tests. [David S. Batista]
+- Working on comparative example. [David S. Batista]
+- Fixes. [David S. Batista]
+- Fxing empty entities. [David S. Batista]
+- Fixing imports. [David S. Batista]
+- Moving reporting to the Evaluator class. [David S. Batista]
+- Working on new versions of summary reports. [David S. Batista]
+- Cleaning up README.MD. [David S. Batista]
+- Adding missed pyproject.toml. [David S. Batista]
+- Type checking. [David S. Batista]
+- Fixing all tests. [David S. Batista]
+- Adding refactored code. [David S. Batista]
+- Separating new and old evaluator logic. [David S. Batista]
+- Fixing loaders. [David S. Batista]
+- Fixing loading test_conll_loader. [David S. Batista]
+- Fixing loading test_dict_loader. [David S. Batista]
+- Fixing loading test_list_loader. [David S. Batista]
+- Adding tests. [David S. Batista]
+
+
+0.3.1 (2025-06-05)
+------------------
+- Fixing pandas dependency. [David S. Batista]
 - Fixing pandas dependency. [David S. Batista]
 
 
