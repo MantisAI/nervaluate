@@ -7,6 +7,44 @@ from .entities import Entity, EvaluationResult, EvaluationIndices
 class EvaluationStrategy(ABC):
     """Abstract base class for evaluation strategies."""
 
+    def __init__(self, min_overlap_percentage: float = 1.0):
+        """
+        Initialize strategy with minimum overlap threshold.
+
+        Args:
+            min_overlap_percentage: Minimum overlap percentage required (1-100)
+        """
+        if not (1.0 <= min_overlap_percentage <= 100.0):
+            raise ValueError("min_overlap_percentage must be between 1.0 and 100.0")
+        self.min_overlap_percentage = min_overlap_percentage
+
+    def _calculate_overlap_percentage(self, pred: Entity, true: Entity) -> float:
+        """
+        Calculate the percentage overlap between predicted and true entities.
+
+        Returns:
+            Overlap percentage based on true entity span (0-100)
+        """
+        # Check if there's any overlap first
+        if pred.start > true.end or pred.end < true.start:
+            return 0.0
+
+        # Calculate overlap boundaries
+        overlap_start = max(pred.start, true.start)
+        overlap_end = min(pred.end, true.end)
+
+        # Calculate spans (adding 1 because end is inclusive)
+        overlap_span = overlap_end - overlap_start + 1
+        true_span = true.end - true.start + 1
+
+        # Calculate percentage based on true entity span
+        return (overlap_span / true_span) * 100.0
+
+    def _has_sufficient_overlap(self, pred: Entity, true: Entity) -> bool:
+        """Check if entities have sufficient overlap based on threshold."""
+        overlap_percentage = self._calculate_overlap_percentage(pred, true)
+        return overlap_percentage >= self.min_overlap_percentage
+
     @abstractmethod
     def evaluate(
         self, true_entities: List[Entity], pred_entities: List[Entity], tags: List[str], instance_index: int = 0
@@ -50,8 +88,8 @@ class StrictEvaluation(EvaluationStrategy):
                     matched_true.add(true_idx)
                     found_match = True
                     break
-                # Check for any overlap
-                if pred.start <= true.end and pred.end >= true.start:
+                # Check for sufficient overlap with min threshold
+                if self._has_sufficient_overlap(pred, true):
                     result.incorrect += 1
                     indices.incorrect_indices.append((instance_index, pred_idx))
                     matched_true.add(true_idx)
@@ -97,8 +135,8 @@ class PartialEvaluation(EvaluationStrategy):
                 if true_idx in matched_true:
                     continue
 
-                # Check for overlap
-                if pred.start <= true.end and pred.end >= true.start:
+                # Check for sufficient overlap with min threshold
+                if self._has_sufficient_overlap(pred, true):
                     if pred.start == true.start and pred.end == true.end:
                         result.correct += 1
                         indices.correct_indices.append((instance_index, pred_idx))
@@ -135,7 +173,6 @@ class EntityTypeEvaluation(EvaluationStrategy):
     If there's a predicted entity that doesn't match any true entity, we mark it as spurious.
     If there's a true entity that doesn't match any predicted entity, we mark it as missed.
 
-    # ToDo: define a minimum overlap threshold - see: https://github.com/MantisAI/nervaluate/pull/83
     """
 
     def evaluate(
@@ -153,8 +190,8 @@ class EntityTypeEvaluation(EvaluationStrategy):
                 if true_idx in matched_true:
                     continue
 
-                # Check for any overlap (perfect or minimum)
-                if pred.start <= true.end and pred.end >= true.start:
+                # Check for sufficient overlap with min threshold
+                if self._has_sufficient_overlap(pred, true):
                     if pred.label == true.label:
                         result.correct += 1
                         indices.correct_indices.append((instance_index, pred_idx))
@@ -216,8 +253,8 @@ class ExactEvaluation(EvaluationStrategy):
                     matched_true.add(true_idx)
                     found_match = True
                     break
-                # Check for any overlap
-                if pred.start <= true.end and pred.end >= true.start:
+                # Check for sufficient overlap with min threshold
+                if self._has_sufficient_overlap(pred, true):
                     result.incorrect += 1
                     indices.incorrect_indices.append((instance_index, pred_idx))
                     matched_true.add(true_idx)
