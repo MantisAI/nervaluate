@@ -170,7 +170,6 @@ def test_results_to_csv(sample_data, tmp_path):
 
 def test_evaluator_with_min_overlap_percentage():
     """Test Evaluator class with minimum overlap percentage parameter."""
-    from nervaluate import Evaluator
 
     # Test data: true entity spans positions 0-9 (10 tokens)
     true_entities = [[{"label": "PER", "start": 0, "end": 9}]]  # 10-token entity

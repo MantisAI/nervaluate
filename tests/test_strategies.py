@@ -504,7 +504,6 @@ class TestPartialEvaluation:
 
 def test_minimum_overlap_percentage_validation():
     """Test that minimum overlap percentage validation works correctly."""
-    from nervaluate.strategies import PartialEvaluation
 
     # Valid values should work
     PartialEvaluation(min_overlap_percentage=1.0)
@@ -524,9 +523,6 @@ def test_minimum_overlap_percentage_validation():
 
 def test_overlap_percentage_calculation():
     """Test the overlap percentage calculation method."""
-    from nervaluate.strategies import PartialEvaluation
-    from nervaluate.entities import Entity
-
     strategy = PartialEvaluation(min_overlap_percentage=50.0)
 
     true_entity = Entity(label="PER", start=0, end=9)  # 10 tokens (0-9 inclusive)
@@ -553,8 +549,6 @@ def test_overlap_percentage_calculation():
 
 def test_has_sufficient_overlap():
     """Test the has_sufficient_overlap method with different thresholds."""
-    from nervaluate.strategies import PartialEvaluation
-    from nervaluate.entities import Entity
 
     true_entity = Entity(label="PER", start=0, end=9)  # 10 tokens
 
@@ -585,8 +579,6 @@ def test_has_sufficient_overlap():
 
 def test_partial_evaluation_with_min_overlap():
     """Test PartialEvaluation strategy with different minimum overlap thresholds."""
-    from nervaluate.strategies import PartialEvaluation
-    from nervaluate.entities import Entity
 
     true_entities = [Entity(label="PER", start=0, end=9)]  # 10 tokens
 
@@ -602,7 +594,7 @@ def test_partial_evaluation_with_min_overlap():
     for pred_entity, threshold, expected_correct, expected_partial, expected_spurious in test_cases:
         pred_entities = [pred_entity]
         strategy = PartialEvaluation(min_overlap_percentage=threshold)
-        result, indices = strategy.evaluate(true_entities, pred_entities, ["PER"], 0)
+        result, _ = strategy.evaluate(true_entities, pred_entities, ["PER"], 0)
 
         assert (
             result.correct == expected_correct
@@ -617,15 +609,13 @@ def test_partial_evaluation_with_min_overlap():
 
 def test_strict_evaluation_with_min_overlap():
     """Test StrictEvaluation strategy with minimum overlap threshold."""
-    from nervaluate.strategies import StrictEvaluation
-    from nervaluate.entities import Entity
 
     true_entities = [Entity(label="PER", start=0, end=9)]
 
     # Test case where pred has insufficient overlap -> should be spurious
     pred_entities = [Entity(label="PER", start=0, end=2)]  # 30% overlap
     strategy = StrictEvaluation(min_overlap_percentage=50.0)
-    result, indices = strategy.evaluate(true_entities, pred_entities, ["PER"], 0)
+    result, _ = strategy.evaluate(true_entities, pred_entities, ["PER"], 0)
 
     assert result.correct == 0
     assert result.incorrect == 0
@@ -634,7 +624,7 @@ def test_strict_evaluation_with_min_overlap():
 
     # Test case where pred has sufficient overlap but wrong label -> should be incorrect
     pred_entities = [Entity(label="ORG", start=0, end=6)]  # 70% overlap, wrong label
-    result, indices = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
+    result, _ = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
 
     assert result.correct == 0
     assert result.incorrect == 1  # Sufficient overlap but wrong label
@@ -644,15 +634,13 @@ def test_strict_evaluation_with_min_overlap():
 
 def test_entity_type_evaluation_with_min_overlap():
     """Test EntityTypeEvaluation strategy with minimum overlap threshold."""
-    from nervaluate.strategies import EntityTypeEvaluation
-    from nervaluate.entities import Entity
 
     true_entities = [Entity(label="PER", start=0, end=9)]
 
     # Test case: sufficient overlap with correct label -> correct
     pred_entities = [Entity(label="PER", start=0, end=6)]  # 70% overlap, correct label
     strategy = EntityTypeEvaluation(min_overlap_percentage=50.0)
-    result, indices = strategy.evaluate(true_entities, pred_entities, ["PER"], 0)
+    result, _ = strategy.evaluate(true_entities, pred_entities, ["PER"], 0)
 
     assert result.correct == 1
     assert result.incorrect == 0
@@ -661,7 +649,7 @@ def test_entity_type_evaluation_with_min_overlap():
 
     # Test case: sufficient overlap with wrong label -> incorrect
     pred_entities = [Entity(label="ORG", start=0, end=6)]  # 70% overlap, wrong label
-    result, indices = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
+    result, _ = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
 
     assert result.correct == 0
     assert result.incorrect == 1
@@ -670,7 +658,7 @@ def test_entity_type_evaluation_with_min_overlap():
 
     # Test case: insufficient overlap -> spurious
     pred_entities = [Entity(label="PER", start=0, end=2)]  # 30% overlap < 50%
-    result, indices = strategy.evaluate(true_entities, pred_entities, ["PER"], 0)
+    result, _ = strategy.evaluate(true_entities, pred_entities, ["PER"], 0)
 
     assert result.correct == 0
     assert result.incorrect == 0
@@ -680,15 +668,13 @@ def test_entity_type_evaluation_with_min_overlap():
 
 def test_exact_evaluation_with_min_overlap():
     """Test ExactEvaluation strategy with minimum overlap threshold."""
-    from nervaluate.strategies import ExactEvaluation
-    from nervaluate.entities import Entity
 
     true_entities = [Entity(label="PER", start=0, end=9)]
 
     # Test case: exact boundaries (different label) -> correct
     pred_entities = [Entity(label="ORG", start=0, end=9)]  # Exact match, different label
     strategy = ExactEvaluation(min_overlap_percentage=50.0)
-    result, indices = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
+    result, _ = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
 
     assert result.correct == 1
     assert result.incorrect == 0
@@ -697,7 +683,7 @@ def test_exact_evaluation_with_min_overlap():
 
     # Test case: sufficient overlap but not exact -> incorrect
     pred_entities = [Entity(label="ORG", start=0, end=6)]  # 70% overlap, not exact
-    result, indices = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
+    result, _ = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
 
     assert result.correct == 0
     assert result.incorrect == 1
@@ -706,7 +692,7 @@ def test_exact_evaluation_with_min_overlap():
 
     # Test case: insufficient overlap -> spurious
     pred_entities = [Entity(label="ORG", start=0, end=2)]  # 30% overlap < 50%
-    result, indices = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
+    result, _ = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG"], 0)
 
     assert result.correct == 0
     assert result.incorrect == 0
@@ -716,8 +702,6 @@ def test_exact_evaluation_with_min_overlap():
 
 def test_edge_cases_overlap_calculation():
     """Test edge cases for overlap calculation."""
-    from nervaluate.strategies import PartialEvaluation
-    from nervaluate.entities import Entity
 
     strategy = PartialEvaluation(min_overlap_percentage=100.0)
 
@@ -741,8 +725,6 @@ def test_edge_cases_overlap_calculation():
 
 def test_multiple_entities_with_min_overlap():
     """Test evaluation with multiple entities and minimum overlap."""
-    from nervaluate.strategies import PartialEvaluation
-    from nervaluate.entities import Entity
 
     true_entities = [Entity(label="PER", start=0, end=4), Entity(label="ORG", start=10, end=14)]  # 5 tokens  # 5 tokens
 
@@ -754,7 +736,7 @@ def test_multiple_entities_with_min_overlap():
 
     # With 50% threshold
     strategy = PartialEvaluation(min_overlap_percentage=50.0)
-    result, indices = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG", "LOC"], 0)
+    result, _ = strategy.evaluate(true_entities, pred_entities, ["PER", "ORG", "LOC"], 0)
 
     assert result.correct == 0
     assert result.partial == 1  # Only the ORG entity has sufficient overlap (60% > 50%)

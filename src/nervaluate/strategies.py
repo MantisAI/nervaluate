@@ -14,11 +14,12 @@ class EvaluationStrategy(ABC):
         Args:
             min_overlap_percentage: Minimum overlap percentage required (1-100)
         """
-        if not (1.0 <= min_overlap_percentage <= 100.0):
+        if not 1.0 <= min_overlap_percentage <= 100.0:
             raise ValueError("min_overlap_percentage must be between 1.0 and 100.0")
         self.min_overlap_percentage = min_overlap_percentage
 
-    def _calculate_overlap_percentage(self, pred: Entity, true: Entity) -> float:
+    @staticmethod
+    def _calculate_overlap_percentage(pred: Entity, true: Entity) -> float:
         """
         Calculate the percentage overlap between predicted and true entities.
 
@@ -42,7 +43,7 @@ class EvaluationStrategy(ABC):
 
     def _has_sufficient_overlap(self, pred: Entity, true: Entity) -> bool:
         """Check if entities have sufficient overlap based on threshold."""
-        overlap_percentage = self._calculate_overlap_percentage(pred, true)
+        overlap_percentage = EvaluationStrategy._calculate_overlap_percentage(pred, true)
         return overlap_percentage >= self.min_overlap_percentage
 
     @abstractmethod
