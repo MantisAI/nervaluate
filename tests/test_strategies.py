@@ -500,3 +500,105 @@ class TestPartialEvaluation:
         assert result_indices.partial_indices == []
         assert result_indices.missed_indices == []
         assert result_indices.spurious_indices == [(0, 1)]
+
+
+class TestSingleCharacterEntities:
+    """Test cases for single-character entities to ensure proper range handling."""
+
+    def test_single_token_entities_strict(self):
+        """Test case: Single token entities using strict evaluation."""
+        # Create entities representing single characters/tokens
+        # Entity at position 1 with start=1, end=2 (standard representation)
+        true = [Entity("PER", 1, 2), Entity("ORG", 4, 5)]
+        pred = [Entity("PER", 1, 2), Entity("ORG", 4, 5)]
+
+        evaluator = StrictEvaluation()
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
+
+        assert result.correct == 2
+        assert result.incorrect == 0
+        assert result.partial == 0
+        assert result.missed == 0
+        assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+
+    def test_single_token_entities_same_start_end(self):
+        """Test case: Single token entities where start==end (edge case)."""
+        # Edge case: entities where start and end are the same
+        # This tests the scenario mentioned in the user's question
+        true = [Entity("PER", 1, 1), Entity("ORG", 4, 4)]
+        pred = [Entity("PER", 1, 1), Entity("ORG", 4, 4)]
+
+        evaluator = StrictEvaluation()
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
+
+        assert result.correct == 2
+        assert result.incorrect == 0
+        assert result.partial == 0
+        assert result.missed == 0
+        assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+
+    def test_single_token_entities_partial_evaluation(self):
+        """Test case: Single token entities with partial evaluation."""
+        true = [Entity("PER", 1, 1), Entity("ORG", 4, 4)]
+        pred = [Entity("PER", 1, 1), Entity("ORG", 4, 4)]
+
+        evaluator = PartialEvaluation()
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
+
+        assert result.correct == 2
+        assert result.incorrect == 0
+        assert result.partial == 0
+        assert result.missed == 0
+        assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+
+    def test_single_token_entities_overlap_detection(self):
+        """Test case: Single token entities with overlapping positions."""
+        # Test overlap detection for single character entities
+        true = [Entity("PER", 1, 1)]  # Single token at position 1
+        pred = [Entity("ORG", 1, 1)]  # Different label, same position
+
+        evaluator = StrictEvaluation()
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
+
+        # Should be marked as incorrect due to label mismatch but position overlap
+        assert result.correct == 0
+        assert result.incorrect == 1
+        assert result.partial == 0
+        assert result.missed == 0
+        assert result.spurious == 0
+        assert result_indices.incorrect_indices == [(0, 0)]
+
+    def test_single_token_adjacent_entities(self):
+        """Test case: Adjacent single token entities."""
+        # Test entities at adjacent positions
+        true = [Entity("PER", 1, 1), Entity("ORG", 2, 2)]
+        pred = [Entity("PER", 1, 1), Entity("ORG", 2, 2)]
+
+        evaluator = StrictEvaluation()
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
+
+        assert result.correct == 2
+        assert result.incorrect == 0
+        assert result.partial == 0
+        assert result.missed == 0
+        assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0), (0, 1)]
+
+    def test_single_token_missed_entity(self):
+        """Test case: Single token entity that is missed."""
+        true = [Entity("PER", 1, 1), Entity("ORG", 4, 4)]
+        pred = [Entity("PER", 1, 1)]  # Missing the ORG entity
+
+        evaluator = StrictEvaluation()
+        result, result_indices = evaluator.evaluate(true, pred, ["PER", "ORG"])
+
+        assert result.correct == 1
+        assert result.incorrect == 0
+        assert result.partial == 0
+        assert result.missed == 1
+        assert result.spurious == 0
+        assert result_indices.correct_indices == [(0, 0)]
+        assert result_indices.missed_indices == [(0, 1)]
