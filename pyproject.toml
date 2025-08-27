@@ -68,6 +68,7 @@ disable = [
     "R0801",  # duplicate-code
     "W9020",  # bad-option-value
     "W0621",  # redefined-outer-name
+    "W0212",  # protected-access
 ]
 
 [tool.pylint.'DESIGN']

@@ -17,7 +17,9 @@ from .entities import Entity
 class Evaluator:
     """Main evaluator class for NER evaluation."""
 
-    def __init__(self, true: Any, pred: Any, tags: List[str], loader: str = "default") -> None:
+    def __init__(
+        self, true: Any, pred: Any, tags: List[str], loader: str = "default", min_overlap_percentage: float = 1.0
+    ) -> None:
         """
         Initialize the evaluator.
 
@@ -26,8 +28,10 @@ class Evaluator:
             pred: Predicted entities in any supported format
             tags: List of valid entity tags
             loader: Name of the loader to use
+            min_overlap_percentage: Minimum overlap percentage for partial matches (1-100)
         """
         self.tags = tags
+        self.min_overlap_percentage = min_overlap_percentage
         self._setup_loaders()
         self._load_data(true, pred, loader)
         self._setup_evaluation_strategies()
@@ -37,12 +41,12 @@ class Evaluator:
         self.loaders: Dict[str, DataLoader] = {"conll": ConllLoader(), "list": ListLoader(), "dict": DictLoader()}
 
     def _setup_evaluation_strategies(self) -> None:
-        """Setup evaluation strategies."""
+        """Setup evaluation strategies with overlap threshold."""
         self.strategies: Dict[str, EvaluationStrategy] = {
-            "strict": StrictEvaluation(),
-            "partial": PartialEvaluation(),
-            "ent_type": EntityTypeEvaluation(),
-            "exact": ExactEvaluation(),
+            "strict": StrictEvaluation(self.min_overlap_percentage),
+            "partial": PartialEvaluation(self.min_overlap_percentage),
+            "ent_type": EntityTypeEvaluation(self.min_overlap_percentage),
+            "exact": ExactEvaluation(self.min_overlap_percentage),
         }
 
     def _load_data(self, true: Any, pred: Any, loader: str) -> None:
