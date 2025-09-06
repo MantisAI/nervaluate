@@ -3,7 +3,7 @@ message: "If you use this software, please cite it as below."
 title: "nervaluate"
 date-released: 2025-06-08
 url: "https://github.com/mantisnlp/nervaluate"
-version: 1.0.0
+version: 1.1.0
 authors:
 - family-names: "Batista"
   given-names: "David"
