@@ -4,6 +4,18 @@ Changelog
 
 (unreleased)
 ------------
+- Testing for single character entities. [David S. Batista]
+- Fixing linting issues. [David S. Batista]
+- Fixing linting issues. [David S. Batista]
+- Defining a min ground truth percentage to be considered an overlap.
+  [David S. Batista]
+- Chore: removing script to compare old and new version outputs. [David
+  S. Batista]
+
+
+1.0.0 (2025-08-18)
+------------------
+- 1.0.0 release. [David S. Batista]
 - Bumping version. [David S. Batista]
 - Removing pandas dependency. [David S. Batista]
 - Relaxing tests invalid mode and scenario. [David S. Batista]
@@ -16,11 +28,15 @@ Changelog
 - Renaming evaluation_strategies to strategies and improving README.
   [David S. Batista]
 - Removing old files. [David S. Batista]
+- Removing old files. [David S. Batista]
 - Updating README.MD. [David S. Batista]
 - One more use case. [David S. Batista]
 - Comparative indices report overall. [David S. Batista]
 - Wip: fixing report indices. [David S. Batista]
+- Wip. [David S. Batista]
+- Wip: fixing report for entities. [David S. Batista]
 - Adding function to generate synthetic data. [David S. Batista]
+- Wip: fixing report for entities. [David S. Batista]
 - Wip: fixing report for entities. [David S. Batista]
 - Only showing entities report for entities that actually apper on
   either true or pred data. [David S. Batista]
