@@ -2,6 +2,7 @@ import pytest
 from nervaluate.entities import Entity
 from nervaluate.strategies import EntityTypeEvaluation, ExactEvaluation, PartialEvaluation, StrictEvaluation
 
+
 def create_entities_from_bio(bio_tags):
     """Helper function to create entities from BIO tags."""
     entities = []
@@ -26,6 +27,7 @@ def create_entities_from_bio(bio_tags):
         entities.append(current_entity)
 
     return entities
+
 
 @pytest.fixture
 def base_sequence():
