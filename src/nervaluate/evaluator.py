@@ -118,7 +118,7 @@ class Evaluator:
                     results[strategy_name] = result
                     indices[strategy_name] = doc_indices
                 else:
-                    self._merge_results(results[strategy_name], result)
+                    self._merge_results(results[strategy_name], result, strategy_name)
                     self._merge_indices(indices[strategy_name], doc_indices)
 
                 # Update entity-specific results
@@ -137,7 +137,7 @@ class Evaluator:
                         entity_results[tag][strategy_name] = tag_result
                         entity_indices[tag][strategy_name] = tag_indices
                     else:
-                        self._merge_results(entity_results[tag][strategy_name], tag_result)
+                        self._merge_results(entity_results[tag][strategy_name], tag_result, strategy_name)
                         self._merge_indices(entity_indices[tag][strategy_name], tag_indices)
 
         return {
@@ -148,14 +148,17 @@ class Evaluator:
         }
 
     @staticmethod
-    def _merge_results(target: EvaluationResult, source: EvaluationResult) -> None:
+    def _merge_results(
+        target: EvaluationResult, source: EvaluationResult, strategy_name: str
+    ) -> None:
         """Merge two evaluation results."""
         target.correct += source.correct
         target.incorrect += source.incorrect
         target.partial += source.partial
         target.missed += source.missed
         target.spurious += source.spurious
-        target.compute_metrics()
+        use_partial_formula = strategy_name in ("partial", "ent_type")
+        target.compute_metrics(partial_or_type=use_partial_formula)
 
     @staticmethod
     def _merge_indices(target: EvaluationIndices, source: EvaluationIndices) -> None:
