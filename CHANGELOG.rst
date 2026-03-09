@@ -4,8 +4,11 @@ Changelog
 
 (unreleased)
 ------------
+- EntityType strategy: when multiple true entities of the same type overlap a prediction,
+  the matched true entity is now chosen by closest boundaries (not list order). Aggregate
+  counts (correct, missed, etc.) are unchanged; ``missed_indices`` may list a different
+  true-entity index in those cases. [David S. Batista]
 - Testing for single character entities. [David S. Batista]
-- Fixing linting issues. [David S. Batista]
 - Fixing linting issues. [David S. Batista]
 - Defining a min ground truth percentage to be considered an overlap.
   [David S. Batista]

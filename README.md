@@ -247,6 +247,11 @@ but according to the definition of `spurious`:
 
 In this case there exists an annotation, but with a different entity type, so we assume it's only incorrect.
 
+For the **Type** (ent_type) strategy, if multiple true entities of the same label overlap a
+prediction, the match is resolved by closest boundaries. This can change which
+``(instance_index, entity_index)`` appears in ``missed_indices`` compared to list order,
+while aggregate counts stay the same.
+
 
 ## Contributing to the `nervaluate` package
 
