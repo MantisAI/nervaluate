@@ -4,11 +4,56 @@ Changelog
 
 (unreleased)
 ------------
-- EntityType strategy: when multiple true entities of the same type overlap a prediction,
-  the matched true entity is now chosen by closest boundaries (not list order). Aggregate
-  counts (correct, missed, etc.) are unchanged; ``missed_indices`` may list a different
-  true-entity index in those cases. [David S. Batista]
+- Bumping version to 1.2.0. [David S. Batista]
+- Adding more tests. [David S. Batista]
+- Explaining new behaviour docstring + README.md. [David S. Batista]
+- Fixing typo. [David S. Batista]
+- Fixing typo + linting error. [David S. Batista]
+- Refactor: better naming. [DinizNicolas]
+- Docs: update docstring. [DinizNicolas]
+- Docs: docstring update. [DinizNicolas]
+- Style: lint. [DinizNicolas]
+- Refactor: change ugly ifs. [DinizNicolas]
+- Feat: nested entities support. [DinizNicolas]
+
+  Change partial evaluation to resolve nested entities edge cases.
+- Test: nested entities support. [DinizNicolas]
+
+  Add tests for nested entities partial evaluation
+- Feat: nested entities support. [DinizNicolas]
+
+  Change exact evaluation to resolve nested entities edge cases.
+
+  Same changes as strict evaluation
+- Test: nested entities support. [DinizNicolas]
+
+  Add tests for nested entities exact evaluation
+- Feat: nested entities support. [DinizNicolas]
+
+  Change entity type evaluation to resolve nested entities edge cases.
+
+  Before : when a sufficient overlap is found between to entities of the same label, it was counted as correct.
+
+  Now : we search for the best match to count a correct entity. The best match being the one with minimum gap between predicted and true entities boundaries.
+- Add tests for nested entities entity type evaluation. [diniznicol]
+- Feat: nested entities support Change strict evaluation to resolve
+  nested entities edge cases. Before: without a perfect match beetwen a
+  true/pred pair, if an overlap was found, it was directly counted as
+  incorrect. Now : Only when no perfect match is found in every true
+  entity, the first overlapping pred entity found is counted as
+  incorrect. [DinizNicolas]
+- Test: nested entities support test correction. [DinizNicolas]
+- Test: nested entities support. [DinizNicolas]
+
+  Add tests for nested entities strict evaluation
+
+
+1.1.0 (2025-09-06)
+------------------
+- 1.1.0 release. [David S. Batista]
+- 1.1.0 release. [David S. Batista]
 - Testing for single character entities. [David S. Batista]
+- Fixing linting issues. [David S. Batista]
 - Fixing linting issues. [David S. Batista]
 - Defining a min ground truth percentage to be considered an overlap.
   [David S. Batista]
