@@ -1,9 +1,9 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "nervaluate"
-date-released: 2026-03-09
+date-released: 2026-03-12
 url: "https://github.com/mantisnlp/nervaluate"
-version: 1.2.0
+version: 1.2.1
 authors:
 - family-names: "Batista"
   given-names: "David"

@@ -4,6 +4,27 @@ Changelog
 
 (unreleased)
 ------------
+- Adding tests + updating README.md. [David S. Batista]
+- Fix partial and ent_type precision/recall when merging multi-document
+  results. [David S. Batista]
+
+  _merge_results() was calling compute_metrics() with no arguments after
+  merging counts, so partial_or_type defaulted to False and strict
+  formula (COR/ACT, COR/POS) was used for all strategies. That overwrote
+  the correct partial/ent_type P/R (COR+0.5*PAR)/ACT and (COR+0.5*PAR)/POS.
+
+  Now pass strategy_name into _merge_results and call
+  compute_metrics(partial_or_type=True) for 'partial' and 'ent_type'
+  so merged results keep the SemEval partial-match formula.
+
+  Fixes the bug where partial (and ent_type) reported same P/R as strict
+  (e.g. README example showed 0.40 instead of 0.70 for partial).
+
+
+1.2.0 (2026-03-09)
+------------------
+- 1.2.0 release. [David S. Batista]
+- Updating CHANGELOG. [David S. Batista]
 - Bumping version to 1.2.0. [David S. Batista]
 - Adding more tests. [David S. Batista]
 - Explaining new behaviour docstring + README.md. [David S. Batista]
