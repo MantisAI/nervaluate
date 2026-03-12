@@ -64,6 +64,58 @@ def test_evaluator_with_invalid_tags(sample_data):
         assert results["overall"][strategy].spurious == 0
 
 
+def test_partial_and_ent_type_metrics_use_partial_formula_after_merge():
+    """
+    Test that partial and ent_type strategies use (COR + 0.5*PAR)/ACT for precision/recall
+    after merging multi-document results, not the strict formula COR/ACT.
+
+    Uses the README usage example: 2 documents, partial has correct=2, partial=3.
+    SemEval partial formula gives P=R=(2+0.5*3)/5=0.7; strict would give 0.4.
+    This test would have caught the bug where _merge_results called compute_metrics()
+    without partial_or_type=True, overwriting partial/ent_type metrics with strict values.
+    """
+    # README usage example (2 documents so _merge_results is exercised)
+    true = [
+        ["O", "B-PER", "I-PER", "O", "O", "O", "B-ORG", "I-ORG"],
+        ["O", "B-LOC", "B-PER", "I-PER", "O", "O", "B-DATE"],
+    ]
+    pred = [
+        ["O", "O", "B-PER", "I-PER", "O", "O", "B-ORG", "I-ORG"],
+        ["O", "B-LOC", "I-LOC", "B-PER", "O", "O", "B-DATE"],
+    ]
+    evaluator = Evaluator(true, pred, tags=["PER", "ORG", "LOC", "DATE"], loader="list")
+    results = evaluator.evaluate()
+
+    strict_res = results["overall"]["strict"]
+    partial_res = results["overall"]["partial"]
+    ent_type_res = results["overall"]["ent_type"]
+
+    # Partial has correct=2, partial=3, no incorrect/missed/spurious -> ACT=POS=5
+    assert partial_res.correct == 2
+    assert partial_res.partial == 3
+    assert partial_res.incorrect == 0
+    assert partial_res.missed == 0
+    assert partial_res.spurious == 0
+    assert partial_res.actual == 5
+    assert partial_res.possible == 5
+
+    # SemEval partial formula: (COR + 0.5*PAR) / ACT and / POS
+    expected_partial_precision = (partial_res.correct + 0.5 * partial_res.partial) / partial_res.actual
+    expected_partial_recall = (partial_res.correct + 0.5 * partial_res.partial) / partial_res.possible
+    assert expected_partial_precision == pytest.approx(0.7)
+    assert expected_partial_recall == pytest.approx(0.7)
+
+    # Partial strategy must report these values (not strict 0.4)
+    assert partial_res.precision == pytest.approx(expected_partial_precision)
+    assert partial_res.recall == pytest.approx(expected_partial_recall)
+    assert partial_res.precision != strict_res.precision
+    assert partial_res.recall != strict_res.recall
+
+    # ent_type for this example has no partial/incorrect, so P/R=1.0; ensure it used partial formula path
+    assert ent_type_res.precision == pytest.approx(1.0)
+    assert ent_type_res.recall == pytest.approx(1.0)
+
+
 def test_evaluator_different_document_lengths():
     """Test that Evaluator raises ValueError when documents have different lengths."""
     true = [
